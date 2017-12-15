@@ -10,7 +10,7 @@ public class EventData extends Data {
         this.event = event;
     }
 
-    void setEvent(Event event) {
+    public void setEvent(Event event) {
         this.event = event;
     }
 

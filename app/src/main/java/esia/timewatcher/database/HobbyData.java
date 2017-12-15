@@ -10,7 +10,7 @@ public class HobbyData extends Data {
         this.hobby = hobby;
     }
 
-    void setHobby(Hobby hobby) {
+    public void setHobby(Hobby hobby) {
         this.hobby = hobby;
     }
 

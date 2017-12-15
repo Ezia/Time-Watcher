@@ -7,6 +7,7 @@ import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.util.Log;
 
 import java.io.ByteArrayOutputStream;
 
@@ -17,7 +18,7 @@ public class DatabaseManager extends SQLiteOpenHelper {
     private static DatabaseManager instance = null;
 
     // Database Version
-    private static final int DATABASE_VERSION = 1;
+    private static final int DATABASE_VERSION = 3;
 
     // Database Name
     private static final String DATABASE_NAME = "time_history";
@@ -34,7 +35,7 @@ public class DatabaseManager extends SQLiteOpenHelper {
     private static final String KEY_START_DATE = "start_date";
     private static final String KEY_END_DATE = "end_date";
     private static final String KEY_DATE = "date";
-    private static final String KEY_TYPE = "date";
+    private static final String KEY_TYPE = "type";
 
     private DatabaseManager(Context context) {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
@@ -57,13 +58,9 @@ public class DatabaseManager extends SQLiteOpenHelper {
     public void onCreate(SQLiteDatabase db) {
         String CREATE_OCCUPATION_TYPES_TABLE =
                 "CREATE TABLE " + TABLE_OCCUPATION_TYPES + "("
-                    + KEY_ID + " INTEGER,"
+                    + KEY_ID + " INTEGER PRIMARY KEY,"
                     + KEY_NAME + " TEXT,"
-                    + KEY_ICON + " BLOB,"
-                    + "PRIMARY KEY("
-                        + KEY_ID + ","
-                        + KEY_NAME
-                    + ")"
+                    + KEY_ICON + " BLOB"
                 + ")";
         String CREATE_HOBBIES_TABLE =
                 "CREATE TABLE " + TABLE_HOBBIES + "("
@@ -107,14 +104,13 @@ public class DatabaseManager extends SQLiteOpenHelper {
         SQLiteDatabase db = this.getWritableDatabase();
 
         ContentValues values = new ContentValues();
-        values.put(KEY_NAME, occupationType.getName()); // Contact Name
-        values.put(KEY_ICON, bitmapToBytes(occupationType.getIcon())); // Contact Phone Number
+        values.put(KEY_NAME, occupationType.getName());
+        values.put(KEY_ICON, bitmapToBytes(occupationType.getIcon()));
 
-        // Inserting Row
         long id = db.insert(TABLE_OCCUPATION_TYPES, null, values);
-        db.close(); // Closing database connection
+        db.close();
 
-        if (id > -1) {
+        if (id != -1) {
             return new OccupationTypeData(id, occupationType);
         }
         return null;
@@ -125,13 +121,12 @@ public class DatabaseManager extends SQLiteOpenHelper {
 
         Cursor cursor = db.query(TABLE_OCCUPATION_TYPES,
                 new String[] { KEY_ID, KEY_NAME, KEY_ICON },
-                KEY_ID + " = ?",
+                KEY_ID + "=?",
                 new String[] { String.valueOf(data.getId()) },
                 null,
                 null,
                 null,
                 null);
-        db.close();
 
         if (cursor != null) {
             cursor.moveToFirst();
@@ -139,26 +134,38 @@ public class DatabaseManager extends SQLiteOpenHelper {
                     new OccupationType(cursor.getString(1),
                     bytesToBitmap(cursor.getBlob(2)))
             );
+            cursor.close();
+        } else {
+            data.setOccupationType(null);
         }
+
+        db.close();
     }
 
-    public void updateOccupationType(OccupationTypeData data) {
+    public void updateOccupationType(OccupationTypeData data, OccupationType type) {
         SQLiteDatabase db = this.getWritableDatabase();
 
         ContentValues values = new ContentValues();
-        values.put(KEY_NAME, data.getOccupationType().getName());
-        values.put(KEY_ICON, bitmapToBytes(data.getOccupationType().getIcon()));
+        values.put(KEY_NAME, type.getName());
+        values.put(KEY_ICON, bitmapToBytes(type.getIcon()));
 
-        // updating row
-        db.update(TABLE_OCCUPATION_TYPES, values, KEY_ID + " = ?",
+        int affectedRowNbr = db.update(TABLE_OCCUPATION_TYPES, values, KEY_ID + "=?",
                 new String[] { String.valueOf(data.getId()) });
         db.close();
+
+        if (affectedRowNbr == 1) {
+            data.setOccupationType(type);
+        } else {
+            data.setOccupationType(null);
+        }
+
     }
 
     public void deleteOccupationType(OccupationTypeData data) {
         SQLiteDatabase db = this.getWritableDatabase();
-        db.delete(TABLE_OCCUPATION_TYPES, KEY_ID + " = ?",
+        db.delete(TABLE_OCCUPATION_TYPES, KEY_ID + "=?",
                 new String[] { String.valueOf(data.getId()) });
+        data.setOccupationType(null);
         db.close();
     }
 
