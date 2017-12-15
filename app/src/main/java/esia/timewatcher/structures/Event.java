@@ -1,0 +1,21 @@
+package esia.timewatcher.structures;
+
+import java.util.Date;
+
+public class Event {
+    private Date date;
+    private OccupationType type;
+
+    public Event(Date date, OccupationType type) {
+        this.date = date;
+        this.type = type;
+    }
+
+    public Date getDate() {
+        return date;
+    }
+
+    public OccupationType getType() {
+        return type;
+    }
+}
