@@ -57,7 +57,7 @@ public class DatabaseManager extends SQLiteOpenHelper {
     public void onCreate(SQLiteDatabase db) {
         String CREATE_OCCUPATION_TYPES_TABLE =
                 "CREATE TABLE " + TABLE_OCCUPATION_TYPES + "("
-                    + KEY_ID + " INTEGER AUTOINCREMENT,"
+                    + KEY_ID + " INTEGER,"
                     + KEY_NAME + " TEXT,"
                     + KEY_ICON + " BLOB,"
                     + "PRIMARY KEY("
@@ -67,7 +67,7 @@ public class DatabaseManager extends SQLiteOpenHelper {
                 + ")";
         String CREATE_HOBBIES_TABLE =
                 "CREATE TABLE " + TABLE_HOBBIES + "("
-                    + KEY_ID + " INTEGER AUTOINCREMENT,"
+                    + KEY_ID + " INTEGER,"
                     + KEY_TYPE + " INTEGER,"
                     + KEY_START_DATE + " INTEGER,"
                     + KEY_END_DATE + " INTEGER,"
@@ -77,7 +77,7 @@ public class DatabaseManager extends SQLiteOpenHelper {
                 + ")";
         String CREATE_EVENTS_TABLE =
                 "CREATE TABLE " + TABLE_EVENTS + "("
-                    + KEY_ID + " INTEGER AUTOINCREMENT,"
+                    + KEY_ID + " INTEGER,"
                     + KEY_TYPE + " INTEGER,"
                     + KEY_DATE + " INTEGER,"
                     + "FOREIGN KEY(" + KEY_TYPE + ")"
