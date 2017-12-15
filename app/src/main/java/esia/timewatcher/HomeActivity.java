@@ -4,6 +4,8 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 
+import esia.timewatcher.database.DatabaseManager;
+
 
 public class HomeActivity extends AppCompatActivity {
     @Override
@@ -11,5 +13,6 @@ public class HomeActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.home_activity_layout);
 
+        DatabaseManager.initializeInstance(this.getApplicationContext());
     }
 }
