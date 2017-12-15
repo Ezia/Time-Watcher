@@ -12,7 +12,7 @@ public class Event {
     }
 
     public Event(Event event) {
-        this.date = new Date(event.date.getTime());
+        this.date = event.date;
         this.type = event.type;
     }
 

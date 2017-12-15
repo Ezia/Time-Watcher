@@ -2,13 +2,13 @@ package esia.timewatcher.database;
 
 public abstract class Data {
 
-    private int id;
+    protected final long id;
 
-    Data(int id) {
+    Data(long id) {
         this.id = id;
     }
 
-    int getId() {
+    long getId() {
         return id;
     }
 }

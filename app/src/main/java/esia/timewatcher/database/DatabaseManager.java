@@ -1,10 +1,21 @@
 package esia.timewatcher.database;
 
+import android.content.ContentValues;
 import android.content.Context;
+import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+
+import java.io.ByteArrayOutputStream;
+
+import esia.timewatcher.structures.Hobby;
+import esia.timewatcher.structures.OccupationType;
 
 public class DatabaseManager extends SQLiteOpenHelper {
+    private static DatabaseManager instance = null;
+
     // Database Version
     private static final int DATABASE_VERSION = 1;
 
@@ -25,8 +36,21 @@ public class DatabaseManager extends SQLiteOpenHelper {
     private static final String KEY_DATE = "date";
     private static final String KEY_TYPE = "date";
 
-    public DatabaseManager(Context context) {
+    private DatabaseManager(Context context) {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
+    }
+
+    /**
+     * Must be called by the application before performing operations
+     * @param context
+     * @return
+     */
+    public static void initializeInstance(Context context) {
+        instance = new DatabaseManager(context.getApplicationContext());
+    }
+
+    public static DatabaseManager getInstance() {
+        return instance;
     }
 
     @Override
@@ -62,5 +86,80 @@ public class DatabaseManager extends SQLiteOpenHelper {
 
         // Creating tables again
         onCreate(db);
+    }
+
+    ///// OCCUPATION TYPES /////
+
+    public OccupationTypeData createOccupationType(OccupationType occupationType) {
+        SQLiteDatabase db = this.getWritableDatabase();
+
+        ContentValues values = new ContentValues();
+        values.put(KEY_NAME, occupationType.getName()); // Contact Name
+        values.put(KEY_ICON, bitmapToBytes(occupationType.getIcon())); // Contact Phone Number
+
+        // Inserting Row
+        long id = db.insert(TABLE_OCCUPATION_TYPES, null, values);
+        db.close(); // Closing database connection
+
+        if (id > -1) {
+            return new OccupationTypeData(id, occupationType);
+        }
+        return null;
+    }
+
+    public void requestOccupationType(OccupationTypeData data) {
+        SQLiteDatabase db = this.getReadableDatabase();
+
+        Cursor cursor = db.query(TABLE_OCCUPATION_TYPES,
+                new String[] { KEY_ID, KEY_NAME, KEY_ICON },
+                KEY_ID + "=?",
+                new String[] { String.valueOf(data.getId()) },
+                null,
+                null,
+                null,
+                null);
+        db.close();
+
+        if (cursor != null) {
+            cursor.moveToFirst();
+            data.setOccupationType(
+                    new OccupationType(cursor.getString(1),
+                    bytesToBitmap(cursor.getBlob(2)))
+            );
+        }
+    }
+
+    public void updateOccupationType(OccupationTypeData data) {
+        SQLiteDatabase db = this.getWritableDatabase();
+
+        ContentValues values = new ContentValues();
+        values.put(KEY_NAME, data.getOccupationType().getName());
+        values.put(KEY_ICON, bitmapToBytes(data.getOccupationType().getIcon()));
+
+        // updating row
+        db.update(TABLE_OCCUPATION_TYPES, values, KEY_ID + " = ?",
+                new String[] { String.valueOf(data.getId()) });
+        db.close();
+    }
+
+    public void deleteOccupationType(OccupationTypeData data) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        db.delete(TABLE_OCCUPATION_TYPES, KEY_ID + " = ?",
+                new String[] { String.valueOf(data.getId()) });
+        db.close();
+    }
+
+    ///// BITMAP UTILS /////
+
+    // convert from bitmap to byte array
+    public static byte[] bitmapToBytes(Bitmap bitmap) {
+        ByteArrayOutputStream stream = new ByteArrayOutputStream();
+        bitmap.compress(Bitmap.CompressFormat.PNG, 0, stream);
+        return stream.toByteArray();
+    }
+
+    // convert from byte array to bitmap
+    public static Bitmap bytesToBitmap(byte[] image) {
+        return BitmapFactory.decodeByteArray(image, 0, image.length);
     }
 }

@@ -1,21 +1,19 @@
 package esia.timewatcher.structures;
 
 import android.graphics.Bitmap;
-import android.graphics.drawable.Drawable;
 
 public class OccupationType {
-    private Bitmap icon;
     private String name;
+    private Bitmap icon;
 
-    public OccupationType(Bitmap icon, String name) {
+    public OccupationType(String name, Bitmap icon) {
         this.icon = icon;
         this.name = name;
     }
 
     public OccupationType(OccupationType occupationType) {
-        this.name = new String(occupationType.name);
-        this.icon = occupationType.icon.copy(
-                occupationType.icon.getConfig(), false);
+        this.name = occupationType.name;
+        this.icon = occupationType.icon;
     }
 
     public Bitmap getIcon() {
