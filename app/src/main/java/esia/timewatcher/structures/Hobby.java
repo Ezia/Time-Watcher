@@ -4,11 +4,12 @@ import java.util.Date;
 
 public class Hobby {
     private Date startDate;
-    private Date endDate = null;
+    private Date endDate;
     private OccupationType type;
 
     public Hobby(Date startDate, OccupationType type) {
         this.startDate = startDate;
+        this.endDate = new Date(0);
         this.type = type;
     }
 
