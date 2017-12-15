@@ -19,6 +19,12 @@ public class Hobby {
         this.type = type;
     }
 
+    public Hobby(Hobby hobby) {
+        this.startDate = new Date(hobby.startDate.getTime());
+        this.endDate = new Date(hobby.endDate.getTime());
+        this.type = hobby.type;
+    }
+
     public Date getStartDate() {
         return startDate;
     }

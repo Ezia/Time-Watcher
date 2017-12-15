@@ -12,6 +12,12 @@ public class OccupationType {
         this.name = name;
     }
 
+    public OccupationType(OccupationType occupationType) {
+        this.name = new String(occupationType.name);
+        this.icon = occupationType.icon.copy(
+                occupationType.icon.getConfig(), false);
+    }
+
     public Bitmap getIcon() {
         return icon;
     }

@@ -11,6 +11,11 @@ public class Event {
         this.type = type;
     }
 
+    public Event(Event event) {
+        this.date = new Date(event.date.getTime());
+        this.type = event.type;
+    }
+
     public Date getDate() {
         return date;
     }
