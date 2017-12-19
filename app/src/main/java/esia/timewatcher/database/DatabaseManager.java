@@ -9,28 +9,43 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 
 import java.io.ByteArrayOutputStream;
+import java.util.Date;
 
+import esia.timewatcher.structures.Event;
 import esia.timewatcher.structures.Hobby;
 import esia.timewatcher.structures.OccupationType;
 
 public class DatabaseManager extends SQLiteOpenHelper {
     private static DatabaseManager instance = null;
 
-    private static final int DATABASE_VERSION = 1;
+    private static final int DATABASE_VERSION = 3;
 
     private static final String DATABASE_NAME = "time_history";
 
-    private static final String TABLE_OCCUPATION_TYPES = "occupation_types";
-    private static final String TABLE_HOBBIES = "hobbies";
-    private static final String TABLE_EVENTS = "events";
+    private static class HobbyTable {
+        private static final String TABLE_NAME = "hobby_table";
 
-    private static final String KEY_ID = "id";
-    private static final String KEY_NAME = "name";
-    private static final String KEY_ICON = "icon";
-    private static final String KEY_START_DATE = "start_date";
-    private static final String KEY_END_DATE = "end_date";
-    private static final String KEY_DATE = "date";
-    private static final String KEY_TYPE = "type";
+        private static final String KEY_ID = "hobby_id";
+        private static final String KEY_START_DATE = "hobby_start_date";
+        private static final String KEY_END_DATE = "hobby_end_date";
+        private static final String KEY_TYPE = "hobby_type";
+    }
+
+    private static class EventTable {
+        private static final String TABLE_NAME = "event_table";
+
+        private static final String KEY_ID = "event_id";
+        private static final String KEY_DATE = "event_start_date";
+        private static final String KEY_TYPE = "event_type";
+    }
+
+    private static class OccupationTypeTable {
+        private static final String TABLE_NAME = "hobby_table";
+
+        private static final String KEY_ID = "occupation_id";
+        private static final String KEY_NAME = "occupation_name";
+        private static final String KEY_ICON = "occupation_icon";
+    }
 
     ///// LIFECYCLE /////
 
@@ -54,27 +69,31 @@ public class DatabaseManager extends SQLiteOpenHelper {
     @Override
     public void onCreate(SQLiteDatabase db) {
         String CREATE_OCCUPATION_TYPES_TABLE =
-                "CREATE TABLE " + TABLE_OCCUPATION_TYPES + "("
-                    + KEY_ID + " INTEGER PRIMARY KEY,"
-                    + KEY_NAME + " TEXT UNIQUE,"
-                    + KEY_ICON + " BLOB"
+                "CREATE TABLE " + OccupationTypeTable.TABLE_NAME + "("
+                    + OccupationTypeTable.KEY_ID + " INTEGER PRIMARY KEY,"
+                    + OccupationTypeTable.KEY_NAME + " TEXT UNIQUE,"
+                    + OccupationTypeTable.KEY_ICON + " BLOB"
                 + ")";
+
         String CREATE_HOBBIES_TABLE =
-                "CREATE TABLE " + TABLE_HOBBIES + "("
-                    + KEY_ID + " INTEGER PRIMARY KEY,"
-                    + KEY_TYPE + " INTEGER,"
-                    + KEY_START_DATE + " INTEGER,"
-                    + KEY_END_DATE + " INTEGER,"
-                    + "FOREIGN KEY(" + KEY_TYPE + ")"
-                        + " REFERENCES " + TABLE_OCCUPATION_TYPES + "(" + KEY_ID + ")"
+                "CREATE TABLE " + HobbyTable.TABLE_NAME + "("
+                    + HobbyTable.KEY_ID + " INTEGER PRIMARY KEY,"
+                    + HobbyTable.KEY_TYPE + " INTEGER,"
+                    + HobbyTable.KEY_START_DATE + " INTEGER,"
+                    + HobbyTable.KEY_END_DATE + " INTEGER,"
+                    + "FOREIGN KEY(" + HobbyTable.KEY_TYPE + ")"
+                        + " REFERENCES " + OccupationTypeTable.TABLE_NAME
+                        + "(" + OccupationTypeTable.KEY_ID + ")"
                 + ")";
+
         String CREATE_EVENTS_TABLE =
-                "CREATE TABLE " + TABLE_EVENTS + "("
-                    + KEY_ID + " INTEGER PRIMARY KEY,"
-                    + KEY_TYPE + " INTEGER,"
-                    + KEY_DATE + " INTEGER,"
-                    + "FOREIGN KEY(" + KEY_TYPE + ")"
-                        + " REFERENCES " + TABLE_OCCUPATION_TYPES + "(" + KEY_ID + ")"
+                "CREATE TABLE " + EventTable.TABLE_NAME + "("
+                    + EventTable.KEY_ID + " INTEGER PRIMARY KEY,"
+                    + EventTable.KEY_TYPE + " INTEGER,"
+                    + EventTable.KEY_DATE + " INTEGER,"
+                    + "FOREIGN KEY(" + EventTable.KEY_TYPE + ")"
+                        + " REFERENCES " + OccupationTypeTable.TABLE_NAME
+                        + "(" + OccupationTypeTable.KEY_ID + ")"
                 + ")";
 
         db.execSQL(CREATE_OCCUPATION_TYPES_TABLE);
@@ -85,9 +104,9 @@ public class DatabaseManager extends SQLiteOpenHelper {
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
         // Drop older tables if existed
-        db.execSQL("DROP TABLE IF EXISTS " + TABLE_OCCUPATION_TYPES);
-        db.execSQL("DROP TABLE IF EXISTS " + TABLE_EVENTS);
-        db.execSQL("DROP TABLE IF EXISTS " + TABLE_HOBBIES);
+        db.execSQL("DROP TABLE IF EXISTS " + OccupationTypeTable.TABLE_NAME);
+        db.execSQL("DROP TABLE IF EXISTS " + EventTable.TABLE_NAME);
+        db.execSQL("DROP TABLE IF EXISTS " + HobbyTable.TABLE_NAME);
 
         // Creating tables again
         onCreate(db);
@@ -96,9 +115,9 @@ public class DatabaseManager extends SQLiteOpenHelper {
     @Override
     public void onDowngrade(SQLiteDatabase db, int oldVersion, int newVersion) {
         // Drop older tables if existed
-        db.execSQL("DROP TABLE IF EXISTS " + TABLE_OCCUPATION_TYPES);
-        db.execSQL("DROP TABLE IF EXISTS " + TABLE_EVENTS);
-        db.execSQL("DROP TABLE IF EXISTS " + TABLE_HOBBIES);
+        db.execSQL("DROP TABLE IF EXISTS " + OccupationTypeTable.TABLE_NAME);
+        db.execSQL("DROP TABLE IF EXISTS " + EventTable.TABLE_NAME);
+        db.execSQL("DROP TABLE IF EXISTS " + HobbyTable.TABLE_NAME);
 
         // Creating tables again
         onCreate(db);
@@ -110,10 +129,10 @@ public class DatabaseManager extends SQLiteOpenHelper {
         SQLiteDatabase db = this.getWritableDatabase();
 
         ContentValues values = new ContentValues();
-        values.put(KEY_NAME, occupationType.getName());
-        values.put(KEY_ICON, bitmapToBytes(occupationType.getIcon()));
+        values.put(OccupationTypeTable.KEY_NAME, occupationType.getName());
+        values.put(OccupationTypeTable.KEY_ICON, bitmapToBytes(occupationType.getIcon()));
 
-        long id = db.insert(TABLE_OCCUPATION_TYPES, null, values);
+        long id = db.insert(OccupationTypeTable.TABLE_NAME, null, values);
         db.close();
 
         return id;
@@ -122,9 +141,10 @@ public class DatabaseManager extends SQLiteOpenHelper {
     public OccupationType requestOccupationType(long id) {
         SQLiteDatabase db = this.getReadableDatabase();
 
-        Cursor cursor = db.query(TABLE_OCCUPATION_TYPES,
-                new String[] { KEY_ID, KEY_NAME, KEY_ICON },
-                KEY_ID + "=?",
+        Cursor cursor = db.query(OccupationTypeTable.TABLE_NAME,
+                new String[] { OccupationTypeTable.KEY_ID,
+                        OccupationTypeTable.KEY_NAME, OccupationTypeTable.KEY_ICON },
+                OccupationTypeTable.KEY_ID + "=?",
                 new String[] { String.valueOf(id) },
                 null,
                 null,
@@ -134,8 +154,9 @@ public class DatabaseManager extends SQLiteOpenHelper {
         OccupationType occupationType = null;
         if (cursor != null) {
             cursor.moveToFirst();
-            occupationType = new OccupationType(cursor.getString(1),
-                    bytesToBitmap(cursor.getBlob(2))
+            occupationType = new OccupationType(
+                    cursor.getString(cursor.getColumnIndex(OccupationTypeTable.KEY_NAME)),
+                    bytesToBitmap(cursor.getBlob(cursor.getColumnIndex(OccupationTypeTable.KEY_ICON)))
             );
             cursor.close();
         }
@@ -148,10 +169,11 @@ public class DatabaseManager extends SQLiteOpenHelper {
         SQLiteDatabase db = this.getWritableDatabase();
 
         ContentValues values = new ContentValues();
-        values.put(KEY_NAME, type.getName());
-        values.put(KEY_ICON, bitmapToBytes(type.getIcon()));
+        values.put(OccupationTypeTable.KEY_NAME, type.getName());
+        values.put(OccupationTypeTable.KEY_ICON, bitmapToBytes(type.getIcon()));
 
-        int affectedRowNbr = db.update(TABLE_OCCUPATION_TYPES, values, KEY_ID + "=?",
+        int affectedRowNbr = db.update(OccupationTypeTable.TABLE_NAME, values,
+                OccupationTypeTable.KEY_ID + "=?",
                 new String[] { String.valueOf(id) });
         db.close();
 
@@ -164,7 +186,83 @@ public class DatabaseManager extends SQLiteOpenHelper {
 
     public boolean deleteOccupationType(long id) {
         SQLiteDatabase db = this.getWritableDatabase();
-        int affectedRowNbr = db.delete(TABLE_OCCUPATION_TYPES, KEY_ID + "=?",
+        int affectedRowNbr = db.delete(OccupationTypeTable.TABLE_NAME,
+                OccupationTypeTable.KEY_ID + "=?",
+                new String[] { String.valueOf(id) });
+        db.close();
+        if (affectedRowNbr == 1) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    ///// EVENT /////
+
+    public long createEvent(Event event, long typeId) {
+        SQLiteDatabase db = this.getWritableDatabase();
+
+        ContentValues values = new ContentValues();
+        values.put(EventTable.KEY_TYPE, typeId);
+        values.put(EventTable.KEY_DATE, event.getDate().getTime());
+
+        long id = db.insert(EventTable.TABLE_NAME, null, values);
+        db.close();
+
+        return id;
+    }
+
+    public Event requestEvent(long id) {
+        String query = "SELECT * FROM " + EventTable.TABLE_NAME
+                + " INNER JOINT " + OccupationTypeTable.TABLE_NAME
+                + " ON " + EventTable.KEY_TYPE + " = " + OccupationTypeTable.KEY_ID
+                + " WHERE " + EventTable.KEY_ID + "=?";
+        SQLiteDatabase db = this.getReadableDatabase();
+
+        Cursor cursor = db.rawQuery(query, new String[] {String.valueOf(id)});
+
+        Event event = null;
+        OccupationType occupationType = null;
+        if (cursor != null) {
+            cursor.moveToFirst();
+            occupationType = new OccupationType(
+                    cursor.getString(cursor.getColumnIndex(OccupationTypeTable.KEY_NAME)),
+                    bytesToBitmap(cursor.getBlob(cursor.getColumnIndex(OccupationTypeTable.KEY_ICON)))
+            );
+            event = new Event(
+                    new Date(cursor.getLong(cursor.getColumnIndex(EventTable.KEY_DATE))),
+                    occupationType
+            );
+            cursor.close();
+        }
+        db.close();
+
+        return event;
+    }
+
+    public boolean updateEvent(long id, Event event, long typeId) {
+        SQLiteDatabase db = this.getWritableDatabase();
+
+        ContentValues values = new ContentValues();
+        values.put(EventTable.KEY_DATE, event.getDate().getTime());
+        values.put(EventTable.KEY_TYPE, typeId);
+
+        int affectedRowNbr = db.update(EventTable.TABLE_NAME, values,
+                EventTable.KEY_ID + "=?",
+                new String[] { String.valueOf(id) });
+        db.close();
+
+        if (affectedRowNbr == 1) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    public boolean deleteEvent(long id) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        int affectedRowNbr = db.delete(EventTable.TABLE_NAME,
+                EventTable.KEY_ID + "=?",
                 new String[] { String.valueOf(id) });
         db.close();
         if (affectedRowNbr == 1) {
