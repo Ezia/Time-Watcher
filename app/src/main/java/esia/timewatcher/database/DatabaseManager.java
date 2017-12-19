@@ -7,7 +7,6 @@ import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.util.Pair;
 
 import java.io.ByteArrayOutputStream;
 import java.util.Date;
@@ -56,8 +55,7 @@ public class DatabaseManager extends SQLiteOpenHelper {
 
     /**
      * Must be called by the application before performing operations
-     * @param context
-     * @return
+     * @param context Application context
      */
     public static void initializeInstance(Context context) {
         instance = new DatabaseManager(context.getApplicationContext());
@@ -172,7 +170,7 @@ public class DatabaseManager extends SQLiteOpenHelper {
         return new OccupationTypeData(id, occupationType);
     }
 
-    public boolean updateOccupationType(long id, OccupationType type) {
+    public OccupationTypeData updateOccupationType(long id, OccupationType type) {
         SQLiteDatabase db = this.getWritableDatabase();
 
         ContentValues values = new ContentValues();
@@ -185,9 +183,9 @@ public class DatabaseManager extends SQLiteOpenHelper {
         db.close();
 
         if (affectedRowNbr == 1) {
-            return true;
+            return new OccupationTypeData(id, new OccupationType(type));
         } else {
-            return false;
+            return null;
         }
     }
 
@@ -265,7 +263,7 @@ public class DatabaseManager extends SQLiteOpenHelper {
         );
     }
 
-    public boolean updateEvent(long id, Event event, long typeId) {
+    public EventData updateEvent(long id, Event event, long typeId) {
         SQLiteDatabase db = this.getWritableDatabase();
 
         ContentValues values = new ContentValues();
@@ -278,9 +276,9 @@ public class DatabaseManager extends SQLiteOpenHelper {
         db.close();
 
         if (affectedRowNbr == 1) {
-            return true;
+            return new EventData(id, new Event(event), requestOccupationType(typeId));
         } else {
-            return false;
+            return null;
         }
     }
 
@@ -359,7 +357,7 @@ public class DatabaseManager extends SQLiteOpenHelper {
         );
     }
 
-    public boolean updateHobby(long id, Hobby hobby, long typeId) {
+    public HobbyData updateHobby(long id, Hobby hobby, long typeId) {
         SQLiteDatabase db = this.getWritableDatabase();
 
         ContentValues values = new ContentValues();
@@ -373,9 +371,9 @@ public class DatabaseManager extends SQLiteOpenHelper {
         db.close();
 
         if (affectedRowNbr == 1) {
-            return true;
+            return new HobbyData(id, new Hobby(hobby), requestOccupationType(typeId));
         } else {
-            return false;
+            return null;
         }
     }
 
