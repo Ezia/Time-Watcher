@@ -7,6 +7,7 @@ import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.util.Pair;
 
 import java.io.ByteArrayOutputStream;
 import java.util.Date;
@@ -125,7 +126,7 @@ public class DatabaseManager extends SQLiteOpenHelper {
 
     ///// OCCUPATION TYPES /////
 
-    public long createOccupationType(OccupationType occupationType) {
+    public OccupationTypeData createOccupationType(OccupationType occupationType) {
         SQLiteDatabase db = this.getWritableDatabase();
 
         ContentValues values = new ContentValues();
@@ -135,10 +136,13 @@ public class DatabaseManager extends SQLiteOpenHelper {
         long id = db.insert(OccupationTypeTable.TABLE_NAME, null, values);
         db.close();
 
-        return id;
+        if (id == -1) {
+            return null;
+        }
+        return new OccupationTypeData(id, new OccupationType(occupationType));
     }
 
-    public OccupationType requestOccupationType(long id) {
+    public OccupationTypeData requestOccupationType(long id) {
         SQLiteDatabase db = this.getReadableDatabase();
 
         Cursor cursor = db.query(OccupationTypeTable.TABLE_NAME,
@@ -162,7 +166,10 @@ public class DatabaseManager extends SQLiteOpenHelper {
         }
         db.close();
 
-        return occupationType;
+        if (occupationType == null) {
+            return null;
+        }
+        return new OccupationTypeData(id, occupationType);
     }
 
     public boolean updateOccupationType(long id, OccupationType type) {
@@ -190,6 +197,7 @@ public class DatabaseManager extends SQLiteOpenHelper {
                 OccupationTypeTable.KEY_ID + "=?",
                 new String[] { String.valueOf(id) });
         db.close();
+
         if (affectedRowNbr == 1) {
             return true;
         } else {
@@ -199,7 +207,7 @@ public class DatabaseManager extends SQLiteOpenHelper {
 
     ///// EVENT /////
 
-    public long createEvent(Event event, long typeId) {
+    public EventData createEvent(Event event, long typeId) {
         SQLiteDatabase db = this.getWritableDatabase();
 
         ContentValues values = new ContentValues();
@@ -209,10 +217,18 @@ public class DatabaseManager extends SQLiteOpenHelper {
         long id = db.insert(EventTable.TABLE_NAME, null, values);
         db.close();
 
-        return id;
+        if (id == -1) {
+            return null;
+        }
+
+        return new EventData(
+                id,
+                new Event(event),
+                requestOccupationType(typeId)
+        );
     }
 
-    public Event requestEvent(long id) {
+    public EventData requestEvent(long id) {
         String query = "SELECT * FROM " + EventTable.TABLE_NAME
                 + " INNER JOINT " + OccupationTypeTable.TABLE_NAME
                 + " ON " + EventTable.KEY_TYPE + " = " + OccupationTypeTable.KEY_ID
@@ -223,6 +239,7 @@ public class DatabaseManager extends SQLiteOpenHelper {
 
         Event event = null;
         OccupationType occupationType = null;
+        long typeId = -1;
         if (cursor != null) {
             cursor.moveToFirst();
             occupationType = new OccupationType(
@@ -233,11 +250,19 @@ public class DatabaseManager extends SQLiteOpenHelper {
                     new Date(cursor.getLong(cursor.getColumnIndex(EventTable.KEY_DATE))),
                     occupationType
             );
+            typeId = cursor.getLong(cursor.getColumnIndex(EventTable.KEY_TYPE));
             cursor.close();
         }
         db.close();
 
-        return event;
+        if (event == null) {
+            return null;
+        }
+        return new EventData(
+                id,
+                event,
+                new OccupationTypeData(typeId, occupationType)
+        );
     }
 
     public boolean updateEvent(long id, Event event, long typeId) {
@@ -263,6 +288,101 @@ public class DatabaseManager extends SQLiteOpenHelper {
         SQLiteDatabase db = this.getWritableDatabase();
         int affectedRowNbr = db.delete(EventTable.TABLE_NAME,
                 EventTable.KEY_ID + "=?",
+                new String[] { String.valueOf(id) });
+        db.close();
+        if (affectedRowNbr == 1) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    ///// EVENT /////
+
+    public HobbyData createHobby(Hobby hobby, long typeId) {
+        SQLiteDatabase db = this.getWritableDatabase();
+
+        ContentValues values = new ContentValues();
+        values.put(HobbyTable.KEY_TYPE, typeId);
+        values.put(HobbyTable.KEY_START_DATE, hobby.getStartDate().getTime());
+        values.put(HobbyTable.KEY_END_DATE, hobby.getEndDate().getTime());
+
+        long id = db.insert(HobbyTable.TABLE_NAME, null, values);
+        db.close();
+
+        if (id == -1) {
+            return null;
+        }
+
+        return new HobbyData(
+                id,
+                new Hobby(hobby),
+                requestOccupationType(typeId)
+        );
+    }
+
+    public HobbyData requestHobby(long id) {
+        String query = "SELECT * FROM " + HobbyTable.TABLE_NAME
+                + " INNER JOINT " + OccupationTypeTable.TABLE_NAME
+                + " ON " + HobbyTable.KEY_TYPE + " = " + OccupationTypeTable.KEY_ID
+                + " WHERE " + HobbyTable.KEY_ID + "=?";
+        SQLiteDatabase db = this.getReadableDatabase();
+
+        Cursor cursor = db.rawQuery(query, new String[] {String.valueOf(id)});
+
+        Hobby hobby = null;
+        OccupationType occupationType = null;
+        long typeId = -1;
+        if (cursor != null) {
+            cursor.moveToFirst();
+            occupationType = new OccupationType(
+                    cursor.getString(cursor.getColumnIndex(OccupationTypeTable.KEY_NAME)),
+                    bytesToBitmap(cursor.getBlob(cursor.getColumnIndex(OccupationTypeTable.KEY_ICON)))
+            );
+            hobby = new Hobby(
+                    new Date(cursor.getLong(cursor.getColumnIndex(HobbyTable.KEY_START_DATE))),
+                    new Date(cursor.getLong(cursor.getColumnIndex(HobbyTable.KEY_END_DATE))),
+                    occupationType
+            );
+            typeId = cursor.getLong(cursor.getColumnIndex(HobbyTable.KEY_TYPE));
+            cursor.close();
+        }
+        db.close();
+
+        if (hobby == null) {
+            return null;
+        }
+        return new HobbyData(
+                id,
+                hobby,
+                new OccupationTypeData(typeId, occupationType)
+        );
+    }
+
+    public boolean updateHobby(long id, Hobby hobby, long typeId) {
+        SQLiteDatabase db = this.getWritableDatabase();
+
+        ContentValues values = new ContentValues();
+        values.put(HobbyTable.KEY_TYPE, typeId);
+        values.put(HobbyTable.KEY_END_DATE, hobby.getEndDate().getTime());
+        values.put(HobbyTable.KEY_START_DATE, hobby.getStartDate().getTime());
+
+        int affectedRowNbr = db.update(EventTable.TABLE_NAME, values,
+                EventTable.KEY_ID + "=?",
+                new String[] { String.valueOf(id) });
+        db.close();
+
+        if (affectedRowNbr == 1) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    public boolean deleteHobby(long id) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        int affectedRowNbr = db.delete(HobbyTable.TABLE_NAME,
+                HobbyTable.KEY_ID + "=?",
                 new String[] { String.valueOf(id) });
         db.close();
         if (affectedRowNbr == 1) {
