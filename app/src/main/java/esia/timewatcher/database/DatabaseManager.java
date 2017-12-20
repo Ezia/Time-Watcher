@@ -3,6 +3,7 @@ package esia.timewatcher.database;
 import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
+import android.database.DatabaseUtils;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.graphics.Bitmap;
@@ -18,9 +19,9 @@ import esia.timewatcher.structures.OccupationType;
 public class DatabaseManager extends SQLiteOpenHelper {
     private static DatabaseManager instance = null;
 
-    private static final int DATABASE_VERSION = 3;
+    private static final int DATABASE_VERSION = 4;
 
-    private static final String DATABASE_NAME = "time_history";
+    public static final String DATABASE_NAME = "time_history";
 
     private static class HobbyTable {
         private static final String TABLE_NAME = "hobby_table";
@@ -40,7 +41,7 @@ public class DatabaseManager extends SQLiteOpenHelper {
     }
 
     private static class OccupationTypeTable {
-        private static final String TABLE_NAME = "hobby_table";
+        private static final String TABLE_NAME = "occupation_table";
 
         private static final String KEY_ID = "occupation_id";
         private static final String KEY_NAME = "occupation_name";
@@ -124,7 +125,21 @@ public class DatabaseManager extends SQLiteOpenHelper {
 
     ///// OCCUPATION TYPES /////
 
+    public long getOccupationTypeNumber() {
+        SQLiteDatabase db = this.getWritableDatabase();
+
+        long numberOfRows = DatabaseUtils.queryNumEntries(db, OccupationTypeTable.TABLE_NAME);
+
+        db.close();
+
+        return numberOfRows;
+    }
+
     public OccupationTypeData createOccupationType(OccupationType occupationType) {
+        if (occupationType == null || !occupationType.isValid()) {
+            return null;
+        }
+
         SQLiteDatabase db = this.getWritableDatabase();
 
         ContentValues values = new ContentValues();
@@ -154,7 +169,7 @@ public class DatabaseManager extends SQLiteOpenHelper {
                 null);
 
         OccupationType occupationType = null;
-        if (cursor != null) {
+        if (cursor != null && cursor.getCount() != 0) {
             cursor.moveToFirst();
             occupationType = new OccupationType(
                     cursor.getString(cursor.getColumnIndex(OccupationTypeTable.KEY_NAME)),
@@ -171,6 +186,10 @@ public class DatabaseManager extends SQLiteOpenHelper {
     }
 
     public OccupationTypeData updateOccupationType(long id, OccupationType type) {
+        if (type == null || !type.isValid()) {
+            return null;
+        }
+
         SQLiteDatabase db = this.getWritableDatabase();
 
         ContentValues values = new ContentValues();
@@ -204,6 +223,16 @@ public class DatabaseManager extends SQLiteOpenHelper {
     }
 
     ///// EVENT /////
+
+    public long getEventNumber() {
+        SQLiteDatabase db = this.getWritableDatabase();
+
+        long numberOfRows = DatabaseUtils.queryNumEntries(db, EventTable.TABLE_NAME);
+
+        db.close();
+
+        return numberOfRows;
+    }
 
     public EventData createEvent(Event event, long typeId) {
         SQLiteDatabase db = this.getWritableDatabase();
@@ -295,7 +324,17 @@ public class DatabaseManager extends SQLiteOpenHelper {
         }
     }
 
-    ///// EVENT /////
+    ///// HOBBY /////
+
+    public long getHobbyNumber() {
+        SQLiteDatabase db = this.getWritableDatabase();
+
+        long numberOfRows = DatabaseUtils.queryNumEntries(db, HobbyTable.TABLE_NAME);
+
+        db.close();
+
+        return numberOfRows;
+    }
 
     public HobbyData createHobby(Hobby hobby, long typeId) {
         SQLiteDatabase db = this.getWritableDatabase();
@@ -390,10 +429,17 @@ public class DatabaseManager extends SQLiteOpenHelper {
         }
     }
 
+    ///// JOINT UTILS /////
+
+    public void getEventsOfType(long occupationType) {
+
+    }
+
     ///// BITMAP UTILS /////
 
     // convert from bitmap to byte array
     public static byte[] bitmapToBytes(Bitmap bitmap) {
+        assert(bitmap != null);
         ByteArrayOutputStream stream = new ByteArrayOutputStream();
         bitmap.compress(Bitmap.CompressFormat.PNG, 0, stream);
         return stream.toByteArray();

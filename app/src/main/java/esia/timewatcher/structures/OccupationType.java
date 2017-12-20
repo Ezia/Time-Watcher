@@ -2,7 +2,7 @@ package esia.timewatcher.structures;
 
 import android.graphics.Bitmap;
 
-public class OccupationType {
+public class OccupationType implements Storable {
     private String name;
     private Bitmap icon;
 
@@ -22,5 +22,16 @@ public class OccupationType {
 
     public String getName() {
         return name;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        OccupationType other = (OccupationType) obj;
+        return other != null && other.name.equals(this.name) && other.icon.sameAs(this.icon);
+    }
+
+    @Override
+    public boolean isValid() {
+        return name != null && !name.isEmpty() && icon != null;
     }
 }
