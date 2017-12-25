@@ -4,6 +4,7 @@ import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
 import android.database.DatabaseUtils;
+import android.database.SQLException;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.graphics.Bitmap;
@@ -125,37 +126,70 @@ public class DatabaseManager extends SQLiteOpenHelper {
 
     ///// OCCUPATION TYPES /////
 
-    public long getOccupationTypeNumber() {
+    public long getTypeNumber() {
         SQLiteDatabase db = this.getWritableDatabase();
-
         long numberOfRows = DatabaseUtils.queryNumEntries(db, OccupationTypeTable.TABLE_NAME);
-
         db.close();
 
         return numberOfRows;
     }
 
-    public OccupationTypeData createOccupationType(OccupationType occupationType) throws IllegalArgumentException {
-        if (occupationType == null || !occupationType.isValid()) {
+    public boolean typeExists(long id) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        long numberOfRows = DatabaseUtils.queryNumEntries(db,
+                OccupationTypeTable.TABLE_NAME,
+                OccupationTypeTable.KEY_ID + "=?",
+                new String[] {String.valueOf(id)});
+        db.close();
+
+        return numberOfRows == 1;
+    }
+
+    public boolean typeExists(String name) throws IllegalArgumentException {
+        if (name == null || name.isEmpty()) {
+            throw new IllegalArgumentException();
+        }
+
+        SQLiteDatabase db = this.getWritableDatabase();
+        long numberOfRows = DatabaseUtils.queryNumEntries(db,
+                OccupationTypeTable.TABLE_NAME,
+                OccupationTypeTable.KEY_NAME + "=?",
+                new String[] {String.valueOf(name)});
+        db.close();
+
+        return numberOfRows == 1;
+    }
+
+    public OccupationTypeData createType(OccupationType type)
+            throws IllegalArgumentException, SQLException {
+        if (type == null || !type.isValid()
+                || typeExists(type.getName())) {
             throw new IllegalArgumentException();
         }
 
         SQLiteDatabase db = this.getWritableDatabase();
 
         ContentValues values = new ContentValues();
-        values.put(OccupationTypeTable.KEY_NAME, occupationType.getName());
-        values.put(OccupationTypeTable.KEY_ICON, bitmapToBytes(occupationType.getIcon()));
+        values.put(OccupationTypeTable.KEY_NAME, type.getName());
+        values.put(OccupationTypeTable.KEY_ICON, bitmapToBytes(type.getIcon()));
 
         long id = db.insert(OccupationTypeTable.TABLE_NAME, null, values);
+
         db.close();
 
         if (id == -1) {
-            return null;
+            throw new SQLException();
         }
-        return new OccupationTypeData(id, new OccupationType(occupationType));
+
+        return new OccupationTypeData(id, new OccupationType(type));
     }
 
-    public OccupationTypeData requestOccupationTypeById(long id) {
+    public OccupationTypeData requestType(long id)
+            throws IllegalArgumentException, SQLException {
+        if (!typeExists(id)) {
+            throw new IllegalArgumentException();
+        }
+
         SQLiteDatabase db = this.getReadableDatabase();
 
         Cursor cursor = db.query(OccupationTypeTable.TABLE_NAME,
@@ -168,27 +202,33 @@ public class DatabaseManager extends SQLiteOpenHelper {
                 null,
                 null);
 
-        OccupationType occupationType = null;
-        if (cursor != null && cursor.getCount() != 0) {
-            cursor.moveToFirst();
-            occupationType = new OccupationType(
-                    cursor.getString(cursor.getColumnIndex(OccupationTypeTable.KEY_NAME)),
-                    bytesToBitmap(cursor.getBlob(cursor.getColumnIndex(OccupationTypeTable.KEY_ICON)))
-            );
+        if (cursor == null) {
+            db.close();
+            throw new SQLException();
+        } else if (cursor.getCount() <= 0) {
             cursor.close();
+            db.close();
+            throw new SQLException();
         }
+
+        cursor.moveToFirst();
+        OccupationType occupationType = new OccupationType(
+                cursor.getString(cursor.getColumnIndex(OccupationTypeTable.KEY_NAME)),
+                bytesToBitmap(cursor.getBlob(cursor.getColumnIndex(OccupationTypeTable.KEY_ICON)))
+        );
+        cursor.close();
+
         db.close();
 
-        if (occupationType == null) {
-            return null;
-        }
         return new OccupationTypeData(id, occupationType);
     }
 
-    public OccupationTypeData requestOccupationTypeByName(String name) throws IllegalArgumentException {
-        if (name == null || name.isEmpty()) {
+    public OccupationTypeData requestType(String name)
+            throws IllegalArgumentException, SQLException {
+        if (name == null || name.isEmpty() || !typeExists(name)) {
             throw new IllegalArgumentException();
         }
+
         SQLiteDatabase db = this.getReadableDatabase();
 
         Cursor cursor = db.query(OccupationTypeTable.TABLE_NAME,
@@ -201,27 +241,32 @@ public class DatabaseManager extends SQLiteOpenHelper {
                 null,
                 null);
 
-        OccupationType occupationType = null;
-        long id = -1;
-        if (cursor != null && cursor.getCount() != 0) {
-            cursor.moveToFirst();
-            id = cursor.getLong(cursor.getColumnIndex(OccupationTypeTable.KEY_ID));
-            occupationType = new OccupationType(
-                    cursor.getString(cursor.getColumnIndex(OccupationTypeTable.KEY_NAME)),
-                    bytesToBitmap(cursor.getBlob(cursor.getColumnIndex(OccupationTypeTable.KEY_ICON)))
-            );
+        if (cursor == null) {
+            db.close();
+            throw new SQLException();
+        } else if (cursor.getCount() <= 0) {
             cursor.close();
+            db.close();
+            throw new SQLException();
         }
+
+        cursor.moveToFirst();
+        long id = cursor.getLong(cursor.getColumnIndex(OccupationTypeTable.KEY_ID));
+        OccupationType occupationType = new OccupationType(
+                cursor.getString(cursor.getColumnIndex(OccupationTypeTable.KEY_NAME)),
+                bytesToBitmap(cursor.getBlob(cursor.getColumnIndex(OccupationTypeTable.KEY_ICON)))
+        );
+        cursor.close();
+
         db.close();
 
-        if (occupationType == null) {
-            return null;
-        }
         return new OccupationTypeData(id, occupationType);
     }
 
-    public OccupationTypeData updateOccupationType(long id, OccupationType type) throws IllegalArgumentException {
-        if (type == null || !type.isValid()) {
+    public OccupationTypeData updateType(long id, OccupationType type)
+            throws IllegalArgumentException, SQLException {
+        if (type == null || !type.isValid() || !typeExists(id)
+                || typeExists(type.getName()) && requestType(type.getName()).getId() != id) {
             throw new IllegalArgumentException();
         }
 
@@ -231,29 +276,32 @@ public class DatabaseManager extends SQLiteOpenHelper {
         values.put(OccupationTypeTable.KEY_NAME, type.getName());
         values.put(OccupationTypeTable.KEY_ICON, bitmapToBytes(type.getIcon()));
 
-        int affectedRowNbr = db.update(OccupationTypeTable.TABLE_NAME, values,
+        int affectedRowsNbr = db.update(OccupationTypeTable.TABLE_NAME, values,
                 OccupationTypeTable.KEY_ID + "=?",
                 new String[] { String.valueOf(id) });
         db.close();
 
-        if (affectedRowNbr == 1) {
+        if (affectedRowsNbr >= 1) {
             return new OccupationTypeData(id, new OccupationType(type));
         } else {
-            return null;
+            throw  new SQLException();
         }
     }
 
-    public boolean deleteOccupationType(long id) {
+    public void deleteType(long id)
+            throws IllegalArgumentException, SQLException {
+        if (!typeExists(id)) {
+            throw new IllegalArgumentException();
+        }
+
         SQLiteDatabase db = this.getWritableDatabase();
         int affectedRowNbr = db.delete(OccupationTypeTable.TABLE_NAME,
                 OccupationTypeTable.KEY_ID + "=?",
                 new String[] { String.valueOf(id) });
         db.close();
 
-        if (affectedRowNbr == 1) {
-            return true;
-        } else {
-            return false;
+        if (affectedRowNbr <= 0) {
+            throw new SQLException();
         }
     }
 
@@ -270,7 +318,7 @@ public class DatabaseManager extends SQLiteOpenHelper {
     }
 
     public EventData createEvent(Event event, long typeId) {
-        if (event == null || !event.isValid() || requestOccupationTypeById(typeId) == null) {
+        if (event == null || !event.isValid() || requestType(typeId) == null) {
             return null;
         }
 
@@ -290,7 +338,7 @@ public class DatabaseManager extends SQLiteOpenHelper {
         return new EventData(
                 id,
                 new Event(event),
-                requestOccupationTypeById(typeId)
+                requestType(typeId)
         );
     }
 
@@ -343,7 +391,7 @@ public class DatabaseManager extends SQLiteOpenHelper {
         db.close();
 
         if (affectedRowNbr == 1) {
-            return new EventData(id, new Event(event), requestOccupationTypeById(typeId));
+            return new EventData(id, new Event(event), requestType(typeId));
         } else {
             return null;
         }
@@ -392,7 +440,7 @@ public class DatabaseManager extends SQLiteOpenHelper {
         return new HobbyData(
                 id,
                 new Hobby(hobby),
-                requestOccupationTypeById(typeId)
+                requestType(typeId)
         );
     }
 
@@ -448,7 +496,7 @@ public class DatabaseManager extends SQLiteOpenHelper {
         db.close();
 
         if (affectedRowNbr == 1) {
-            return new HobbyData(id, new Hobby(hobby), requestOccupationTypeById(typeId));
+            return new HobbyData(id, new Hobby(hobby), requestType(typeId));
         } else {
             return null;
         }
