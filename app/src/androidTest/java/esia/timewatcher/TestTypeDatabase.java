@@ -171,30 +171,21 @@ public class TestTypeDatabase {
     }
 
     ///// DELETE /////
-//
-//    @Test
-//    public void deleteExistentType() throws Exception {
-//        long initTypeSize = DatabaseManager.getInstance().getTypeNumber();
-//        OccupationType type = DatabaseTestHelper.getValidOccupationType1();
-//
-//        OccupationTypeData data1 = DatabaseManager.getInstance().createType(type);
-//        boolean deleted = DatabaseManager.getInstance().deleteType(data1.getId());
-//        OccupationTypeData data2 = DatabaseManager.getInstance().requestType(data1.getId());
-//
-//        Assert.assertNull(data2);
-//        Assert.assertTrue(deleted);
-//        Assert.assertEquals(DatabaseManager.getInstance().getTypeNumber(), initTypeSize);
-//    }
-//
-//    @Test
-//    public void deleteNonexistentType() throws Exception {
-//        long initTypeSize = DatabaseManager.getInstance().getTypeNumber();
-//
-//        boolean deleted = DatabaseManager.getInstance().deleteType(1);
-//
-//        Assert.assertFalse(deleted);
-//        Assert.assertEquals(DatabaseManager.getInstance().getTypeNumber(), initTypeSize);
-//    }
+
+    @Test
+    public void deleteExistentType() throws Exception {
+        long initTypeSize = DatabaseManager.getInstance().getTypeNumber();
+        OccupationType type = DatabaseTestHelper.getValidOccupationType1();
+
+        OccupationTypeData data1 = DatabaseManager.getInstance().createType(type);
+        DatabaseManager.getInstance().deleteType(data1.getId());
+		Assert.assertEquals(DatabaseManager.getInstance().getTypeNumber(), initTypeSize);
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void deleteNonexistentType() throws Exception {
+        DatabaseManager.getInstance().deleteType(1);
+    }
 
     ///// EXISTENCE /////
 
@@ -258,4 +249,33 @@ public class TestTypeDatabase {
     public void emptyTable() throws Exception {
         Assert.assertEquals(DatabaseManager.getInstance().getTypeNumber(), 0);
     }
+
+    ///// ID FROM NAME /////
+
+	@Test
+	public void requestExistentIdFromName() throws Exception {
+		long initTypeSize = DatabaseManager.getInstance().getTypeNumber();
+		OccupationType type = DatabaseTestHelper.getValidOccupationType1();
+
+		OccupationTypeData data1 = DatabaseManager.getInstance().createType(type);
+		long id = DatabaseManager.getInstance().requestTypeId(type.getName());
+
+		Assert.assertEquals(id, data1.getId());
+		Assert.assertEquals(DatabaseManager.getInstance().getTypeNumber(), initTypeSize+1);
+	}
+
+	@Test(expected = IllegalArgumentException.class)
+	public void requestNonexistentIdFromName() throws Exception {
+		DatabaseManager.getInstance().requestTypeId("test");
+	}
+
+	@Test(expected = IllegalArgumentException.class)
+	public void requestIdFromNullName() throws Exception {
+		DatabaseManager.getInstance().requestTypeId(null);
+	}
+
+	@Test(expected = IllegalArgumentException.class)
+	public void requestIdFromInvalidName() throws Exception {
+		DatabaseManager.getInstance().requestTypeId("");
+	}
 }

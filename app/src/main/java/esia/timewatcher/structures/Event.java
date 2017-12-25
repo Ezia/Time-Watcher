@@ -2,25 +2,36 @@ package esia.timewatcher.structures;
 
 import java.util.Date;
 
-public class Event {
+public class Event implements Storable {
     private Date date;
-    private OccupationType type;
 
-    public Event(Date date, OccupationType type) {
+    public Event(Date date) {
         this.date = date;
-        this.type = type;
     }
 
     public Event(Event event) {
         this.date = event.date;
-        this.type = event.type;
     }
 
     public Date getDate() {
         return date;
     }
 
-    public OccupationType getType() {
-        return type;
+    @Override
+    public boolean isValid() {
+        return date != null;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        Event other = (Event) obj;
+        return other != null && other.date.equals(this.date);
+    }
+
+    @Override
+    public String toString() {
+        return "Event{" +
+                "date=" + date +
+                '}';
     }
 }

@@ -31,6 +31,14 @@ public class OccupationType implements Storable {
     }
 
     @Override
+    public String toString() {
+        return "OccupationType{" +
+                "name='" + name + '\'' +
+                ", icon=" + icon +
+                '}';
+    }
+
+    @Override
     public boolean isValid() {
         return name != null && !name.isEmpty() && icon != null;
     }

@@ -263,6 +263,41 @@ public class DatabaseManager extends SQLiteOpenHelper {
         return new OccupationTypeData(id, occupationType);
     }
 
+	public long requestTypeId(String name)
+			throws IllegalArgumentException, SQLException {
+		if (name == null || name.isEmpty() || !typeExists(name)) {
+			throw new IllegalArgumentException();
+		}
+
+		SQLiteDatabase db = this.getReadableDatabase();
+
+		Cursor cursor = db.query(OccupationTypeTable.TABLE_NAME,
+				new String[] { OccupationTypeTable.KEY_ID },
+				OccupationTypeTable.KEY_NAME + "=?",
+				new String[] { name },
+				null,
+				null,
+				null,
+				null);
+
+		if (cursor == null) {
+			db.close();
+			throw new SQLException();
+		} else if (cursor.getCount() <= 0) {
+			cursor.close();
+			db.close();
+			throw new SQLException();
+		}
+
+		cursor.moveToFirst();
+		long id = cursor.getLong(cursor.getColumnIndex(OccupationTypeTable.KEY_ID));
+		cursor.close();
+
+		db.close();
+
+		return id;
+	}
+
     public OccupationTypeData updateType(long id, OccupationType type)
             throws IllegalArgumentException, SQLException {
         if (type == null || !type.isValid() || !typeExists(id)
@@ -317,9 +352,21 @@ public class DatabaseManager extends SQLiteOpenHelper {
         return numberOfRows;
     }
 
-    public EventData createEvent(Event event, long typeId) {
-        if (event == null || !event.isValid() || requestType(typeId) == null) {
-            return null;
+	public boolean eventExists(long id) {
+		SQLiteDatabase db = this.getWritableDatabase();
+		long numberOfRows = DatabaseUtils.queryNumEntries(db,
+				EventTable.TABLE_NAME,
+				EventTable.KEY_ID + "=?",
+				new String[] {String.valueOf(id)});
+		db.close();
+
+		return numberOfRows == 1;
+	}
+
+    public EventData createEvent(Event event, long typeId)
+			throws IllegalArgumentException, SQLException {
+        if (event == null || !event.isValid() || !typeExists(typeId)) {
+            throw new IllegalArgumentException();
         }
 
         SQLiteDatabase db = this.getWritableDatabase();
@@ -332,7 +379,7 @@ public class DatabaseManager extends SQLiteOpenHelper {
         db.close();
 
         if (id == -1) {
-            return null;
+            throw new SQLException();
         }
 
         return new EventData(
@@ -342,35 +389,42 @@ public class DatabaseManager extends SQLiteOpenHelper {
         );
     }
 
-    public EventData requestEvent(long id) {
+    public EventData requestEvent(long id)
+			throws IllegalArgumentException, SQLException {
+    	if (!eventExists(id)) {
+    		throw new IllegalArgumentException();
+		}
+
         String query = "SELECT * FROM " + EventTable.TABLE_NAME
                 + " INNER JOIN " + OccupationTypeTable.TABLE_NAME
                 + " ON " + EventTable.KEY_TYPE + " = " + OccupationTypeTable.KEY_ID
                 + " WHERE " + EventTable.KEY_ID + "=?";
+
         SQLiteDatabase db = this.getReadableDatabase();
 
         Cursor cursor = db.rawQuery(query, new String[] {String.valueOf(id)});
 
-        Event event = null;
-        OccupationType occupationType = null;
-        long typeId = -1;
-        if (cursor != null && cursor.getCount() != 0) {
-            cursor.moveToFirst();
-            occupationType = new OccupationType(
-                    cursor.getString(cursor.getColumnIndex(OccupationTypeTable.KEY_NAME)),
-                    bytesToBitmap(cursor.getBlob(cursor.getColumnIndex(OccupationTypeTable.KEY_ICON)))
-            );
-            event = new Event(
-                    new Date(cursor.getLong(cursor.getColumnIndex(EventTable.KEY_DATE)))
-            );
-            typeId = cursor.getLong(cursor.getColumnIndex(EventTable.KEY_TYPE));
-            cursor.close();
-        }
+		if (cursor == null) {
+			db.close();
+			throw new SQLException();
+		} else if (cursor.getCount() <= 0) {
+			cursor.close();
+			db.close();
+			throw new SQLException();
+		}
+
+		cursor.moveToFirst();
+		OccupationType occupationType = new OccupationType(
+				cursor.getString(cursor.getColumnIndex(OccupationTypeTable.KEY_NAME)),
+				bytesToBitmap(cursor.getBlob(cursor.getColumnIndex(OccupationTypeTable.KEY_ICON)))
+		);
+		Event event = new Event(
+				new Date(cursor.getLong(cursor.getColumnIndex(EventTable.KEY_DATE)))
+		);
+		long typeId = cursor.getLong(cursor.getColumnIndex(EventTable.KEY_TYPE));
+		cursor.close();
         db.close();
 
-        if (event == null) {
-            return null;
-        }
         return new EventData(
                 id,
                 event,
@@ -378,7 +432,12 @@ public class DatabaseManager extends SQLiteOpenHelper {
         );
     }
 
-    public EventData updateEvent(long id, Event event, long typeId) {
+    public EventData updateEvent(long id, Event event, long typeId)
+			throws IllegalArgumentException, SQLException {
+    	if (event == null || !event.isValid() || !eventExists(id) || !typeExists(typeId)) {
+    		throw new IllegalArgumentException();
+		}
+
         SQLiteDatabase db = this.getWritableDatabase();
 
         ContentValues values = new ContentValues();
@@ -390,23 +449,27 @@ public class DatabaseManager extends SQLiteOpenHelper {
                 new String[] { String.valueOf(id) });
         db.close();
 
-        if (affectedRowNbr == 1) {
+        if (affectedRowNbr >= 1) {
             return new EventData(id, new Event(event), requestType(typeId));
         } else {
-            return null;
+            throw new SQLException();
         }
     }
 
-    public boolean deleteEvent(long id) {
+    public void deleteEvent(long id)
+			throws IllegalArgumentException, SQLException {
+    	if (!eventExists(id)) {
+    		throw new IllegalArgumentException();
+		}
+
         SQLiteDatabase db = this.getWritableDatabase();
         int affectedRowNbr = db.delete(EventTable.TABLE_NAME,
                 EventTable.KEY_ID + "=?",
                 new String[] { String.valueOf(id) });
         db.close();
-        if (affectedRowNbr == 1) {
-            return true;
-        } else {
-            return false;
+
+        if (affectedRowNbr <= 0) {
+            throw new SQLException();
         }
     }
 
