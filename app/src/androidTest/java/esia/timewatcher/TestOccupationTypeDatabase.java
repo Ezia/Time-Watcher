@@ -2,87 +2,21 @@ package esia.timewatcher;
 
 import android.graphics.BitmapFactory;
 import android.support.test.InstrumentationRegistry;
+import android.support.test.runner.AndroidJUnit4;
 
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.junit.runners.Parameterized;
-
-import java.util.Collection;
-import java.util.LinkedList;
 
 import esia.timewatcher.database.DatabaseManager;
 import esia.timewatcher.database.OccupationTypeData;
 import esia.timewatcher.structures.OccupationType;
 
-@RunWith(Parameterized.class)
+@RunWith(AndroidJUnit4.class)
 public class TestOccupationTypeDatabase {
 
-    ///// PARAMETERS /////
-
-    private OccupationType type1;
-    private OccupationType type2;
-
-    @Parameterized.Parameters
-    public static Collection<Object[]> data() {
-        LinkedList<Object[]> list =  new LinkedList<>();
-
-        OccupationType type1 = new OccupationType("myName",
-                BitmapFactory.decodeResource(
-                        InstrumentationRegistry.getTargetContext().getResources(),
-                        R.drawable.twitter
-                )
-        );
-
-        OccupationType type2 = new OccupationType("myName2",
-                BitmapFactory.decodeResource(
-                        InstrumentationRegistry.getTargetContext().getResources(),
-                        R.drawable.lan
-                )
-        );
-
-        OccupationType type3 = new OccupationType("myName2",
-                null
-        );
-
-        OccupationType type4 = new OccupationType("",
-                BitmapFactory.decodeResource(
-                        InstrumentationRegistry.getTargetContext().getResources(),
-                        R.drawable.lan
-                )
-        );
-
-        OccupationType type5 = new OccupationType(null,
-                BitmapFactory.decodeResource(
-                        InstrumentationRegistry.getTargetContext().getResources(),
-                        R.drawable.lan
-                )
-        );
-
-        OccupationType type6 = new OccupationType(null, null);
-
-        list.add(new Object[] {type1, type2});
-        list.add(new Object[] {type1, null});
-        list.add(new Object[] {null, type2});
-        list.add(new Object[] {null, null});
-        list.add(new Object[] {type1, type3});
-        list.add(new Object[] {type1, type4});
-        list.add(new Object[] {type1, type5});
-        list.add(new Object[] {type1, type6});
-        list.add(new Object[] {type3, type1});
-        list.add(new Object[] {type4, type1});
-        list.add(new Object[] {type5, type1});
-        list.add(new Object[] {type6, type1});
-        return list;
-    }
-
-    public TestOccupationTypeDatabase(OccupationType type1, OccupationType type2) {
-        this.type1 = type1;
-        this.type2 = type2;
-    }
-
-    ///// BEFORE AND AFTER /////
+    ///// BEFORE /////
 
     @Before
     public void resetDatabase() {
@@ -90,142 +24,227 @@ public class TestOccupationTypeDatabase {
         DatabaseManager.initializeInstance(InstrumentationRegistry.getTargetContext());
     }
 
-    ///// TEST UTILS /////
+    ///// CREATE /////
 
-    public static OccupationTypeData createType(OccupationType type) throws Exception {
+    @Test
+    public void createExistingType() throws Exception {
         long initTypeSize = DatabaseManager.getInstance().getOccupationTypeNumber();
+        OccupationType type = new OccupationType("test",
+                BitmapFactory.decodeResource(
+                        InstrumentationRegistry.getTargetContext().getResources(),
+                        R.drawable.lan
+                )
+        );
+
+        DatabaseManager.getInstance().createOccupationType(type);
+        OccupationTypeData data = DatabaseManager.getInstance().createOccupationType(type);
+
+        Assert.assertNull(data);
+        Assert.assertEquals(DatabaseManager.getInstance().getOccupationTypeNumber(), initTypeSize+1);
+    }
+
+    @Test
+    public void createValidType() throws Exception {
+        long initTypeSize = DatabaseManager.getInstance().getOccupationTypeNumber();
+        OccupationType type = new OccupationType("test",
+                BitmapFactory.decodeResource(
+                        InstrumentationRegistry.getTargetContext().getResources(),
+                        R.drawable.lan
+                )
+        );
 
         OccupationTypeData data = DatabaseManager.getInstance().createOccupationType(type);
 
-        if (type == null || !type.isValid()) {
-            Assert.assertNull(data);
-            Assert.assertEquals(DatabaseManager.getInstance().getOccupationTypeNumber(), initTypeSize);
-        } else {
-            Assert.assertNotNull(data);
-            Assert.assertNotEquals(data.getId(), -1);
-            Assert.assertEquals(data.getOccupationType(), type);
-            Assert.assertEquals(DatabaseManager.getInstance().getOccupationTypeNumber(), initTypeSize+1);
-        }
-        return data;
+        Assert.assertNotNull(data);
+        Assert.assertNotEquals(data.getId(), -1);
+        Assert.assertEquals(data.getOccupationType(), type);
+        Assert.assertEquals(DatabaseManager.getInstance().getOccupationTypeNumber(), initTypeSize+1);
     }
 
-    public static OccupationTypeData requestType(long id, boolean exists, OccupationType knownValue) throws Exception {
+    @Test(expected = IllegalArgumentException.class)
+    public void createInvalidType() throws Exception {
+        OccupationType type = new OccupationType(null,
+                BitmapFactory.decodeResource(
+                InstrumentationRegistry.getTargetContext().getResources(),
+                R.drawable.lan
+        ));
+        DatabaseManager.getInstance().createOccupationType(type);
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void createNullType() throws Exception {
+        DatabaseManager.getInstance().createOccupationType(null);
+    }
+    
+    ///// REQUEST /////
+
+    @Test
+    public void requestExistentTypeById() throws Exception {
+        long initTypeSize = DatabaseManager.getInstance().getOccupationTypeNumber();
+        OccupationType type = new OccupationType("test",
+                BitmapFactory.decodeResource(
+                        InstrumentationRegistry.getTargetContext().getResources(),
+                        R.drawable.lan
+                )
+        );
+
+        OccupationTypeData data1 = DatabaseManager.getInstance().createOccupationType(type);
+        OccupationTypeData data2 = DatabaseManager.getInstance().requestOccupationTypeById(data1.getId());
+
+        Assert.assertNotNull(data2);
+        Assert.assertEquals(data1.getId(), data2.getId());
+        Assert.assertEquals(data2.getOccupationType(), type);
+        Assert.assertEquals(DatabaseManager.getInstance().getOccupationTypeNumber(), initTypeSize+1);
+    }
+
+    @Test
+    public void requestExistentTypeByName() throws Exception {
+        long initTypeSize = DatabaseManager.getInstance().getOccupationTypeNumber();
+        OccupationType type = new OccupationType("test",
+                BitmapFactory.decodeResource(
+                        InstrumentationRegistry.getTargetContext().getResources(),
+                        R.drawable.lan
+                )
+        );
+
+        OccupationTypeData data1 = DatabaseManager.getInstance().createOccupationType(type);
+        OccupationTypeData data2 = DatabaseManager.getInstance().requestOccupationTypeByName("test");
+
+        Assert.assertNotNull(data2);
+        Assert.assertEquals(data1.getId(), data2.getId());
+        Assert.assertEquals(data2.getOccupationType(), type);
+        Assert.assertEquals(DatabaseManager.getInstance().getOccupationTypeNumber(), initTypeSize+1);
+    }
+
+    @Test
+    public void requestNonexistentTypeById() throws Exception {
         long initTypeSize = DatabaseManager.getInstance().getOccupationTypeNumber();
 
-        OccupationTypeData data = DatabaseManager.getInstance().requestOccupationType(id);
+        OccupationTypeData data = DatabaseManager.getInstance().requestOccupationTypeById(1);
 
-        if (knownValue == null || !knownValue.isValid() || !exists) {
-            Assert.assertNull(data);
-        } else {
-            Assert.assertNotNull(data);
-            Assert.assertEquals(data.getId(), id);
-            Assert.assertEquals(data.getOccupationType(), knownValue);
-        }
+        Assert.assertNull(data);
         Assert.assertEquals(DatabaseManager.getInstance().getOccupationTypeNumber(), initTypeSize);
-        return data;
     }
 
-    public static OccupationTypeData updateType(long id, boolean exists, OccupationType newValue) throws Exception {
+    @Test
+    public void requestNonexistentTypeByValidName() throws Exception {
         long initTypeSize = DatabaseManager.getInstance().getOccupationTypeNumber();
 
-        OccupationTypeData data = DatabaseManager.getInstance().updateOccupationType(id, newValue);
+        OccupationTypeData data = DatabaseManager.getInstance().requestOccupationTypeByName("test");
 
-        if (newValue == null || !newValue.isValid() || !exists) {
-            Assert.assertNull(data);
-        } else {
-            Assert.assertNotNull(data);
-            Assert.assertEquals(data.getId(), id);
-            Assert.assertEquals(data.getOccupationType(), newValue);
-        }
+        Assert.assertNull(data);
         Assert.assertEquals(DatabaseManager.getInstance().getOccupationTypeNumber(), initTypeSize);
-        return data;
     }
 
-    public static boolean deleteType(long id, boolean exists) throws Exception {
+    @Test(expected = IllegalArgumentException.class)
+    public void requestNonexistentTypeByInvalidName() throws Exception {
         long initTypeSize = DatabaseManager.getInstance().getOccupationTypeNumber();
 
-        boolean deleted = DatabaseManager.getInstance().deleteOccupationType(id);
-
-        if (!exists) {
-            Assert.assertFalse(deleted);
-            Assert.assertEquals(DatabaseManager.getInstance().getOccupationTypeNumber(), initTypeSize);
-        } else {
-            Assert.assertTrue(deleted);
-            Assert.assertEquals(DatabaseManager.getInstance().getOccupationTypeNumber(), initTypeSize-1);
-        }
-        return deleted;
+        DatabaseManager.getInstance().requestOccupationTypeByName("");
     }
 
-    ///// TESTS /////
+    @Test(expected = IllegalArgumentException.class)
+    public void requestNonexistentTypeByNullName() throws Exception {
+        DatabaseManager.getInstance().requestOccupationTypeByName(null);
+    }
 
+    ///// UPDATE /////
+
+    @Test
+    public void updateValidExistentType() throws Exception {
+        long initTypeSize = DatabaseManager.getInstance().getOccupationTypeNumber();
+        OccupationType type1 = new OccupationType("test1",
+                BitmapFactory.decodeResource(
+                        InstrumentationRegistry.getTargetContext().getResources(),
+                        R.drawable.lan
+                )
+        );
+        OccupationType type2 = new OccupationType("test2",
+                BitmapFactory.decodeResource(
+                        InstrumentationRegistry.getTargetContext().getResources(),
+                        R.drawable.lan
+                )
+        );
+
+        OccupationTypeData data1 = DatabaseManager.getInstance().createOccupationType(type1);
+        OccupationTypeData data2 = DatabaseManager.getInstance().updateOccupationType(data1.getId(), type2);
+
+        Assert.assertNotNull(data2);
+        Assert.assertEquals(data1.getId(), data2.getId());
+        Assert.assertEquals(data2.getOccupationType(), type2);
+        Assert.assertEquals(DatabaseManager.getInstance().getOccupationTypeNumber(), initTypeSize+1);
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void updateInvalidExistentType() throws Exception {
+        OccupationType type1 = new OccupationType("test1",
+                BitmapFactory.decodeResource(
+                        InstrumentationRegistry.getTargetContext().getResources(),
+                        R.drawable.lan
+                )
+        );
+        OccupationType type2 = new OccupationType("",
+                BitmapFactory.decodeResource(
+                        InstrumentationRegistry.getTargetContext().getResources(),
+                        R.drawable.lan
+                )
+        );
+
+        OccupationTypeData data1 = DatabaseManager.getInstance().createOccupationType(type1);
+        DatabaseManager.getInstance().updateOccupationType(data1.getId(), type2);
+    }
+
+    @Test
+    public void updateValidNonexistentType() throws Exception {
+        long initTypeSize = DatabaseManager.getInstance().getOccupationTypeNumber();
+        OccupationType type = new OccupationType("test1",
+                BitmapFactory.decodeResource(
+                        InstrumentationRegistry.getTargetContext().getResources(),
+                        R.drawable.lan
+                )
+        );
+
+        OccupationTypeData data = DatabaseManager.getInstance().updateOccupationType(1, type);
+
+        Assert.assertNull(data);
+        Assert.assertEquals(DatabaseManager.getInstance().getOccupationTypeNumber(), initTypeSize);
+    }
+
+    ///// DELETE /////
+
+    @Test
+    public void deleteExistentType() throws Exception {
+        long initTypeSize = DatabaseManager.getInstance().getOccupationTypeNumber();
+        OccupationType type = new OccupationType("test",
+                BitmapFactory.decodeResource(
+                        InstrumentationRegistry.getTargetContext().getResources(),
+                        R.drawable.lan
+                )
+        );
+
+        OccupationTypeData data1 = DatabaseManager.getInstance().createOccupationType(type);
+        boolean deleted = DatabaseManager.getInstance().deleteOccupationType(data1.getId());
+        OccupationTypeData data2 = DatabaseManager.getInstance().requestOccupationTypeById(data1.getId());
+
+        Assert.assertNull(data2);
+        Assert.assertTrue(deleted);
+        Assert.assertEquals(DatabaseManager.getInstance().getOccupationTypeNumber(), initTypeSize);
+    }
+
+    @Test
+    public void deleteNonexistentType() throws Exception {
+        long initTypeSize = DatabaseManager.getInstance().getOccupationTypeNumber();
+
+        boolean deleted = DatabaseManager.getInstance().deleteOccupationType(1);
+
+        Assert.assertFalse(deleted);
+        Assert.assertEquals(DatabaseManager.getInstance().getOccupationTypeNumber(), initTypeSize);
+    }
+
+    ///// MISC /////
 
     @Test
     public void emptyTable() throws Exception {
         Assert.assertEquals(DatabaseManager.getInstance().getOccupationTypeNumber(), 0);
-    }
-
-    @Test
-    public void create1Type() throws Exception {
-        createType(type1);
-    }
-
-    @Test
-    public void create2Types() throws Exception {
-        createType(type1);
-        createType(type2);
-    }
-
-    @Test
-    public void createAndRequest1Type() throws Exception {
-        OccupationTypeData data = createType(type1);
-        if (data != null) {
-            requestType(data.getId(), true, type1);
-        } else {
-            requestType(-1, false, type1);
-        }
-    }
-
-    @Test
-    public void createAndUpdate1Type() throws Exception {
-        OccupationTypeData data = createType(type1);
-        if (data != null) {
-            updateType(data.getId(), true, type2);
-        } else {
-            updateType(-1, false, type2);
-        }
-    }
-
-    @Test
-    public void createAndDelete1Type() throws Exception {
-        OccupationTypeData data = createType(type1);
-        if (data != null) {
-            deleteType(data.getId(), true);
-        } else {
-            deleteType(-1, false);
-        }
-    }
-
-    @Test
-    public void createDeleteAndRequest1Type() throws Exception {
-        OccupationTypeData data = createType(type1);
-        if (data != null) {
-            deleteType(data.getId(), true);
-            requestType(data.getId(), false, type1);
-        } else {
-            deleteType(-1, false);
-            requestType(-1, false, type1);
-        }
-    }
-
-    @Test
-    public void createDeleteAndUpdate1Type() throws Exception {
-        OccupationTypeData data = createType(type1);
-        if (data != null) {
-            deleteType(data.getId(), true);
-            updateType(data.getId(), false, type2);
-        } else {
-            deleteType(-1, false);
-            requestType(-1, false, type2);
-        }
     }
 }
