@@ -8,9 +8,9 @@ import java.util.Date;
 import esia.timewatcher.structures.Event;
 import esia.timewatcher.structures.OccupationType;
 
-public class DatabaseTestHelper {
+class DatabaseTestHelper {
 
-	public static OccupationType getValidOccupationType1() {
+	 static OccupationType getValidOccupationType1() {
 		return new OccupationType("test1",
 				BitmapFactory.decodeResource(
 						InstrumentationRegistry.getTargetContext().getResources(),
@@ -19,7 +19,7 @@ public class DatabaseTestHelper {
 		);
 	}
 
-	public static OccupationType getValidOccupationType2() {
+	 static OccupationType getValidOccupationType2() {
 		return new OccupationType("test2",
 				BitmapFactory.decodeResource(
 						InstrumentationRegistry.getTargetContext().getResources(),
@@ -28,7 +28,7 @@ public class DatabaseTestHelper {
 		);
 	}
 
-	public static OccupationType getInvalidOccupationType() {
+	 static OccupationType getInvalidOccupationType() {
 		return new OccupationType("",
 				BitmapFactory.decodeResource(
 						InstrumentationRegistry.getTargetContext().getResources(),
@@ -37,15 +37,15 @@ public class DatabaseTestHelper {
 		);
 	}
 
-	public static Event getValidEvent1() {
+	 static Event getValidEvent1() {
 		return new Event(new Date(0));
 	}
 
-	public static Event getValidEvent2() {
+	 static Event getValidEvent2() {
 		return new Event(new Date(1));
 	}
 
-	public static Event getInvalidEvent() {
+	 static Event getInvalidEvent() {
 		return new Event((Date) null);
 	}
 }
