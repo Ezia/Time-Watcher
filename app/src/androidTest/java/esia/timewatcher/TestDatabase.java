@@ -6,7 +6,8 @@ import org.junit.runners.Suite;
 @RunWith(Suite.class)
 @Suite.SuiteClasses({
 		TestTypeDatabase.class,
-		TestEventDatabase.class
+		TestEventDatabase.class,
+		TestHobbyDatabase.class
 })
 public class TestDatabase {
 }

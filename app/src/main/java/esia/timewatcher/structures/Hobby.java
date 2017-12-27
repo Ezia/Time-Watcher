@@ -2,27 +2,23 @@ package esia.timewatcher.structures;
 
 import java.util.Date;
 
-public class Hobby {
+public class Hobby implements Storable {
     private Date startDate;
     private Date endDate;
-    private OccupationType type;
 
-    public Hobby(Date startDate, OccupationType type) {
+    public Hobby(Date startDate) {
         this.startDate = startDate;
         this.endDate = new Date(0);
-        this.type = type;
     }
 
-    public Hobby(Date startDate, Date endDate, OccupationType type) {
+    public Hobby(Date startDate, Date endDate) {
         this.startDate = startDate;
         this.endDate = endDate;
-        this.type = type;
     }
 
     public Hobby(Hobby hobby) {
         this.startDate = hobby.startDate;
         this.endDate = hobby.endDate;
-        this.type = hobby.type;
     }
 
     public Date getStartDate() {
@@ -33,7 +29,19 @@ public class Hobby {
         return endDate;
     }
 
-    public OccupationType getType() {
-        return type;
+    public boolean isRunning() {
+        return endDate.getTime()==0;
+    }
+
+    @Override
+    public boolean isValid() {
+        return startDate != null && endDate != null && ( isRunning() || endDate.after(startDate));
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        Hobby other = (Hobby) obj;
+        return obj != null && this.startDate.equals(other.startDate)
+                && this.endDate.equals(other.endDate);
     }
 }

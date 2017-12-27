@@ -485,7 +485,23 @@ public class DatabaseManager extends SQLiteOpenHelper {
         return numberOfRows;
     }
 
-    public HobbyData createHobby(Hobby hobby, long typeId) {
+    public boolean hobbyExists(long id) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        long numberOfRows = DatabaseUtils.queryNumEntries(db,
+                HobbyTable.TABLE_NAME,
+                HobbyTable.KEY_ID + "=?",
+                new String[] {String.valueOf(id)});
+        db.close();
+
+        return numberOfRows == 1;
+    }
+
+    public HobbyData createHobby(Hobby hobby, long typeId)
+            throws IllegalArgumentException, SQLException {
+        if (hobby == null || !hobby.isValid() || !typeExists(typeId)) {
+            throw new IllegalArgumentException();
+        }
+
         SQLiteDatabase db = this.getWritableDatabase();
 
         ContentValues values = new ContentValues();
@@ -497,7 +513,7 @@ public class DatabaseManager extends SQLiteOpenHelper {
         db.close();
 
         if (id == -1) {
-            return null;
+            throw new SQLException();
         }
 
         return new HobbyData(
@@ -507,37 +523,43 @@ public class DatabaseManager extends SQLiteOpenHelper {
         );
     }
 
-    public HobbyData requestHobby(long id) {
+    public HobbyData requestHobby(long id)
+            throws IllegalArgumentException, SQLException {
+        if (!hobbyExists(id)) {
+            throw new IllegalArgumentException();
+        }
+
         String query = "SELECT * FROM " + HobbyTable.TABLE_NAME
-                + " INNER JOINT " + OccupationTypeTable.TABLE_NAME
+                + " INNER JOIN " + OccupationTypeTable.TABLE_NAME
                 + " ON " + HobbyTable.KEY_TYPE + " = " + OccupationTypeTable.KEY_ID
                 + " WHERE " + HobbyTable.KEY_ID + "=?";
+
         SQLiteDatabase db = this.getReadableDatabase();
 
         Cursor cursor = db.rawQuery(query, new String[] {String.valueOf(id)});
 
-        Hobby hobby = null;
-        OccupationType occupationType = null;
-        long typeId = -1;
-        if (cursor != null) {
-            cursor.moveToFirst();
-            occupationType = new OccupationType(
-                    cursor.getString(cursor.getColumnIndex(OccupationTypeTable.KEY_NAME)),
-                    bytesToBitmap(cursor.getBlob(cursor.getColumnIndex(OccupationTypeTable.KEY_ICON)))
-            );
-            hobby = new Hobby(
-                    new Date(cursor.getLong(cursor.getColumnIndex(HobbyTable.KEY_START_DATE))),
-                    new Date(cursor.getLong(cursor.getColumnIndex(HobbyTable.KEY_END_DATE))),
-                    occupationType
-            );
-            typeId = cursor.getLong(cursor.getColumnIndex(HobbyTable.KEY_TYPE));
+        if (cursor == null) {
+            db.close();
+            throw new SQLException();
+        } else if (cursor.getCount() <= 0) {
             cursor.close();
+            db.close();
+            throw new SQLException();
         }
+
+        cursor.moveToFirst();
+        OccupationType occupationType = new OccupationType(
+                cursor.getString(cursor.getColumnIndex(OccupationTypeTable.KEY_NAME)),
+                bytesToBitmap(cursor.getBlob(cursor.getColumnIndex(OccupationTypeTable.KEY_ICON)))
+        );
+        Hobby hobby = new Hobby(
+                new Date(cursor.getLong(cursor.getColumnIndex(HobbyTable.KEY_START_DATE))),
+                new Date(cursor.getLong(cursor.getColumnIndex(HobbyTable.KEY_END_DATE)))
+        );
+        long typeId = cursor.getLong(cursor.getColumnIndex(HobbyTable.KEY_TYPE));
+        cursor.close();
         db.close();
 
-        if (hobby == null) {
-            return null;
-        }
         return new HobbyData(
                 id,
                 hobby,
@@ -545,36 +567,45 @@ public class DatabaseManager extends SQLiteOpenHelper {
         );
     }
 
-    public HobbyData updateHobby(long id, Hobby hobby, long typeId) {
+    public HobbyData updateHobby(long id, Hobby hobby, long typeId)
+            throws IllegalArgumentException, SQLException {
+        if (hobby == null || !hobby.isValid() || !hobbyExists(id) || !typeExists(typeId)) {
+            throw new IllegalArgumentException();
+        }
+
         SQLiteDatabase db = this.getWritableDatabase();
 
         ContentValues values = new ContentValues();
-        values.put(HobbyTable.KEY_TYPE, typeId);
-        values.put(HobbyTable.KEY_END_DATE, hobby.getEndDate().getTime());
         values.put(HobbyTable.KEY_START_DATE, hobby.getStartDate().getTime());
+        values.put(HobbyTable.KEY_END_DATE, hobby.getEndDate().getTime());
+        values.put(HobbyTable.KEY_TYPE, typeId);
 
-        int affectedRowNbr = db.update(EventTable.TABLE_NAME, values,
-                EventTable.KEY_ID + "=?",
+        int affectedRowNbr = db.update(HobbyTable.TABLE_NAME, values,
+                HobbyTable.KEY_ID + "=?",
                 new String[] { String.valueOf(id) });
         db.close();
 
-        if (affectedRowNbr == 1) {
+        if (affectedRowNbr >= 1) {
             return new HobbyData(id, new Hobby(hobby), requestType(typeId));
         } else {
-            return null;
+            throw new SQLException();
         }
     }
 
-    public boolean deleteHobby(long id) {
+    public void deleteHobby(long id)
+            throws IllegalArgumentException, SQLException {
+        if (!hobbyExists(id)) {
+            throw new IllegalArgumentException();
+        }
+
         SQLiteDatabase db = this.getWritableDatabase();
         int affectedRowNbr = db.delete(HobbyTable.TABLE_NAME,
                 HobbyTable.KEY_ID + "=?",
                 new String[] { String.valueOf(id) });
         db.close();
-        if (affectedRowNbr == 1) {
-            return true;
-        } else {
-            return false;
+
+        if (affectedRowNbr <= 0) {
+            throw new SQLException();
         }
     }
 

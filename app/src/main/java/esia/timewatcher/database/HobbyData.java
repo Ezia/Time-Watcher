@@ -12,7 +12,7 @@ public class HobbyData extends Data {
 
     HobbyData(long id, Hobby hobby, OccupationTypeData occupationTypeData) {
         super(id);
-        this.hobby = this.hobby;
+        this.hobby = hobby;
         this.occupationTypeData = occupationTypeData;
     }
 
