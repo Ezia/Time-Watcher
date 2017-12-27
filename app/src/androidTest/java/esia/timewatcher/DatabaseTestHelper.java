@@ -1,9 +1,11 @@
 package esia.timewatcher;
 
+import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.support.test.InstrumentationRegistry;
 
 import java.util.Date;
+import java.util.LinkedList;
 
 import esia.timewatcher.structures.Event;
 import esia.timewatcher.structures.Hobby;
@@ -56,5 +58,17 @@ class DatabaseTestHelper {
 
 	static Hobby getInvalidHobby() { return new Hobby((Date) null);}
 
+	static LinkedList<OccupationType> getListOfTypes(int number) {
+	 	LinkedList<OccupationType> list = new LinkedList<>();
+		Bitmap icon = BitmapFactory.decodeResource(
+				InstrumentationRegistry.getTargetContext().getResources(),
+				R.drawable.lan
+		);
 
+	 	for (int i = 0; i < number; i++) {
+			list.add(new OccupationType("test"+i, icon));
+		}
+
+		return list;
+	}
 }

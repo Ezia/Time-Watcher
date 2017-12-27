@@ -16,4 +16,8 @@ public class HomeActivity extends AppCompatActivity {
         DatabaseManager.initializeInstance(this.getApplicationContext());
 
     }
+
+    private void updateTypeSpinnerAdapter() {
+        DatabaseManager.getInstance().requestTypes(5);
+    }
 }

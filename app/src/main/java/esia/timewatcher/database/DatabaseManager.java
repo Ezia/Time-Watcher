@@ -12,6 +12,7 @@ import android.graphics.BitmapFactory;
 
 import java.io.ByteArrayOutputStream;
 import java.util.Date;
+import java.util.LinkedList;
 
 import esia.timewatcher.structures.Event;
 import esia.timewatcher.structures.Hobby;
@@ -609,10 +610,80 @@ public class DatabaseManager extends SQLiteOpenHelper {
         }
     }
 
-    ///// JOINT UTILS /////
+    ///// SPECIFIC REQUESTS /////
 
-    public void getEventsOfType(long occupationType) {
+    public LinkedList<OccupationTypeData> requestAllTypes()
+            throws SQLException {
+        SQLiteDatabase db = this.getReadableDatabase();
 
+        Cursor cursor = db.query(OccupationTypeTable.TABLE_NAME,
+                new String[] { OccupationTypeTable.KEY_ID,
+                        OccupationTypeTable.KEY_NAME, OccupationTypeTable.KEY_ICON },
+                null,
+                null,
+                null,
+                null,
+                null,
+                null);
+
+        if (cursor == null) {
+            db.close();
+            throw new SQLException();
+        }
+
+        LinkedList<OccupationTypeData> dataList = new LinkedList<>();
+        while (cursor.moveToNext()) {
+            long id = cursor.getLong(cursor.getColumnIndex(OccupationTypeTable.KEY_ID));
+            OccupationType type = new OccupationType(
+                    cursor.getString(cursor.getColumnIndex(OccupationTypeTable.KEY_NAME)),
+                    bytesToBitmap(cursor.getBlob(cursor.getColumnIndex(OccupationTypeTable.KEY_ICON)))
+            );
+            dataList.add(new OccupationTypeData(id, type));
+        }
+
+        cursor.close();
+        db.close();
+
+        return dataList;
+    }
+
+    public LinkedList<OccupationTypeData> requestTypes(int maxNumber)
+                    throws IllegalArgumentException, SQLException {
+        if (maxNumber <= 0) {
+            throw new IllegalArgumentException();
+        }
+
+        SQLiteDatabase db = this.getReadableDatabase();
+
+        Cursor cursor = db.query(OccupationTypeTable.TABLE_NAME,
+                new String[] { OccupationTypeTable.KEY_ID,
+                        OccupationTypeTable.KEY_NAME, OccupationTypeTable.KEY_ICON },
+                null,
+                null,
+                null,
+                null,
+                null,
+                String.valueOf(maxNumber));
+
+        if (cursor == null) {
+            db.close();
+            throw new SQLException();
+        }
+
+        LinkedList<OccupationTypeData> dataList = new LinkedList<>();
+        while (cursor.moveToNext()) {
+            long id = cursor.getLong(cursor.getColumnIndex(OccupationTypeTable.KEY_ID));
+            OccupationType type = new OccupationType(
+                    cursor.getString(cursor.getColumnIndex(OccupationTypeTable.KEY_NAME)),
+                    bytesToBitmap(cursor.getBlob(cursor.getColumnIndex(OccupationTypeTable.KEY_ICON)))
+            );
+            dataList.add(new OccupationTypeData(id, type));
+        }
+
+        cursor.close();
+        db.close();
+
+        return dataList;
     }
 
     ///// BITMAP UTILS /////
