@@ -163,9 +163,10 @@ public class DatabaseManager extends SQLiteOpenHelper {
 
     public OccupationTypeData createType(OccupationType type)
             throws IllegalArgumentException, SQLException {
-        if (type == null || !type.isValid()
-                || typeExists(type.getName())) {
+        if (type == null || !type.isValid()) {
             throw new IllegalArgumentException();
+        } else if (typeExists(type.getName())) {
+            throw new EntryAlreadyExistsException();
         }
 
         SQLiteDatabase db = this.getWritableDatabase();
