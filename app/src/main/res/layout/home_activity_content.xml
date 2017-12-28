@@ -16,10 +16,9 @@
         <Spinner
             android:id="@+id/typeSpinner"
             android:layout_width="0dp"
-            android:layout_height="match_parent"
+            android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:entries="@array/planets_array"
-            android:theme="@style/AppTheme.TextTheme" />
+            android:spinnerMode="dialog"/>
 
         <Button
             android:id="@+id/button"
@@ -35,8 +34,8 @@
             android:contentDescription="@string/more_start_button" />
     </LinearLayout>
 
-    <include
-        layout="@layout/running_hobby_layout"
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/running_hobbies"
         android:layout_width="match_parent"
         android:layout_height="wrap_content" />
 

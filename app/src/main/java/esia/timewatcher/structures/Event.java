@@ -1,11 +1,11 @@
 package esia.timewatcher.structures;
 
-import java.util.Date;
+import org.joda.time.DateTime;
 
 public class Event implements Storable {
-    private Date date;
+    private DateTime date;
 
-    public Event(Date date) {
+    public Event(DateTime date) {
         this.date = date;
     }
 
@@ -13,7 +13,7 @@ public class Event implements Storable {
         this.date = event.date;
     }
 
-    public Date getDate() {
+    public DateTime getDate() {
         return date;
     }
 

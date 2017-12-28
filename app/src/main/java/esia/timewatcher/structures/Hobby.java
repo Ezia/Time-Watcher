@@ -1,17 +1,17 @@
 package esia.timewatcher.structures;
 
-import java.util.Date;
+import org.joda.time.DateTime;
 
 public class Hobby implements Storable {
-    private Date startDate;
-    private Date endDate;
+    private DateTime startDate;
+    private DateTime endDate;
 
-    public Hobby(Date startDate) {
+    public Hobby(DateTime startDate) {
         this.startDate = startDate;
-        this.endDate = new Date(0);
+        this.endDate = new DateTime(0);
     }
 
-    public Hobby(Date startDate, Date endDate) {
+    public Hobby(DateTime startDate, DateTime endDate) {
         this.startDate = startDate;
         this.endDate = endDate;
     }
@@ -21,21 +21,22 @@ public class Hobby implements Storable {
         this.endDate = hobby.endDate;
     }
 
-    public Date getStartDate() {
+    public DateTime getStartDate() {
         return startDate;
     }
 
-    public Date getEndDate() {
+    public DateTime getEndDate() {
         return endDate;
     }
 
     public boolean isRunning() {
-        return endDate.getTime()==0;
+        return endDate.getMillis()==0;
     }
 
     @Override
     public boolean isValid() {
-        return startDate != null && endDate != null && ( isRunning() || endDate.after(startDate));
+        return startDate != null && endDate != null &&
+				( isRunning() || endDate.isAfter(startDate));
     }
 
     @Override

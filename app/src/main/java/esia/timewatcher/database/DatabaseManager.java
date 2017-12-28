@@ -10,6 +10,8 @@ import android.database.sqlite.SQLiteOpenHelper;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 
+import org.joda.time.DateTime;
+
 import java.io.ByteArrayOutputStream;
 import java.util.Date;
 import java.util.LinkedList;
@@ -375,7 +377,7 @@ public class DatabaseManager extends SQLiteOpenHelper {
 
         ContentValues values = new ContentValues();
         values.put(EventTable.KEY_TYPE, typeId);
-        values.put(EventTable.KEY_DATE, event.getDate().getTime());
+        values.put(EventTable.KEY_DATE, event.getDate().getMillis());
 
         long id = db.insert(EventTable.TABLE_NAME, null, values);
         db.close();
@@ -421,7 +423,7 @@ public class DatabaseManager extends SQLiteOpenHelper {
 				bytesToBitmap(cursor.getBlob(cursor.getColumnIndex(OccupationTypeTable.KEY_ICON)))
 		);
 		Event event = new Event(
-				new Date(cursor.getLong(cursor.getColumnIndex(EventTable.KEY_DATE)))
+				new DateTime(cursor.getLong(cursor.getColumnIndex(EventTable.KEY_DATE)))
 		);
 		long typeId = cursor.getLong(cursor.getColumnIndex(EventTable.KEY_TYPE));
 		cursor.close();
@@ -443,7 +445,7 @@ public class DatabaseManager extends SQLiteOpenHelper {
         SQLiteDatabase db = this.getWritableDatabase();
 
         ContentValues values = new ContentValues();
-        values.put(EventTable.KEY_DATE, event.getDate().getTime());
+        values.put(EventTable.KEY_DATE, event.getDate().getMillis());
         values.put(EventTable.KEY_TYPE, typeId);
 
         int affectedRowNbr = db.update(EventTable.TABLE_NAME, values,
@@ -508,8 +510,8 @@ public class DatabaseManager extends SQLiteOpenHelper {
 
         ContentValues values = new ContentValues();
         values.put(HobbyTable.KEY_TYPE, typeId);
-        values.put(HobbyTable.KEY_START_DATE, hobby.getStartDate().getTime());
-        values.put(HobbyTable.KEY_END_DATE, hobby.getEndDate().getTime());
+        values.put(HobbyTable.KEY_START_DATE, hobby.getStartDate().getMillis());
+        values.put(HobbyTable.KEY_END_DATE, hobby.getEndDate().getMillis());
 
         long id = db.insert(HobbyTable.TABLE_NAME, null, values);
         db.close();
@@ -555,8 +557,8 @@ public class DatabaseManager extends SQLiteOpenHelper {
                 bytesToBitmap(cursor.getBlob(cursor.getColumnIndex(OccupationTypeTable.KEY_ICON)))
         );
         Hobby hobby = new Hobby(
-                new Date(cursor.getLong(cursor.getColumnIndex(HobbyTable.KEY_START_DATE))),
-                new Date(cursor.getLong(cursor.getColumnIndex(HobbyTable.KEY_END_DATE)))
+                new DateTime(cursor.getLong(cursor.getColumnIndex(HobbyTable.KEY_START_DATE))),
+                new DateTime(cursor.getLong(cursor.getColumnIndex(HobbyTable.KEY_END_DATE)))
         );
         long typeId = cursor.getLong(cursor.getColumnIndex(HobbyTable.KEY_TYPE));
         cursor.close();
@@ -578,8 +580,8 @@ public class DatabaseManager extends SQLiteOpenHelper {
         SQLiteDatabase db = this.getWritableDatabase();
 
         ContentValues values = new ContentValues();
-        values.put(HobbyTable.KEY_START_DATE, hobby.getStartDate().getTime());
-        values.put(HobbyTable.KEY_END_DATE, hobby.getEndDate().getTime());
+        values.put(HobbyTable.KEY_START_DATE, hobby.getStartDate().getMillis());
+        values.put(HobbyTable.KEY_END_DATE, hobby.getEndDate().getMillis());
         values.put(HobbyTable.KEY_TYPE, typeId);
 
         int affectedRowNbr = db.update(HobbyTable.TABLE_NAME, values,
@@ -687,10 +689,54 @@ public class DatabaseManager extends SQLiteOpenHelper {
         return dataList;
     }
 
+    public LinkedList<HobbyData> requestRunningHobbies()
+            throws SQLException {
+        String query = "SELECT * FROM " + HobbyTable.TABLE_NAME
+                + " INNER JOIN " + OccupationTypeTable.TABLE_NAME
+                + " ON " + HobbyTable.KEY_TYPE + " = " + OccupationTypeTable.KEY_ID
+                + " WHERE " + HobbyTable.KEY_END_DATE + "=?";
+
+        SQLiteDatabase db = this.getReadableDatabase();
+
+        Cursor cursor = db.rawQuery(query, new String[] {String.valueOf(0)});
+
+        if (cursor == null) {
+            db.close();
+            throw new SQLException();
+        }
+
+        LinkedList<HobbyData> dataList = new LinkedList<>();
+        while (cursor.moveToNext()) {
+            OccupationTypeData typeData = new OccupationTypeData(
+                    cursor.getLong(cursor.getColumnIndex(HobbyTable.KEY_TYPE)),
+                    new OccupationType(
+                            cursor.getString(cursor.getColumnIndex(OccupationTypeTable.KEY_NAME)),
+                            bytesToBitmap(cursor.getBlob(cursor.getColumnIndex(OccupationTypeTable.KEY_ICON)))
+                    )
+            );
+
+            HobbyData hobbyData = new HobbyData(
+                    cursor.getLong(cursor.getColumnIndex(HobbyTable.KEY_START_DATE)),
+                    new Hobby(
+                            new DateTime(cursor.getLong(cursor.getColumnIndex(HobbyTable.KEY_START_DATE))),
+                            new DateTime(cursor.getLong(cursor.getColumnIndex(HobbyTable.KEY_END_DATE)))
+                    ),
+                    typeData
+            );
+
+            dataList.add(hobbyData);
+        }
+
+        cursor.close();
+        db.close();
+
+        return dataList;
+    }
+
     ///// BITMAP UTILS /////
 
     // convert from bitmap to byte array
-    public static byte[] bitmapToBytes(Bitmap bitmap) {
+    private static byte[] bitmapToBytes(Bitmap bitmap) {
         assert(bitmap != null);
         ByteArrayOutputStream stream = new ByteArrayOutputStream();
         bitmap.compress(Bitmap.CompressFormat.PNG, 0, stream);
@@ -698,7 +744,7 @@ public class DatabaseManager extends SQLiteOpenHelper {
     }
 
     // convert from byte array to bitmap
-    public static Bitmap bytesToBitmap(byte[] image) {
+    private static Bitmap bytesToBitmap(byte[] image) {
         return BitmapFactory.decodeByteArray(image, 0, image.length);
     }
 }

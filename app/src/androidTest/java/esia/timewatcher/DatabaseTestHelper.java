@@ -4,7 +4,7 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.support.test.InstrumentationRegistry;
 
-import java.util.Date;
+import org.joda.time.DateTime;
 import java.util.LinkedList;
 
 import esia.timewatcher.structures.Event;
@@ -41,22 +41,22 @@ class DatabaseTestHelper {
 	}
 
 	static Event getValidEvent1() {
-		return new Event(new Date(0));
+		return new Event(new DateTime(0));
 	}
 
 	static Event getValidEvent2() {
-		return new Event(new Date(1));
+		return new Event(new DateTime(1));
 	}
 
  	static Event getInvalidEvent() {
-		return new Event((Date) null);
+		return new Event((DateTime) null);
 	}
 
-	static Hobby getValidHobby1() { return new Hobby(new Date(10));}
+	static Hobby getValidHobby1() { return new Hobby(new DateTime(10));}
 
-	static Hobby getValidHobby2() { return new Hobby(new Date(20), new Date(30));}
+	static Hobby getValidHobby2() { return new Hobby(new DateTime(20), new DateTime(30));}
 
-	static Hobby getInvalidHobby() { return new Hobby((Date) null);}
+	static Hobby getInvalidHobby() { return new Hobby((DateTime) null);}
 
 	static LinkedList<OccupationType> getListOfTypes(int number) {
 	 	LinkedList<OccupationType> list = new LinkedList<>();
@@ -67,6 +67,20 @@ class DatabaseTestHelper {
 
 	 	for (int i = 0; i < number; i++) {
 			list.add(new OccupationType("test"+i, icon));
+		}
+
+		return list;
+	}
+
+	static LinkedList<Hobby> getListOfHobbies(int runningNumber, int finishedNumber) {
+		LinkedList<Hobby> list = new LinkedList<>();
+
+		for (int i = 0; i < runningNumber; i++) {
+			list.add(new Hobby(new DateTime(i+1)));
+		}
+
+		for (int i = 0; i < finishedNumber; i++) {
+			list.add(new Hobby(new DateTime(i+1), new DateTime(i+2)));
 		}
 
 		return list;

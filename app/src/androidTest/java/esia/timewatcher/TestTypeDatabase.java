@@ -9,6 +9,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import esia.timewatcher.database.DatabaseManager;
+import esia.timewatcher.database.EntryAlreadyExistsException;
 import esia.timewatcher.database.OccupationTypeData;
 import esia.timewatcher.structures.OccupationType;
 
@@ -48,7 +49,7 @@ public class TestTypeDatabase {
 		DatabaseManager.getInstance().createType(null);
 	}
 
-    @Test(expected = IllegalArgumentException.class)
+    @Test(expected = EntryAlreadyExistsException.class)
     public void createExistentType() throws Exception {
         long initTypeSize = DatabaseManager.getInstance().getTypeNumber();
         OccupationType type = DatabaseTestHelper.getValidOccupationType1();

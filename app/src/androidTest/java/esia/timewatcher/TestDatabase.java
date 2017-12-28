@@ -7,7 +7,8 @@ import org.junit.runners.Suite;
 @Suite.SuiteClasses({
 		TestTypeDatabase.class,
 		TestEventDatabase.class,
-		TestHobbyDatabase.class
+		TestHobbyDatabase.class,
+		TestDatabaseUtils.class
 })
 public class TestDatabase {
 }

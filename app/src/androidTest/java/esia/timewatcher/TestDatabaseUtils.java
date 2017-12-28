@@ -1,6 +1,7 @@
 package esia.timewatcher;
 
 import android.support.test.InstrumentationRegistry;
+import android.util.Log;
 
 import org.junit.Assert;
 import org.junit.Before;
@@ -11,7 +12,9 @@ import org.junit.runners.JUnit4;
 import java.util.LinkedList;
 
 import esia.timewatcher.database.DatabaseManager;
+import esia.timewatcher.database.HobbyData;
 import esia.timewatcher.database.OccupationTypeData;
+import esia.timewatcher.structures.Hobby;
 import esia.timewatcher.structures.OccupationType;
 
 @RunWith(JUnit4.class)
@@ -80,5 +83,26 @@ public class TestDatabaseUtils {
 	public void testRequestAllTypesOnEmptyTable() throws Exception {
 		LinkedList<OccupationTypeData> typeData = DatabaseManager.getInstance().requestAllTypes();
 		Assert.assertEquals(typeData.size(), 0);
+	}
+
+	@Test
+	public void testRequestRunningHobbies() throws Exception {
+		OccupationType type = DatabaseTestHelper.getValidOccupationType1();
+		LinkedList<Hobby> hobbies = DatabaseTestHelper.getListOfHobbies(5, 7);
+
+		OccupationTypeData typeData = DatabaseManager.getInstance().createType(type);
+		for (Hobby hobby : hobbies) {
+			DatabaseManager.getInstance().createHobby(hobby, typeData.getId());
+		}
+
+		LinkedList<HobbyData> hobbyData = DatabaseManager.getInstance().requestRunningHobbies();
+
+		Assert.assertEquals(hobbyData.size(), 5);
+	}
+
+	@Test
+	public void testRequestRunningHobbiesOnEmptyTable() throws Exception {
+		LinkedList<HobbyData> hobbyData = DatabaseManager.getInstance().requestRunningHobbies();
+		Assert.assertEquals(hobbyData.size(), 0);
 	}
 }
