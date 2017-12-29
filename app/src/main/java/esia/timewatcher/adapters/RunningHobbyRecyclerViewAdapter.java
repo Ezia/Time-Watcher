@@ -89,6 +89,7 @@ public class RunningHobbyRecyclerViewAdapter
 		TextView name;
 		TextView startDate;
 		TextView remainingTime;
+		Button stopButton;
 
 		public RunningHobbyItem(View itemView) {
 			super(itemView);
@@ -96,12 +97,7 @@ public class RunningHobbyRecyclerViewAdapter
 			name = itemView.findViewById(R.id.name);
 			startDate = itemView.findViewById(R.id.start_date);
 			remainingTime = itemView.findViewById(R.id.elapsed_time);
-
-			Button stopButton = itemView.findViewById(R.id.stop_button);
-			stopButton.setOnClickListener((v) -> {
-				v.setEnabled(false);
-				onStopClick(getAdapterPosition());
-			});
+			stopButton = itemView.findViewById(R.id.stop_button);
 		}
 
 		public void set(HobbyData data) {
@@ -111,6 +107,10 @@ public class RunningHobbyRecyclerViewAdapter
 			name.setText(data.getOccupationTypeData().getOccupationType().getName());
 			startDate.setText(TimeUtils.toString(data.getHobby().getStartDate()));
 			updateTimer(data);
+			stopButton.setOnClickListener((v) -> {
+				stopButton.setOnClickListener(null);
+				onStopClick(getAdapterPosition());
+			});
 		}
 
 		public void updateTimer(HobbyData data) {

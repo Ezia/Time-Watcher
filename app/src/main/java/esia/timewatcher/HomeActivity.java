@@ -10,6 +10,7 @@ import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
+import android.widget.Button;
 import android.widget.Spinner;
 
 import org.joda.time.DateTime;
@@ -43,7 +44,8 @@ public class HomeActivity extends AppCompatActivity {
 		final RunningHobbyRecyclerViewAdapter runningHobbiesAdapter =
 				new RunningHobbyRecyclerViewAdapter(this);
 		RecyclerView runningHobbiesRecycler = findViewById(R.id.running_hobbies);
-		runningHobbiesRecycler.setLayoutManager(new LinearLayoutManager(this));
+		LinearLayoutManager layoutManager = new LinearLayoutManager(this);
+		runningHobbiesRecycler.setLayoutManager(layoutManager);
 		runningHobbiesRecycler.setAdapter(runningHobbiesAdapter);
 
 		final Handler handler = new Handler();
@@ -56,6 +58,9 @@ public class HomeActivity extends AppCompatActivity {
 		};
 		runOnUiThread(updateRunningList);
 		handler.post(updateRunningList);
+
+		Button startButton = findViewById(R.id.start_button);
+		startButton.setOnClickListener((v) -> onStartClick(v));
     }
 
     private void initializeDatabase() {
@@ -84,9 +89,20 @@ public class HomeActivity extends AppCompatActivity {
 		hobbies.add(new Hobby(new DateTime().minus(Period.months(1))));
 		hobbies.add(new Hobby(new DateTime().minus(Period.years(1))));
 
-		for (int i = 0; i < hobbies.size(); ++i) {
+		for (int i = 0; i < types.size(); ++i) {
 			OccupationTypeData data = DatabaseManager.getInstance().createType(types.get(i));
 			HobbyData d2 = DatabaseManager.getInstance().createHobby(hobbies.get(i), data.getId());
 		}
     }
+
+    public void onStartClick(View v) {
+		Spinner typeSpinner = findViewById(R.id.typeSpinner);
+		long selectedTypeId = typeSpinner.getSelectedItemId();
+		Hobby newHobby = new Hobby(new DateTime());
+		DatabaseManager.getInstance().createHobby(newHobby, selectedTypeId);
+		RecyclerView runningHobbiesRecycler = findViewById(R.id.running_hobbies);
+		RunningHobbyRecyclerViewAdapter adapter = (RunningHobbyRecyclerViewAdapter)
+				runningHobbiesRecycler.getAdapter();
+		adapter.updateFromDatabase();
+	}
 }
