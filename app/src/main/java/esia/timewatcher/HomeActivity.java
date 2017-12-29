@@ -8,6 +8,7 @@ import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.view.View;
 import android.widget.Spinner;
 
 import org.joda.time.DateTime;
@@ -20,6 +21,7 @@ import java.util.LinkedList;
 import esia.timewatcher.adapters.RunningHobbyRecyclerViewAdapter;
 import esia.timewatcher.adapters.TypeSpinnerAdapter;
 import esia.timewatcher.database.DatabaseManager;
+import esia.timewatcher.database.HobbyData;
 import esia.timewatcher.database.OccupationTypeData;
 import esia.timewatcher.structures.Hobby;
 import esia.timewatcher.structures.OccupationType;
@@ -83,7 +85,7 @@ public class HomeActivity extends AppCompatActivity {
 
 		for (int i = 0; i < hobbies.size(); ++i) {
 			OccupationTypeData data = DatabaseManager.getInstance().createType(types.get(i));
-			DatabaseManager.getInstance().createHobby(hobbies.get(i), data.getId());
+			HobbyData d2 = DatabaseManager.getInstance().createHobby(hobbies.get(i), data.getId());
 		}
     }
 }

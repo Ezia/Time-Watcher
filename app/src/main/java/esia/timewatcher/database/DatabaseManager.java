@@ -716,7 +716,7 @@ public class DatabaseManager extends SQLiteOpenHelper {
             );
 
             HobbyData hobbyData = new HobbyData(
-                    cursor.getLong(cursor.getColumnIndex(HobbyTable.KEY_START_DATE)),
+                    cursor.getLong(cursor.getColumnIndex(HobbyTable.KEY_ID)),
                     new Hobby(
                             new DateTime(cursor.getLong(cursor.getColumnIndex(HobbyTable.KEY_START_DATE))),
                             new DateTime(cursor.getLong(cursor.getColumnIndex(HobbyTable.KEY_END_DATE)))
