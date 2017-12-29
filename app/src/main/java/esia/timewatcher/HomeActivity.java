@@ -5,7 +5,9 @@ import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.annotation.Nullable;
+import android.support.design.widget.TabLayout;
 import android.support.v4.app.FragmentTransaction;
+import android.support.v4.view.ViewPager;
 import android.support.v4.widget.NestedScrollView;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.DefaultItemAnimator;
@@ -23,6 +25,7 @@ import java.util.Date;
 import java.util.LinkedList;
 
 import esia.timewatcher.adapters.RunningHobbyRecyclerViewAdapter;
+import esia.timewatcher.adapters.TabPagerAdapter;
 import esia.timewatcher.adapters.TypeSpinnerAdapter;
 import esia.timewatcher.database.DatabaseManager;
 import esia.timewatcher.database.HobbyData;
@@ -39,36 +42,11 @@ public class HomeActivity extends AppCompatActivity {
 
         initializeDatabase();
 
-        HomeFragment frag = new HomeFragment();
-		FragmentTransaction transac = getSupportFragmentManager().beginTransaction();
-		transac.add(R.id.nested_view, frag);
-		transac.commit();
+		ViewPager pager = findViewById(R.id.pager);
+		TabLayout tab = findViewById(R.id.tab);
 
-
-//        TypeSpinnerAdapter typeSpinnerAdapter = new TypeSpinnerAdapter(this, 5);
-//        Spinner typeSpinner = findViewById(R.id.typeSpinner);
-//        typeSpinner.setAdapter(typeSpinnerAdapter);
-//
-//		final RunningHobbyRecyclerViewAdapter runningHobbiesAdapter =
-//				new RunningHobbyRecyclerViewAdapter(this);
-//		RecyclerView runningHobbiesRecycler = findViewById(R.id.running_hobbies);
-//		LinearLayoutManager layoutManager = new LinearLayoutManager(this);
-//		runningHobbiesRecycler.setLayoutManager(layoutManager);
-//		runningHobbiesRecycler.setAdapter(runningHobbiesAdapter);
-//
-//		final Handler handler = new Handler();
-//		Runnable updateRunningList = new Runnable() {
-//			@Override
-//			public void run() {
-//				runningHobbiesAdapter.updateTimers();
-//				handler.postDelayed(this, 1000);
-//			}
-//		};
-//		runOnUiThread(updateRunningList);
-//		handler.post(updateRunningList);
-//
-//		Button startButton = findViewById(R.id.start_button);
-//		startButton.setOnClickListener((v) -> onStartClick(v));
+		pager.setAdapter(new TabPagerAdapter(getSupportFragmentManager()));
+		tab.setupWithViewPager(pager);
     }
 
     private void initializeDatabase() {
@@ -103,14 +81,4 @@ public class HomeActivity extends AppCompatActivity {
 		}
     }
 
-//    public void onStartClick(View v) {
-//		Spinner typeSpinner = findViewById(R.id.typeSpinner);
-//		long selectedTypeId = typeSpinner.getSelectedItemId();
-//		Hobby newHobby = new Hobby(new DateTime());
-//		DatabaseManager.getInstance().createHobby(newHobby, selectedTypeId);
-//		RecyclerView runningHobbiesRecycler = findViewById(R.id.running_hobbies);
-//		RunningHobbyRecyclerViewAdapter adapter = (RunningHobbyRecyclerViewAdapter)
-//				runningHobbiesRecycler.getAdapter();
-//		adapter.updateFromDatabase();
-//	}
 }
