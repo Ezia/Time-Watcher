@@ -9,6 +9,7 @@ import android.widget.TextView;
 
 import org.joda.time.DateTime;
 import org.joda.time.Interval;
+import org.joda.time.Period;
 
 import java.util.Date;
 import java.util.LinkedList;
@@ -16,6 +17,7 @@ import java.util.LinkedList;
 import esia.timewatcher.R;
 import esia.timewatcher.database.DatabaseManager;
 import esia.timewatcher.database.HobbyData;
+import esia.timewatcher.utils.TimeUtils;
 
 public class RunningHobbyRecyclerViewAdapter
 		extends RecyclerView.Adapter<RunningHobbyRecyclerViewAdapter.RunningActivityItem> {
@@ -64,12 +66,14 @@ public class RunningHobbyRecyclerViewAdapter
 		}
 
 		public void set(HobbyData data) {
+			String startDateText = TimeUtils.toString(data.getHobby().getStartDate());
+
 			icon.setImageBitmap(data.getOccupationTypeData().getOccupationType().getIcon());
 			name.setText(data.getOccupationTypeData().getOccupationType().getName());
-			startDate.setText(data.getHobby().getStartDate().toString());
-			Interval elapsedTime = new Interval(data.getHobby().getStartDate(),
+			startDate.setText(startDateText);
+			Period elapsedTime = new Period(data.getHobby().getStartDate(),
 					DateTime.now());
-			remainingTime.setText("(" + elapsedTime + ")");
+			remainingTime.setText("(" + TimeUtils.toString(elapsedTime) + ")");
 		}
 	}
 }

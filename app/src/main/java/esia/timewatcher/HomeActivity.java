@@ -11,6 +11,8 @@ import android.support.v7.widget.RecyclerView;
 import android.widget.Spinner;
 
 import org.joda.time.DateTime;
+import org.joda.time.Days;
+import org.joda.time.Period;
 
 import java.util.Date;
 import java.util.LinkedList;
@@ -46,7 +48,7 @@ public class HomeActivity extends AppCompatActivity {
 			@Override
 			public void run() {
 				runningHobbiesAdapter.notifyDataSetChanged();
-				handler.postDelayed(this, 300);
+				handler.postDelayed(this, 1);
 			}
 		};
 		runOnUiThread(updateRunningList);
@@ -56,14 +58,32 @@ public class HomeActivity extends AppCompatActivity {
     private void initializeDatabase() {
         deleteDatabase(DatabaseManager.DATABASE_NAME);
         DatabaseManager.initializeInstance(this.getApplicationContext());
+
         Bitmap icon = BitmapFactory.decodeResource(getResources(), R.drawable.twitter_small);
-		OccupationTypeData lastType = null;
 
-        for (int i = 0; i < 10; i++) {
-            lastType = DatabaseManager.getInstance().createType(new OccupationType("very very very long text test"+i, icon));
-        }
+        LinkedList<OccupationType> types = new LinkedList<>();
+        types.add(new OccupationType("now", icon));
+		types.add(new OccupationType("1sec", icon));
+		types.add(new OccupationType("1min", icon));
+		types.add(new OccupationType("1hour", icon));
+		types.add(new OccupationType("1day", icon));
+		types.add(new OccupationType("2days", icon));
+		types.add(new OccupationType("1month", icon));
+		types.add(new OccupationType("1year", icon));
 
-		Hobby runningHobby = new Hobby(new DateTime());
-        DatabaseManager.getInstance().createHobby(runningHobby, lastType.getId());
+        LinkedList<Hobby> hobbies = new LinkedList<>();
+        hobbies.add(new Hobby(new DateTime()));
+		hobbies.add(new Hobby(new DateTime().minus(Period.seconds(1))));
+		hobbies.add(new Hobby(new DateTime().minus(Period.minutes(1))));
+		hobbies.add(new Hobby(new DateTime().minus(Period.hours(1))));
+		hobbies.add(new Hobby(new DateTime().minus(Period.days(1))));
+		hobbies.add(new Hobby(new DateTime().minus(Period.days(2))));
+		hobbies.add(new Hobby(new DateTime().minus(Period.months(1))));
+		hobbies.add(new Hobby(new DateTime().minus(Period.years(1))));
+
+		for (int i = 0; i < hobbies.size(); ++i) {
+			OccupationTypeData data = DatabaseManager.getInstance().createType(types.get(i));
+			DatabaseManager.getInstance().createHobby(hobbies.get(i), data.getId());
+		}
     }
 }
