@@ -50,7 +50,7 @@ public class TimeUtils {
 			formatBuilder.appendLiteral(" years ");
 			formatBuilder.appendDays();
 			formatBuilder.appendLiteral(" days");
-		} else if (time.getDays() > 1) {
+		} else if (time.getMonths() != 0 || time.getDays() > 1) {
 			formatBuilder.appendDays();
 			formatBuilder.appendLiteral(" days");
 		} else if (time.getDays() == 1) {

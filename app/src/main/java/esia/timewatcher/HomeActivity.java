@@ -47,8 +47,8 @@ public class HomeActivity extends AppCompatActivity {
 		Runnable updateRunningList = new Runnable() {
 			@Override
 			public void run() {
-				runningHobbiesAdapter.notifyDataSetChanged();
-				handler.postDelayed(this, 1);
+				runningHobbiesAdapter.updateTimers();
+				handler.postDelayed(this, 1000);
 			}
 		};
 		runOnUiThread(updateRunningList);
