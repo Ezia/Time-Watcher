@@ -32,6 +32,7 @@ public class RunningHobbyRecyclerViewAdapter
 		extends RecyclerView.Adapter<RunningHobbyRecyclerViewAdapter.RunningHobbyItem> {
 
 	private Context context;
+	private RecyclerView recyclerView = null;
 	private LinkedList<HobbyData> itemList;
 	private LinkedList<RunningHobbyItem> viewHolders;
 
@@ -43,6 +44,7 @@ public class RunningHobbyRecyclerViewAdapter
 	}
 
 	public void updateFromDatabase() {
+		viewHolders.clear();
 		itemList = DatabaseManager.getInstance().requestRunningHobbies();
 		notifyDataSetChanged();
 	}
@@ -59,6 +61,19 @@ public class RunningHobbyRecyclerViewAdapter
 		View newView = LayoutInflater.from(context)
 				.inflate(R.layout.running_hobby_layout, parent, false);
 		return new RunningHobbyItem(newView);
+	}
+
+
+	@Override
+	public void onAttachedToRecyclerView(RecyclerView recyclerView) {
+		super.onAttachedToRecyclerView(recyclerView);
+		this.recyclerView = recyclerView;
+	}
+
+	@Override
+	public void onDetachedFromRecyclerView(RecyclerView recyclerView) {
+		super.onDetachedFromRecyclerView(recyclerView);
+		this.recyclerView = null;
 	}
 
 	@Override
@@ -124,6 +139,8 @@ public class RunningHobbyRecyclerViewAdapter
 		}
 
 	}
+
+
 
 	public void onStopClick(int position) {
 		HobbyData data = itemList.get(position);
