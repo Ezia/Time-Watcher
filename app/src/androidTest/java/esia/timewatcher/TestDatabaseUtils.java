@@ -42,6 +42,9 @@ public class TestDatabaseUtils {
 		LinkedList<OccupationTypeData> typeData = DatabaseManager.getInstance().requestTypes(5);
 
 		Assert.assertEquals(typeData.size(), 5);
+		for (OccupationTypeData data : typeData) {
+			Assert.assertTrue(types.contains(data.getOccupationType()));
+		}
 	}
 
 	@Test
@@ -55,6 +58,9 @@ public class TestDatabaseUtils {
 		LinkedList<OccupationTypeData> typeData = DatabaseManager.getInstance().requestTypes(15);
 
 		Assert.assertEquals(typeData.size(), 10);
+		for (OccupationTypeData data : typeData) {
+			Assert.assertTrue(types.contains(data.getOccupationType()));
+		}
 	}
 
 	@Test(expected = IllegalArgumentException.class)
@@ -79,6 +85,9 @@ public class TestDatabaseUtils {
 		LinkedList<OccupationTypeData> typeData = DatabaseManager.getInstance().requestAllTypes();
 
 		Assert.assertEquals(typeData.size(), 10);
+		for (OccupationTypeData data : typeData) {
+			Assert.assertTrue(types.contains(data.getOccupationType()));
+		}
 	}
 
 	@Test
@@ -88,21 +97,6 @@ public class TestDatabaseUtils {
 	}
 
 	///// REQUEST RUNNING HOBBIES /////
-
-	@Test
-	public void testRequestRunningHobbies() throws Exception {
-		OccupationType type = DatabaseTestHelper.getValidOccupationType1();
-		LinkedList<Hobby> hobbies = DatabaseTestHelper.getListOfHobbies(5, 7);
-
-		OccupationTypeData typeData = DatabaseManager.getInstance().createType(type);
-		for (Hobby hobby : hobbies) {
-			DatabaseManager.getInstance().createHobby(hobby, typeData.getId());
-		}
-
-		LinkedList<HobbyData> hobbyData = DatabaseManager.getInstance().requestRunningHobbies(true);
-
-		Assert.assertEquals(hobbyData.size(), 5);
-	}
 
 	@Test
 	public void testRequestRunningHobbiesByAscendantOrder() throws Exception {
@@ -118,6 +112,7 @@ public class TestDatabaseUtils {
 
 		LinkedList<HobbyData> hobbyData = DatabaseManager.getInstance().requestRunningHobbies(false);
 
+		Assert.assertEquals(hobbyData.size(), 5);
 		for (int i = 0; i < orderedHobbies.size(); ++i) {
 			Assert.assertEquals(orderedHobbies.get(i), hobbyData.get(i).getHobby());
 		}
@@ -137,12 +132,11 @@ public class TestDatabaseUtils {
 
 		LinkedList<HobbyData> hobbyData = DatabaseManager.getInstance().requestRunningHobbies(true);
 
+		Assert.assertEquals(hobbyData.size(), 5);
 		for (int i = 0; i < orderedHobbies.size(); ++i) {
 			Assert.assertEquals(orderedHobbies.get(i), hobbyData.get(i).getHobby());
 		}
 	}
-
-	///// REQUEST STOPPED HOBBIES /////
 
 	@Test
 	public void testRequestRunningHobbiesOnEmptyTable() throws Exception {
@@ -150,20 +144,7 @@ public class TestDatabaseUtils {
 		Assert.assertEquals(hobbyData.size(), 0);
 	}
 
-	@Test
-	public void testRequestStoppedHobbies() throws Exception {
-		OccupationType type = DatabaseTestHelper.getValidOccupationType1();
-		LinkedList<Hobby> hobbies = DatabaseTestHelper.getListOfHobbies(5, 7);
-
-		OccupationTypeData typeData = DatabaseManager.getInstance().createType(type);
-		for (Hobby hobby : hobbies) {
-			DatabaseManager.getInstance().createHobby(hobby, typeData.getId());
-		}
-
-		LinkedList<HobbyData> hobbyData = DatabaseManager.getInstance().requestStoppedHobbies(true);
-
-		Assert.assertEquals(hobbyData.size(), 7);
-	}
+	///// REQUEST STOPPED HOBBIES /////
 
 	@Test
 	public void testRequestStoppedHobbiesOnEmptyTable() throws Exception {
@@ -185,6 +166,7 @@ public class TestDatabaseUtils {
 
 		LinkedList<HobbyData> hobbyData = DatabaseManager.getInstance().requestStoppedHobbies(false);
 
+		Assert.assertEquals(hobbyData.size(), 5);
 		for (int i = 0; i < orderedHobbies.size(); ++i) {
 			Assert.assertEquals(orderedHobbies.get(i), hobbyData.get(i).getHobby());
 		}
@@ -204,6 +186,7 @@ public class TestDatabaseUtils {
 
 		LinkedList<HobbyData> hobbyData = DatabaseManager.getInstance().requestStoppedHobbies(true);
 
+		Assert.assertEquals(hobbyData.size(), 5);
 		for (int i = 0; i < orderedHobbies.size(); ++i) {
 			Assert.assertEquals(orderedHobbies.get(i), hobbyData.get(i).getHobby());
 		}

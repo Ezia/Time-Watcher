@@ -631,80 +631,24 @@ public class DatabaseManager extends SQLiteOpenHelper {
 
     public LinkedList<OccupationTypeData> requestAllTypes()
             throws SQLException {
-        SQLiteDatabase db = this.getReadableDatabase();
+    	String query = "SELECT * FROM " + OccupationTypeTable.TABLE_NAME;
 
-        Cursor cursor = db.query(OccupationTypeTable.TABLE_NAME,
-                new String[] { OccupationTypeTable.KEY_ID,
-                        OccupationTypeTable.KEY_NAME, OccupationTypeTable.KEY_ICON },
-                null,
-                null,
-                null,
-                null,
-                null,
-                null);
-
-        if (cursor == null) {
-            db.close();
-            throw new SQLException();
-        }
-
-        LinkedList<OccupationTypeData> dataList = new LinkedList<>();
-        while (cursor.moveToNext()) {
-            long id = cursor.getLong(cursor.getColumnIndex(OccupationTypeTable.KEY_ID));
-            OccupationType type = new OccupationType(
-                    cursor.getString(cursor.getColumnIndex(OccupationTypeTable.KEY_NAME)),
-                    bytesToBitmap(cursor.getBlob(cursor.getColumnIndex(OccupationTypeTable.KEY_ICON)))
-            );
-            dataList.add(new OccupationTypeData(id, type));
-        }
-
-        cursor.close();
-        db.close();
-
-        return dataList;
+    	return requestTypes(query, new String[] {});
     }
 
     public LinkedList<OccupationTypeData> requestTypes(int maxNumber)
-                    throws IllegalArgumentException, SQLException {
+                    throws IllegalArgumentException {
         if (maxNumber <= 0) {
             throw new IllegalArgumentException();
         }
 
-        SQLiteDatabase db = this.getReadableDatabase();
+        String query = "SELECT * FROM " + OccupationTypeTable.TABLE_NAME
+				+ " LIMIT " + maxNumber;
 
-        Cursor cursor = db.query(OccupationTypeTable.TABLE_NAME,
-                new String[] { OccupationTypeTable.KEY_ID,
-                        OccupationTypeTable.KEY_NAME, OccupationTypeTable.KEY_ICON },
-                null,
-                null,
-                null,
-                null,
-                null,
-                String.valueOf(maxNumber));
-
-        if (cursor == null) {
-            db.close();
-            throw new SQLException();
-        }
-
-        LinkedList<OccupationTypeData> dataList = new LinkedList<>();
-        while (cursor.moveToNext()) {
-            long id = cursor.getLong(cursor.getColumnIndex(OccupationTypeTable.KEY_ID));
-            OccupationType type = new OccupationType(
-                    cursor.getString(cursor.getColumnIndex(OccupationTypeTable.KEY_NAME)),
-                    bytesToBitmap(cursor.getBlob(cursor.getColumnIndex(OccupationTypeTable.KEY_ICON)))
-            );
-            dataList.add(new OccupationTypeData(id, type));
-        }
-
-        cursor.close();
-        db.close();
-
-        return dataList;
+        return requestTypes(query, new String[] {});
     }
 
-    public LinkedList<HobbyData> requestRunningHobbies(boolean orderByDescendantStartDate)
-            throws SQLException {
+    public LinkedList<HobbyData> requestRunningHobbies(boolean orderByDescendantStartDate) {
         String query = "SELECT * FROM " + HobbyTable.TABLE_NAME
                 + " INNER JOIN " + OccupationTypeTable.TABLE_NAME
                 + " ON " + HobbyTable.KEY_TYPE + " = " + OccupationTypeTable.KEY_ID
@@ -716,41 +660,7 @@ public class DatabaseManager extends SQLiteOpenHelper {
             query += "ORDER BY " + HobbyTable.KEY_START_DATE + " ASC";
         }
 
-        SQLiteDatabase db = this.getReadableDatabase();
-
-        Cursor cursor = db.rawQuery(query, new String[] {String.valueOf(0)});
-
-        if (cursor == null) {
-            db.close();
-            throw new SQLException();
-        }
-
-        LinkedList<HobbyData> dataList = new LinkedList<>();
-        while (cursor.moveToNext()) {
-            OccupationTypeData typeData = new OccupationTypeData(
-                    cursor.getLong(cursor.getColumnIndex(HobbyTable.KEY_TYPE)),
-                    new OccupationType(
-                            cursor.getString(cursor.getColumnIndex(OccupationTypeTable.KEY_NAME)),
-                            bytesToBitmap(cursor.getBlob(cursor.getColumnIndex(OccupationTypeTable.KEY_ICON)))
-                    )
-            );
-
-            HobbyData hobbyData = new HobbyData(
-                    cursor.getLong(cursor.getColumnIndex(HobbyTable.KEY_ID)),
-                    new Hobby(
-                            new DateTime(cursor.getLong(cursor.getColumnIndex(HobbyTable.KEY_START_DATE))),
-                            new DateTime(cursor.getLong(cursor.getColumnIndex(HobbyTable.KEY_END_DATE)))
-                    ),
-                    typeData
-            );
-
-            dataList.add(hobbyData);
-        }
-
-        cursor.close();
-        db.close();
-
-        return dataList;
+        return requestHobbies(query,  new String[] {String.valueOf(0)});
     }
 
     public LinkedList<HobbyData> requestStoppedHobbies(boolean orderByDescendantStartDate)
@@ -766,42 +676,79 @@ public class DatabaseManager extends SQLiteOpenHelper {
 			query += "ORDER BY " + HobbyTable.KEY_START_DATE + " ASC";
 		}
 
-        SQLiteDatabase db = this.getReadableDatabase();
-
-        Cursor cursor = db.rawQuery(query, new String[] {String.valueOf(0)});
-
-        if (cursor == null) {
-            db.close();
-            throw new SQLException();
-        }
-
-        LinkedList<HobbyData> dataList = new LinkedList<>();
-        while (cursor.moveToNext()) {
-            OccupationTypeData typeData = new OccupationTypeData(
-                    cursor.getLong(cursor.getColumnIndex(HobbyTable.KEY_TYPE)),
-                    new OccupationType(
-                            cursor.getString(cursor.getColumnIndex(OccupationTypeTable.KEY_NAME)),
-                            bytesToBitmap(cursor.getBlob(cursor.getColumnIndex(OccupationTypeTable.KEY_ICON)))
-                    )
-            );
-
-            HobbyData hobbyData = new HobbyData(
-                    cursor.getLong(cursor.getColumnIndex(HobbyTable.KEY_ID)),
-                    new Hobby(
-                            new DateTime(cursor.getLong(cursor.getColumnIndex(HobbyTable.KEY_START_DATE))),
-                            new DateTime(cursor.getLong(cursor.getColumnIndex(HobbyTable.KEY_END_DATE)))
-                    ),
-                    typeData
-            );
-
-            dataList.add(hobbyData);
-        }
-
-        cursor.close();
-        db.close();
-
-        return dataList;
+		return requestHobbies(query, new String[] {String.valueOf(0)});
     }
+
+    ///// REQUEST UTILS /////
+
+	public LinkedList<OccupationTypeData> requestTypes(String query, String[] args)
+			throws SQLException {
+
+		SQLiteDatabase db = this.getReadableDatabase();
+
+		Cursor cursor = db.rawQuery(query, args);
+
+		if (cursor == null) {
+			db.close();
+			throw new SQLException();
+		}
+
+		LinkedList<OccupationTypeData> dataList = new LinkedList<>();
+		while (cursor.moveToNext()) {
+			long id = cursor.getLong(cursor.getColumnIndex(OccupationTypeTable.KEY_ID));
+			OccupationType type = new OccupationType(
+					cursor.getString(cursor.getColumnIndex(OccupationTypeTable.KEY_NAME)),
+					bytesToBitmap(cursor.getBlob(cursor.getColumnIndex(OccupationTypeTable.KEY_ICON)))
+			);
+			dataList.add(new OccupationTypeData(id, type));
+		}
+
+		cursor.close();
+		db.close();
+
+		return dataList;
+	}
+
+
+	private LinkedList<HobbyData> requestHobbies(String query, String[] args)
+			throws SQLException {
+
+		SQLiteDatabase db = this.getReadableDatabase();
+
+		Cursor cursor = db.rawQuery(query, args);
+
+		if (cursor == null) {
+			db.close();
+			throw new SQLException();
+		}
+
+		LinkedList<HobbyData> dataList = new LinkedList<>();
+		while (cursor.moveToNext()) {
+			OccupationTypeData typeData = new OccupationTypeData(
+					cursor.getLong(cursor.getColumnIndex(HobbyTable.KEY_TYPE)),
+					new OccupationType(
+							cursor.getString(cursor.getColumnIndex(OccupationTypeTable.KEY_NAME)),
+							bytesToBitmap(cursor.getBlob(cursor.getColumnIndex(OccupationTypeTable.KEY_ICON)))
+					)
+			);
+
+			HobbyData hobbyData = new HobbyData(
+					cursor.getLong(cursor.getColumnIndex(HobbyTable.KEY_ID)),
+					new Hobby(
+							new DateTime(cursor.getLong(cursor.getColumnIndex(HobbyTable.KEY_START_DATE))),
+							new DateTime(cursor.getLong(cursor.getColumnIndex(HobbyTable.KEY_END_DATE)))
+					),
+					typeData
+			);
+
+			dataList.add(hobbyData);
+		}
+
+		cursor.close();
+		db.close();
+
+		return dataList;
+	}
 
     ///// BITMAP UTILS /////
 
