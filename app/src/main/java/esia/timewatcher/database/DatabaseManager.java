@@ -21,6 +21,11 @@ import esia.timewatcher.structures.Hobby;
 import esia.timewatcher.structures.OccupationType;
 
 public class DatabaseManager extends SQLiteOpenHelper {
+
+    private LinkedList<DatabaseListener> listeners = new LinkedList<>();
+
+    ///// STATIC FIELDS /////
+
     private static DatabaseManager instance = null;
 
     private static final int DATABASE_VERSION = 4;
@@ -185,6 +190,7 @@ public class DatabaseManager extends SQLiteOpenHelper {
             throw new SQLException();
         }
 
+        notifyDatabaseChange();
         return new OccupationTypeData(id, new OccupationType(type));
     }
 
@@ -321,6 +327,7 @@ public class DatabaseManager extends SQLiteOpenHelper {
         db.close();
 
         if (affectedRowsNbr >= 1) {
+            notifyDatabaseChange();
             return new OccupationTypeData(id, new OccupationType(type));
         } else {
             throw  new SQLException();
@@ -342,6 +349,7 @@ public class DatabaseManager extends SQLiteOpenHelper {
         if (affectedRowNbr <= 0) {
             throw new SQLException();
         }
+        notifyDatabaseChange();
     }
 
     ///// EVENT /////
@@ -386,6 +394,7 @@ public class DatabaseManager extends SQLiteOpenHelper {
             throw new SQLException();
         }
 
+        notifyDatabaseChange();
         return new EventData(
                 id,
                 new Event(event),
@@ -454,6 +463,7 @@ public class DatabaseManager extends SQLiteOpenHelper {
         db.close();
 
         if (affectedRowNbr >= 1) {
+            notifyDatabaseChange();
             return new EventData(id, new Event(event), requestType(typeId));
         } else {
             throw new SQLException();
@@ -475,6 +485,7 @@ public class DatabaseManager extends SQLiteOpenHelper {
         if (affectedRowNbr <= 0) {
             throw new SQLException();
         }
+        notifyDatabaseChange();
     }
 
     ///// HOBBY /////
@@ -520,6 +531,7 @@ public class DatabaseManager extends SQLiteOpenHelper {
             throw new SQLException();
         }
 
+        notifyDatabaseChange();
         return new HobbyData(
                 id,
                 new Hobby(hobby),
@@ -590,6 +602,7 @@ public class DatabaseManager extends SQLiteOpenHelper {
         db.close();
 
         if (affectedRowNbr >= 1) {
+            notifyDatabaseChange();
             return new HobbyData(id, new Hobby(hobby), requestType(typeId));
         } else {
             throw new SQLException();
@@ -608,6 +621,7 @@ public class DatabaseManager extends SQLiteOpenHelper {
                 new String[] { String.valueOf(id) });
         db.close();
 
+        notifyDatabaseChange();
         if (affectedRowNbr <= 0) {
             throw new SQLException();
         }
@@ -689,12 +703,68 @@ public class DatabaseManager extends SQLiteOpenHelper {
         return dataList;
     }
 
-    public LinkedList<HobbyData> requestRunningHobbies()
+    public LinkedList<HobbyData> requestRunningHobbies(boolean mostRecentFirst)
             throws SQLException {
         String query = "SELECT * FROM " + HobbyTable.TABLE_NAME
                 + " INNER JOIN " + OccupationTypeTable.TABLE_NAME
                 + " ON " + HobbyTable.KEY_TYPE + " = " + OccupationTypeTable.KEY_ID
                 + " WHERE " + HobbyTable.KEY_END_DATE + "=?";
+
+        if (mostRecentFirst) {
+            query += "ORDER BY " + HobbyTable.KEY_START_DATE + " DESC";
+        } else {
+            query += "ORDER BY " + HobbyTable.KEY_START_DATE + " ASC";
+        }
+
+        SQLiteDatabase db = this.getReadableDatabase();
+
+        Cursor cursor = db.rawQuery(query, new String[] {String.valueOf(0)});
+
+        if (cursor == null) {
+            db.close();
+            throw new SQLException();
+        }
+
+        LinkedList<HobbyData> dataList = new LinkedList<>();
+        while (cursor.moveToNext()) {
+            OccupationTypeData typeData = new OccupationTypeData(
+                    cursor.getLong(cursor.getColumnIndex(HobbyTable.KEY_TYPE)),
+                    new OccupationType(
+                            cursor.getString(cursor.getColumnIndex(OccupationTypeTable.KEY_NAME)),
+                            bytesToBitmap(cursor.getBlob(cursor.getColumnIndex(OccupationTypeTable.KEY_ICON)))
+                    )
+            );
+
+            HobbyData hobbyData = new HobbyData(
+                    cursor.getLong(cursor.getColumnIndex(HobbyTable.KEY_ID)),
+                    new Hobby(
+                            new DateTime(cursor.getLong(cursor.getColumnIndex(HobbyTable.KEY_START_DATE))),
+                            new DateTime(cursor.getLong(cursor.getColumnIndex(HobbyTable.KEY_END_DATE)))
+                    ),
+                    typeData
+            );
+
+            dataList.add(hobbyData);
+        }
+
+        cursor.close();
+        db.close();
+
+        return dataList;
+    }
+
+    public LinkedList<HobbyData> requestStoppedHobbies(boolean mostRecentStartDateFirst)
+            throws SQLException {
+        String query = "SELECT * FROM " + HobbyTable.TABLE_NAME
+                + " INNER JOIN " + OccupationTypeTable.TABLE_NAME
+                + " ON " + HobbyTable.KEY_TYPE + " = " + OccupationTypeTable.KEY_ID
+                + " WHERE " + HobbyTable.KEY_END_DATE + "<>?";
+
+        if (mostRecentStartDateFirst) {
+			query += "ORDER BY " + HobbyTable.KEY_START_DATE + " DESC";
+		} else {
+			query += "ORDER BY " + HobbyTable.KEY_START_DATE + " ASC";
+		}
 
         SQLiteDatabase db = this.getReadableDatabase();
 
@@ -746,5 +816,19 @@ public class DatabaseManager extends SQLiteOpenHelper {
     // convert from byte array to bitmap
     private static Bitmap bytesToBitmap(byte[] image) {
         return BitmapFactory.decodeByteArray(image, 0, image.length);
+    }
+
+    ///// LISTENERS /////
+
+    public void addListener(DatabaseListener listener) {
+        listeners.add(listener);
+    }
+
+    public void removeListener(DatabaseListener listener) {
+        listeners.remove(listener);
+    }
+
+    private void notifyDatabaseChange() {
+        listeners.stream().forEach((l) -> l.onDatabaseChange());
     }
 }

@@ -9,10 +9,7 @@ import android.support.v4.view.PagerAdapter;
 import android.view.View;
 
 import esia.timewatcher.HomeFragment;
-
-/**
- * Created by esia on 29/12/17.
- */
+import esia.timewatcher.StatsFragment;
 
 public class TabPagerAdapter extends FragmentPagerAdapter {
 
@@ -22,7 +19,12 @@ public class TabPagerAdapter extends FragmentPagerAdapter {
 
 	@Override
 	public Fragment getItem(int position) {
-		return new HomeFragment();
+		switch (position) {
+			case 2:
+				return new StatsFragment();
+			default:
+				return new HomeFragment();
+		}
 	}
 
 	@Override

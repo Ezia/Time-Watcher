@@ -29,12 +29,12 @@ public class RunningHobbyRecyclerViewAdapter
 
 	public RunningHobbyRecyclerViewAdapter(Context context) {
 		this.context = context;
-		itemList = DatabaseManager.getInstance().requestRunningHobbies();
+		itemList = DatabaseManager.getInstance().requestRunningHobbies(true);
 		setHasStableIds(true);
 	}
 
 	public void updateFromDatabase() {
-		itemList = DatabaseManager.getInstance().requestRunningHobbies();
+		itemList = DatabaseManager.getInstance().requestRunningHobbies(true);
 		notifyDataSetChanged();
 	}
 
@@ -53,7 +53,7 @@ public class RunningHobbyRecyclerViewAdapter
 	@Override
 	public RunningHobbyItem onCreateViewHolder(ViewGroup parent, int viewType) {
 		View newView = LayoutInflater.from(context)
-				.inflate(R.layout.running_hobby_layout, parent, false);
+				.inflate(R.layout.running_hobby_view, parent, false);
 		return new RunningHobbyItem(newView);
 	}
 
@@ -125,6 +125,6 @@ public class RunningHobbyRecyclerViewAdapter
 		Hobby newHobby = new Hobby(data.getHobby().getStartDate(), new DateTime());
 		DatabaseManager.getInstance().updateHobby(data.getId(), newHobby,
 				data.getOccupationTypeData().getId());
-		updateFromDatabase();
 	}
+
 }
