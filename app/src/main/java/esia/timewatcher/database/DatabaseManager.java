@@ -703,14 +703,14 @@ public class DatabaseManager extends SQLiteOpenHelper {
         return dataList;
     }
 
-    public LinkedList<HobbyData> requestRunningHobbies(boolean mostRecentFirst)
+    public LinkedList<HobbyData> requestRunningHobbies(boolean orderByDescendantStartDate)
             throws SQLException {
         String query = "SELECT * FROM " + HobbyTable.TABLE_NAME
                 + " INNER JOIN " + OccupationTypeTable.TABLE_NAME
                 + " ON " + HobbyTable.KEY_TYPE + " = " + OccupationTypeTable.KEY_ID
                 + " WHERE " + HobbyTable.KEY_END_DATE + "=?";
 
-        if (mostRecentFirst) {
+        if (orderByDescendantStartDate) {
             query += "ORDER BY " + HobbyTable.KEY_START_DATE + " DESC";
         } else {
             query += "ORDER BY " + HobbyTable.KEY_START_DATE + " ASC";
@@ -753,14 +753,14 @@ public class DatabaseManager extends SQLiteOpenHelper {
         return dataList;
     }
 
-    public LinkedList<HobbyData> requestStoppedHobbies(boolean mostRecentStartDateFirst)
+    public LinkedList<HobbyData> requestStoppedHobbies(boolean orderByDescendantStartDate)
             throws SQLException {
         String query = "SELECT * FROM " + HobbyTable.TABLE_NAME
                 + " INNER JOIN " + OccupationTypeTable.TABLE_NAME
                 + " ON " + HobbyTable.KEY_TYPE + " = " + OccupationTypeTable.KEY_ID
                 + " WHERE " + HobbyTable.KEY_END_DATE + "<>?";
 
-        if (mostRecentStartDateFirst) {
+        if (orderByDescendantStartDate) {
 			query += "ORDER BY " + HobbyTable.KEY_START_DATE + " DESC";
 		} else {
 			query += "ORDER BY " + HobbyTable.KEY_START_DATE + " ASC";

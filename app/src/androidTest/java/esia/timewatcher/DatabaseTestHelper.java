@@ -85,4 +85,36 @@ class DatabaseTestHelper {
 
 		return list;
 	}
+
+	static LinkedList<Hobby> getListOfStoppedHobbies(int number, boolean sortedByAscendantStartDate) {
+		LinkedList<Hobby> list = new LinkedList<>();
+
+		if (sortedByAscendantStartDate) {
+			for (int i = 0; i < number; i++) {
+				list.add(new Hobby(new DateTime(i+1), new DateTime(i+2)));
+			}
+		} else {
+			for (int i = number-1; i >= 0; i--) {
+				list.add(new Hobby(new DateTime(i+1), new DateTime(i+2)));
+			}
+		}
+
+		return list;
+	}
+
+	static LinkedList<Hobby> getListOfRunningHobbies(int number, boolean sortedByAscendantStartDate) {
+		LinkedList<Hobby> list = new LinkedList<>();
+
+		if (sortedByAscendantStartDate) {
+			for (int i = 0; i < number; i++) {
+				list.add(new Hobby(new DateTime(i+1)));
+			}
+		} else {
+			for (int i = number-1; i >= 0; i--) {
+				list.add(new Hobby(new DateTime(i+1)));
+			}
+		}
+
+		return list;
+	}
 }

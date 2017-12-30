@@ -9,6 +9,8 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
 
+import java.util.Collection;
+import java.util.Collections;
 import java.util.LinkedList;
 
 import esia.timewatcher.database.DatabaseManager;
@@ -103,6 +105,46 @@ public class TestDatabaseUtils {
 	}
 
 	@Test
+	public void testRequestRunningHobbiesByAscendantOrder() throws Exception {
+		OccupationType type = DatabaseTestHelper.getValidOccupationType1();
+		LinkedList<Hobby> orderedHobbies = DatabaseTestHelper.getListOfRunningHobbies(5, true);
+		LinkedList<Hobby> shuffledHobbies = new LinkedList<>(orderedHobbies);
+		Collections.shuffle(shuffledHobbies);
+
+		OccupationTypeData typeData = DatabaseManager.getInstance().createType(type);
+		for (Hobby hobby : shuffledHobbies) {
+			DatabaseManager.getInstance().createHobby(hobby, typeData.getId());
+		}
+
+		LinkedList<HobbyData> hobbyData = DatabaseManager.getInstance().requestRunningHobbies(false);
+
+		for (int i = 0; i < orderedHobbies.size(); ++i) {
+			Assert.assertEquals(orderedHobbies.get(i), hobbyData.get(i).getHobby());
+		}
+	}
+
+	@Test
+	public void testRequestRunningHobbiesByDescendantOrder() throws Exception {
+		OccupationType type = DatabaseTestHelper.getValidOccupationType1();
+		LinkedList<Hobby> orderedHobbies = DatabaseTestHelper.getListOfRunningHobbies(5, false);
+		LinkedList<Hobby> shuffledHobbies = new LinkedList<>(orderedHobbies);
+		Collections.shuffle(shuffledHobbies);
+
+		OccupationTypeData typeData = DatabaseManager.getInstance().createType(type);
+		for (Hobby hobby : shuffledHobbies) {
+			DatabaseManager.getInstance().createHobby(hobby, typeData.getId());
+		}
+
+		LinkedList<HobbyData> hobbyData = DatabaseManager.getInstance().requestRunningHobbies(true);
+
+		for (int i = 0; i < orderedHobbies.size(); ++i) {
+			Assert.assertEquals(orderedHobbies.get(i), hobbyData.get(i).getHobby());
+		}
+	}
+
+	///// REQUEST STOPPED HOBBIES /////
+
+	@Test
 	public void testRequestRunningHobbiesOnEmptyTable() throws Exception {
 		LinkedList<HobbyData> hobbyData = DatabaseManager.getInstance().requestRunningHobbies(true);
 		Assert.assertEquals(hobbyData.size(), 0);
@@ -127,5 +169,43 @@ public class TestDatabaseUtils {
 	public void testRequestStoppedHobbiesOnEmptyTable() throws Exception {
 		LinkedList<HobbyData> hobbyData = DatabaseManager.getInstance().requestStoppedHobbies(true);
 		Assert.assertEquals(hobbyData.size(), 0);
+	}
+
+	@Test
+	public void testRequestStoppedHobbiesByAscendantOrder() throws Exception {
+		OccupationType type = DatabaseTestHelper.getValidOccupationType1();
+		LinkedList<Hobby> orderedHobbies = DatabaseTestHelper.getListOfStoppedHobbies(5, true);
+		LinkedList<Hobby> shuffledHobbies = new LinkedList<>(orderedHobbies);
+		Collections.shuffle(shuffledHobbies);
+
+		OccupationTypeData typeData = DatabaseManager.getInstance().createType(type);
+		for (Hobby hobby : shuffledHobbies) {
+			DatabaseManager.getInstance().createHobby(hobby, typeData.getId());
+		}
+
+		LinkedList<HobbyData> hobbyData = DatabaseManager.getInstance().requestStoppedHobbies(false);
+
+		for (int i = 0; i < orderedHobbies.size(); ++i) {
+			Assert.assertEquals(orderedHobbies.get(i), hobbyData.get(i).getHobby());
+		}
+	}
+
+	@Test
+	public void testRequestStoppedHobbiesByDescendantOrder() throws Exception {
+		OccupationType type = DatabaseTestHelper.getValidOccupationType1();
+		LinkedList<Hobby> orderedHobbies = DatabaseTestHelper.getListOfStoppedHobbies(5, false);
+		LinkedList<Hobby> shuffledHobbies = new LinkedList<>(orderedHobbies);
+		Collections.shuffle(shuffledHobbies);
+
+		OccupationTypeData typeData = DatabaseManager.getInstance().createType(type);
+		for (Hobby hobby : shuffledHobbies) {
+			DatabaseManager.getInstance().createHobby(hobby, typeData.getId());
+		}
+
+		LinkedList<HobbyData> hobbyData = DatabaseManager.getInstance().requestStoppedHobbies(true);
+
+		for (int i = 0; i < orderedHobbies.size(); ++i) {
+			Assert.assertEquals(orderedHobbies.get(i), hobbyData.get(i).getHobby());
+		}
 	}
 }
