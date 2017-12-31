@@ -5,5 +5,5 @@ package esia.timewatcher.database;
  */
 
 public interface DatabaseListener {
-	public void onDatabaseChange();
+	void onDatabaseChange();
 }

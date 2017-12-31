@@ -5,5 +5,5 @@ package esia.timewatcher.structures;
  */
 
 public interface Storable {
-    public abstract boolean isValid();
+    boolean isValid();
 }
