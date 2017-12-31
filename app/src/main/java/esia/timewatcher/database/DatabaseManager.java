@@ -4,7 +4,6 @@ import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
 import android.database.DatabaseUtils;
-import android.database.SQLException;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.graphics.Bitmap;
@@ -15,6 +14,8 @@ import org.joda.time.DateTime;
 import java.io.ByteArrayOutputStream;
 import java.util.LinkedList;
 
+import esia.timewatcher.database.exceptions.EntryAlreadyExistsException;
+import esia.timewatcher.database.exceptions.UnexpectedSqlResultException;
 import esia.timewatcher.structures.Event;
 import esia.timewatcher.structures.Hobby;
 import esia.timewatcher.structures.OccupationType;
@@ -131,7 +132,51 @@ public class DatabaseManager extends SQLiteOpenHelper {
         onCreate(db);
     }
 
-    ///// OCCUPATION TYPES /////
+    ///// ENTRY CREATIONS /////
+
+	public OccupationTypeData createType(OccupationType type) {
+		ContentValues values = checkAndBuildTypeContent(type);
+
+		try(SQLiteDatabase db = this.getWritableDatabase()) {
+			long id = db.insert(OccupationTypeTable.TABLE_NAME, null, values);
+			if (id == -1) {
+				throw new UnexpectedSqlResultException();
+			} else {
+				notifyDatabaseChange();
+				return new OccupationTypeData(id, new OccupationType(type));
+			}
+		}
+	}
+
+	public EventData createEvent(Event event, long typeId) {
+		ContentValues values = checkAndBuildEventContent(event, typeId);
+
+		try (SQLiteDatabase db = this.getWritableDatabase()) {
+			long id = db.insert(EventTable.TABLE_NAME, null, values);
+			if (id == -1) {
+				throw new UnexpectedSqlResultException();
+			} else {
+				notifyDatabaseChange();
+				return new EventData(id, new Event(event), requestType(typeId));
+			}
+		}
+	}
+
+	public HobbyData createHobby(Hobby hobby, long typeId) {
+		ContentValues values = checkAndBuildHobbyContent(hobby, typeId);
+
+		try (SQLiteDatabase db = this.getWritableDatabase()) {
+			long id = db.insert(HobbyTable.TABLE_NAME, null, values);
+			if (id == -1) {
+				throw new UnexpectedSqlResultException();
+			} else {
+				notifyDatabaseChange();
+				return new HobbyData(id, new Hobby(hobby), requestType(typeId));
+			}
+		}
+	}
+
+    ///// ENTRY ACCESSES /////
 
     public long getTypeNumber() {
     	try (SQLiteDatabase db = this.getWritableDatabase()) {
@@ -139,6 +184,20 @@ public class DatabaseManager extends SQLiteOpenHelper {
 			return numberOfRows;
 		}
     }
+
+	public long getHobbyNumber() {
+		try (SQLiteDatabase db = this.getWritableDatabase()) {
+			long numberOfRows = DatabaseUtils.queryNumEntries(db, HobbyTable.TABLE_NAME);
+			return numberOfRows;
+		}
+	}
+
+	public long getEventNumber() {
+		try (SQLiteDatabase db = this.getWritableDatabase()) {
+			long numberOfRows = DatabaseUtils.queryNumEntries(db, EventTable.TABLE_NAME);
+			return numberOfRows;
+		}
+	}
 
     public boolean typeExists(long id) {
     	try (SQLiteDatabase db = this.getWritableDatabase()) {
@@ -164,19 +223,23 @@ public class DatabaseManager extends SQLiteOpenHelper {
 		}
     }
 
-    public OccupationTypeData createType(OccupationType type) {
-        if (type == null) {
-        	throw new IllegalArgumentException();
-		} else if(typeExists(type.getName())) {
-            throw new EntryAlreadyExistsException();
-        }
+	public boolean hobbyExists(long id) {
+		try (SQLiteDatabase db = this.getWritableDatabase()) {
+			long numberOfRows = DatabaseUtils.queryNumEntries(db,
+					HobbyTable.TABLE_NAME,
+					HobbyTable.KEY_ID + "=?",
+					new String[] {String.valueOf(id)});
+			return numberOfRows == 1;
+		}
+	}
 
-		ContentValues values = createTypeContent(type);
-
-        try(SQLiteDatabase db = this.getWritableDatabase()) {
-			long id = db.insert(OccupationTypeTable.TABLE_NAME, null, values);
-			notifyDatabaseChange();
-			return new OccupationTypeData(id, new OccupationType(type));
+	public boolean eventExists(long id) {
+		try (SQLiteDatabase db = this.getWritableDatabase()) {
+			long numberOfRows = DatabaseUtils.queryNumEntries(db,
+					EventTable.TABLE_NAME,
+					EventTable.KEY_ID + "=?",
+					new String[] {String.valueOf(id)});
+			return numberOfRows == 1;
 		}
 	}
 
@@ -220,8 +283,7 @@ public class DatabaseManager extends SQLiteOpenHelper {
 		}
     }
 
-	public long requestTypeId(String name)
-			throws IllegalArgumentException, SQLException {
+	public long requestTypeId(String name) {
 		if (name == null || name.isEmpty() || !typeExists(name)) {
 			throw new IllegalArgumentException();
 		}
@@ -241,15 +303,44 @@ public class DatabaseManager extends SQLiteOpenHelper {
 		}
 	}
 
-    public OccupationTypeData updateType(long id, OccupationType type)
-            throws IllegalArgumentException, SQLException {
-        if (type == null || !typeExists(id)
-                || typeExists(type.getName()) && requestType(type.getName()).getId() != id) {
-            throw new IllegalArgumentException();
-        }
+	public EventData requestEvent(long id) {
+		if (!eventExists(id)) {
+			throw new IllegalArgumentException();
+		}
 
+		String query = "SELECT * FROM " + EventTable.TABLE_NAME
+				+ " INNER JOIN " + OccupationTypeTable.TABLE_NAME
+				+ " ON " + EventTable.KEY_TYPE + " = " + OccupationTypeTable.KEY_ID
+				+ " WHERE " + EventTable.KEY_ID + "=?";
 
-		ContentValues values = createTypeContent(type);
+		try (SQLiteDatabase db = this.getReadableDatabase();
+			 Cursor cursor = db.rawQuery(query, new String[] {String.valueOf(id)})) {
+			cursor.moveToNext();
+			return parseEventAndType(cursor);
+		}
+	}
+
+	public HobbyData requestHobby(long id) {
+		if (!hobbyExists(id)) {
+			throw new IllegalArgumentException();
+		}
+
+		String query = "SELECT * FROM " + HobbyTable.TABLE_NAME
+				+ " INNER JOIN " + OccupationTypeTable.TABLE_NAME
+				+ " ON " + HobbyTable.KEY_TYPE + " = " + OccupationTypeTable.KEY_ID
+				+ " WHERE " + HobbyTable.KEY_ID + "=?";
+
+		try (SQLiteDatabase db = this.getReadableDatabase();
+			 Cursor cursor = db.rawQuery(query, new String[] {String.valueOf(id)})) {
+			cursor.moveToNext();
+			return parseHobbyAndType(cursor);
+		}
+	}
+
+	///// ENTRY UPDATES /////
+
+    public OccupationTypeData updateType(long id, OccupationType type) {
+		ContentValues values = checkAndBuildTypeContent(id, type);
 
 		try (SQLiteDatabase db = this.getWritableDatabase()) {
 			int affectedRowsNbr = db.update(OccupationTypeTable.TABLE_NAME, values,
@@ -259,13 +350,46 @@ public class DatabaseManager extends SQLiteOpenHelper {
 				notifyDatabaseChange();
 				return new OccupationTypeData(id, new OccupationType(type));
 			} else {
-				throw new SQLException();
+				throw new UnexpectedSqlResultException();
 			}
 		}
     }
 
-    public void deleteType(long id)
-            throws IllegalArgumentException, SQLException {
+	public EventData updateEvent(long id, Event event, long typeId) {
+		ContentValues values = checkAndBuildEventContent(id, event, typeId);
+
+		try (SQLiteDatabase db = this.getWritableDatabase()) {
+			int affectedRowNbr = db.update(EventTable.TABLE_NAME, values,
+					EventTable.KEY_ID + "=?",
+					new String[] { String.valueOf(id) });
+			if (affectedRowNbr == 1) {
+				notifyDatabaseChange();
+				return new EventData(id, new Event(event), requestType(typeId));
+			} else {
+				throw new UnexpectedSqlResultException();
+			}
+		}
+	}
+
+	public HobbyData updateHobby(long id, Hobby hobby, long typeId) {
+		ContentValues values = checkAndBuildHobbyContent(id, hobby, typeId);
+
+		try (SQLiteDatabase db = this.getWritableDatabase()) {
+			int affectedRowNbr = db.update(HobbyTable.TABLE_NAME, values,
+					HobbyTable.KEY_ID + "=?",
+					new String[] { String.valueOf(id) });
+			if (affectedRowNbr == 1) {
+				notifyDatabaseChange();
+				return new HobbyData(id, new Hobby(hobby), requestType(typeId));
+			} else {
+				throw new UnexpectedSqlResultException();
+			}
+		}
+	}
+
+    ///// ENTRY DELETION /////
+
+    public void deleteType(long id) {
         if (!typeExists(id)) {
             throw new IllegalArgumentException();
         }
@@ -274,234 +398,51 @@ public class DatabaseManager extends SQLiteOpenHelper {
 			int affectedRowNbr = db.delete(OccupationTypeTable.TABLE_NAME,
 					OccupationTypeTable.KEY_ID + "=?",
 					new String[] { String.valueOf(id) });
-			if (affectedRowNbr == 1) {
-				notifyDatabaseChange();
+			if (affectedRowNbr != 1) {
+				throw new UnexpectedSqlResultException();
 			} else {
-				throw new SQLException();
+				notifyDatabaseChange();
 			}
 		}
     }
 
-    ///// EVENT /////
-
-    public long getEventNumber() {
-        try (SQLiteDatabase db = this.getWritableDatabase()) {
-			long numberOfRows = DatabaseUtils.queryNumEntries(db, EventTable.TABLE_NAME);
-			return numberOfRows;
+    public void deleteEvent(long id) {
+    	if (!eventExists(id)) {
+    		throw new IllegalArgumentException();
 		}
-    }
 
-	public boolean eventExists(long id) {
-		try (SQLiteDatabase db = this.getWritableDatabase()) {
-			long numberOfRows = DatabaseUtils.queryNumEntries(db,
-					EventTable.TABLE_NAME,
+        try (SQLiteDatabase db = this.getWritableDatabase()) {
+			int affectedRowNbr = db.delete(EventTable.TABLE_NAME,
 					EventTable.KEY_ID + "=?",
-					new String[] {String.valueOf(id)});
-			return numberOfRows == 1;
+					new String[] { String.valueOf(id) });
+			if (affectedRowNbr != 1) {
+				throw new UnexpectedSqlResultException();
+			} else {
+				notifyDatabaseChange();
+			}
 		}
 	}
 
-    public EventData createEvent(Event event, long typeId) {
-        if (event == null || !event.isValid() || !typeExists(typeId)) {
+	public void deleteHobby(long id) {
+        if (!hobbyExists(id)) {
             throw new IllegalArgumentException();
         }
 
-		ContentValues values = createEventContent(event, typeId);
-
         try (SQLiteDatabase db = this.getWritableDatabase()) {
-			long id = db.insert(EventTable.TABLE_NAME, null, values);
-			if (id == -1) {
-				throw new SQLException();
+			int affectedRowNbr = db.delete(HobbyTable.TABLE_NAME,
+					HobbyTable.KEY_ID + "=?",
+					new String[] { String.valueOf(id) });
+			if (affectedRowNbr != 1) {
+				throw new UnexpectedSqlResultException();
 			} else {
 				notifyDatabaseChange();
-				return new EventData(
-						id,
-						new Event(event),
-						requestType(typeId)
-				);
 			}
 		}
     }
 
-    public EventData requestEvent(long id)
-			throws IllegalArgumentException, SQLException {
-    	if (!eventExists(id)) {
-    		throw new IllegalArgumentException();
-		}
-
-        String query = "SELECT * FROM " + EventTable.TABLE_NAME
-                + " INNER JOIN " + OccupationTypeTable.TABLE_NAME
-                + " ON " + EventTable.KEY_TYPE + " = " + OccupationTypeTable.KEY_ID
-                + " WHERE " + EventTable.KEY_ID + "=?";
-
-    	try (SQLiteDatabase db = this.getReadableDatabase();
-			 Cursor cursor = db.rawQuery(query, new String[] {String.valueOf(id)})) {
-    		cursor.moveToNext();
-			return parseEventAndType(cursor);
-		}
-    }
-
-    public EventData updateEvent(long id, Event event, long typeId)
-			throws IllegalArgumentException, SQLException {
-    	if (event == null || !event.isValid() || !eventExists(id) || !typeExists(typeId)) {
-    		throw new IllegalArgumentException();
-		}
-
-        SQLiteDatabase db = this.getWritableDatabase();
-
-        ContentValues values = new ContentValues();
-        values.put(EventTable.KEY_DATE, event.getDate().getMillis());
-        values.put(EventTable.KEY_TYPE, typeId);
-
-        int affectedRowNbr = db.update(EventTable.TABLE_NAME, values,
-                EventTable.KEY_ID + "=?",
-                new String[] { String.valueOf(id) });
-        db.close();
-
-        if (affectedRowNbr >= 1) {
-            notifyDatabaseChange();
-            return new EventData(id, new Event(event), requestType(typeId));
-        } else {
-            throw new SQLException();
-        }
-    }
-
-    public void deleteEvent(long id)
-			throws IllegalArgumentException, SQLException {
-    	if (!eventExists(id)) {
-    		throw new IllegalArgumentException();
-		}
-
-        SQLiteDatabase db = this.getWritableDatabase();
-        int affectedRowNbr = db.delete(EventTable.TABLE_NAME,
-                EventTable.KEY_ID + "=?",
-                new String[] { String.valueOf(id) });
-        db.close();
-
-        if (affectedRowNbr <= 0) {
-            throw new SQLException();
-        }
-        notifyDatabaseChange();
-    }
-
-    ///// HOBBY /////
-
-    public long getHobbyNumber() {
-        SQLiteDatabase db = this.getWritableDatabase();
-
-        long numberOfRows = DatabaseUtils.queryNumEntries(db, HobbyTable.TABLE_NAME);
-
-        db.close();
-
-        return numberOfRows;
-    }
-
-    public boolean hobbyExists(long id) {
-        SQLiteDatabase db = this.getWritableDatabase();
-        long numberOfRows = DatabaseUtils.queryNumEntries(db,
-                HobbyTable.TABLE_NAME,
-                HobbyTable.KEY_ID + "=?",
-                new String[] {String.valueOf(id)});
-        db.close();
-
-        return numberOfRows == 1;
-    }
-
-    public HobbyData createHobby(Hobby hobby, long typeId)
-            throws IllegalArgumentException, SQLException {
-        if (hobby == null || !hobby.isValid() || !typeExists(typeId)) {
-            throw new IllegalArgumentException();
-        }
-
-        SQLiteDatabase db = this.getWritableDatabase();
-
-        ContentValues values = new ContentValues();
-        values.put(HobbyTable.KEY_TYPE, typeId);
-        values.put(HobbyTable.KEY_START_DATE, hobby.getStartDate().getMillis());
-        values.put(HobbyTable.KEY_END_DATE, hobby.getEndDate().getMillis());
-
-        long id = db.insert(HobbyTable.TABLE_NAME, null, values);
-        db.close();
-
-        if (id == -1) {
-            throw new SQLException();
-        }
-
-        notifyDatabaseChange();
-        return new HobbyData(
-                id,
-                new Hobby(hobby),
-                requestType(typeId)
-        );
-    }
-
-    public HobbyData requestHobby(long id)
-            throws IllegalArgumentException, SQLException {
-        if (!hobbyExists(id)) {
-            throw new IllegalArgumentException();
-        }
-
-        String query = "SELECT * FROM " + HobbyTable.TABLE_NAME
-                + " INNER JOIN " + OccupationTypeTable.TABLE_NAME
-                + " ON " + HobbyTable.KEY_TYPE + " = " + OccupationTypeTable.KEY_ID
-                + " WHERE " + HobbyTable.KEY_ID + "=?";
-
-        try (SQLiteDatabase db = this.getReadableDatabase();
-			 Cursor cursor = db.rawQuery(query, new String[] {String.valueOf(id)})) {
-			cursor.moveToNext();
-        	return parseHobbyAndType(cursor);
-		}
-    }
-
-    public HobbyData updateHobby(long id, Hobby hobby, long typeId)
-            throws IllegalArgumentException, SQLException {
-        if (hobby == null || !hobby.isValid() || !hobbyExists(id) || !typeExists(typeId)) {
-            throw new IllegalArgumentException();
-        }
-
-        SQLiteDatabase db = this.getWritableDatabase();
-
-        ContentValues values = new ContentValues();
-        values.put(HobbyTable.KEY_START_DATE, hobby.getStartDate().getMillis());
-        values.put(HobbyTable.KEY_END_DATE, hobby.getEndDate().getMillis());
-        values.put(HobbyTable.KEY_TYPE, typeId);
-
-        int affectedRowNbr = db.update(HobbyTable.TABLE_NAME, values,
-                HobbyTable.KEY_ID + "=?",
-                new String[] { String.valueOf(id) });
-        db.close();
-
-        if (affectedRowNbr >= 1) {
-            notifyDatabaseChange();
-            return new HobbyData(id, new Hobby(hobby), requestType(typeId));
-        } else {
-            throw new SQLException();
-        }
-    }
-
-    public void deleteHobby(long id)
-            throws IllegalArgumentException, SQLException {
-        if (!hobbyExists(id)) {
-            throw new IllegalArgumentException();
-        }
-
-        SQLiteDatabase db = this.getWritableDatabase();
-        int affectedRowNbr = db.delete(HobbyTable.TABLE_NAME,
-                HobbyTable.KEY_ID + "=?",
-                new String[] { String.valueOf(id) });
-        db.close();
-
-        notifyDatabaseChange();
-        if (affectedRowNbr <= 0) {
-            throw new SQLException();
-        }
-    }
-
-
     ///// SPECIFIC REQUESTS /////
 
-    public LinkedList<OccupationTypeData> requestAllTypes()
-            throws SQLException {
+    public LinkedList<OccupationTypeData> requestAllTypes() {
     	String query = "SELECT * FROM " + OccupationTypeTable.TABLE_NAME;
 
 		try(SQLiteDatabase db = this.getReadableDatabase();
@@ -514,8 +455,7 @@ public class DatabaseManager extends SQLiteOpenHelper {
 		}
     }
 
-    public LinkedList<OccupationTypeData> requestTypes(int maxNumber)
-                    throws IllegalArgumentException {
+    public LinkedList<OccupationTypeData> requestTypes(int maxNumber) {
         if (maxNumber <= 0) {
             throw new IllegalArgumentException();
         }
@@ -555,8 +495,7 @@ public class DatabaseManager extends SQLiteOpenHelper {
 		}
     }
 
-    public LinkedList<HobbyData> requestStoppedHobbies(boolean orderByDescendantStartDate)
-            throws SQLException {
+    public LinkedList<HobbyData> requestStoppedHobbies(boolean orderByDescendantStartDate) {
         String query = "SELECT * FROM " + HobbyTable.TABLE_NAME
                 + " INNER JOIN " + OccupationTypeTable.TABLE_NAME
                 + " ON " + HobbyTable.KEY_TYPE + " = " + OccupationTypeTable.KEY_ID
@@ -578,11 +517,13 @@ public class DatabaseManager extends SQLiteOpenHelper {
         }
     }
 
-	///// PARSE CURSORS /////
+	///// OPERATION UTILS /////
 
-	private ContentValues createTypeContent(OccupationType type) {
+	private ContentValues checkAndBuildTypeContent(OccupationType type) {
     	if (type == null || !type.isValid()) {
     		throw new  IllegalArgumentException();
+		} else if(typeExists(type.getName())) {
+			throw new EntryAlreadyExistsException();
 		}
 
 		ContentValues values = new ContentValues();
@@ -592,9 +533,49 @@ public class DatabaseManager extends SQLiteOpenHelper {
 		return values;
 	}
 
-	private ContentValues createEventContent(Event event, long typeId) {
-		if (event == null || !event.isValid()) {
+	private ContentValues checkAndBuildTypeContent(long id, OccupationType type) {
+		if (type == null || !type.isValid() || !typeExists(id)) {
 			throw new  IllegalArgumentException();
+		} else if(typeExists(type.getName()) && requestType(type.getName()).getId() != id) {
+			throw new EntryAlreadyExistsException();
+		}
+
+		ContentValues values = new ContentValues();
+		values.put(OccupationTypeTable.KEY_NAME, type.getName());
+		values.put(OccupationTypeTable.KEY_ICON, bitmapToBytes(type.getIcon()));
+
+		return values;
+	}
+
+	private ContentValues checkAndBuildHobbyContent(Hobby hobby, long typeId) {
+		if (hobby == null || !hobby.isValid() || !typeExists(typeId)) {
+			throw new IllegalArgumentException();
+		}
+
+		ContentValues values = new ContentValues();
+		values.put(HobbyTable.KEY_TYPE, typeId);
+		values.put(HobbyTable.KEY_START_DATE, hobby.getStartDate().getMillis());
+		values.put(HobbyTable.KEY_END_DATE, hobby.getEndDate().getMillis());
+
+		return values;
+	}
+	
+	private ContentValues checkAndBuildHobbyContent(long hobbyId, Hobby hobby, long typeId) {
+		if (hobby == null || !hobby.isValid() || !hobbyExists(hobbyId) || !typeExists(typeId)) {
+			throw new IllegalArgumentException();
+		}
+
+		ContentValues values = new ContentValues();
+		values.put(HobbyTable.KEY_TYPE, typeId);
+		values.put(HobbyTable.KEY_START_DATE, hobby.getStartDate().getMillis());
+		values.put(HobbyTable.KEY_END_DATE, hobby.getEndDate().getMillis());
+
+		return values;
+	}
+
+	private ContentValues checkAndBuildEventContent(Event event, long typeId) {
+    	if (event == null || !event.isValid() || !typeExists(typeId)) {
+			throw new IllegalArgumentException();
 		}
 
 		ContentValues values = new ContentValues();
@@ -604,8 +585,19 @@ public class DatabaseManager extends SQLiteOpenHelper {
 		return values;
 	}
 
-	private OccupationTypeData parseType(Cursor cursor)
-			throws IllegalArgumentException {
+	private ContentValues checkAndBuildEventContent(long eventId, Event event, long typeId) {
+		if (event == null || !event.isValid() || !eventExists(eventId) || !typeExists(typeId)) {
+			throw new IllegalArgumentException();
+		}
+
+		ContentValues values = new ContentValues();
+		values.put(EventTable.KEY_TYPE, typeId);
+		values.put(EventTable.KEY_DATE, event.getDate().getMillis());
+
+		return values;
+	}
+
+	private OccupationTypeData parseType(Cursor cursor) {
 		if (cursor == null || cursor.isClosed() || cursor.getPosition() == -1) {
 			throw new IllegalArgumentException();
 		}
@@ -636,8 +628,7 @@ public class DatabaseManager extends SQLiteOpenHelper {
 		);
 	}
 
-    private HobbyData parseHobbyAndType(Cursor cursor)
-            throws IllegalArgumentException {
+    private HobbyData parseHobbyAndType(Cursor cursor) {
         if (cursor == null || cursor.isClosed() || cursor.getPosition() == -1) {
             throw new IllegalArgumentException();
         }

@@ -9,7 +9,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import esia.timewatcher.database.DatabaseManager;
-import esia.timewatcher.database.EntryAlreadyExistsException;
+import esia.timewatcher.database.exceptions.EntryAlreadyExistsException;
 import esia.timewatcher.database.OccupationTypeData;
 import esia.timewatcher.structures.OccupationType;
 
@@ -155,7 +155,7 @@ public class TestTypeDatabase {
         DatabaseManager.getInstance().updateType(data1.getId(), type2);
     }
 
-	@Test(expected = IllegalArgumentException.class)
+	@Test(expected = EntryAlreadyExistsException.class)
 	public void updateDuplicateExistentType() throws Exception {
 		OccupationType type1 = DatabaseTestHelper.getValidOccupationType1();
 		OccupationType type2 = DatabaseTestHelper.getValidOccupationType2();
