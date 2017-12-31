@@ -19,16 +19,10 @@ public class TypeSpinnerAdapter implements SpinnerAdapter {
 
 	private Context context;
 	private LinkedList<OccupationTypeData> items;
-	private final int maxItemNumber;
 
-	public TypeSpinnerAdapter(Context context, int maxDisplayedItems) {
+	public TypeSpinnerAdapter(Context context) {
 		this.context = context;
-		this.maxItemNumber = maxDisplayedItems;
-		items = DatabaseManager.getInstance().requestTypes(maxItemNumber);
-	}
-
-	public int getMaxItemNumber() {
-		return maxItemNumber;
+		items = DatabaseManager.getInstance().requestAllTypes();
 	}
 
 	@Override
