@@ -10,10 +10,13 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
 
-        <ImageView
-            android:layout_width="50dp"
-            android:layout_height="50dp"
-            android:src="@drawable/default_image"/>
+        <Spinner
+            android:id="@+id/type_icon_spinner"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:entries="@array/type_icons"
+            android:spinnerMode="dialog"/>
+
 
         <EditText
             android:layout_weight="1"

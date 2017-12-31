@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <array name="type_icons">
+        <item>@drawable/icon_book</item>
+        <item>@drawable/icon_draw</item>
+        <item>@drawable/icon_groceries</item>
+        <item>@drawable/icon_library</item>
+        <item>@drawable/icon_video</item>
+    </array>
+</resources>
