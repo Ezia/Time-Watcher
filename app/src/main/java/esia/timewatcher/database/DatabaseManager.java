@@ -517,6 +517,27 @@ public class DatabaseManager extends SQLiteOpenHelper {
         }
     }
 
+	public LinkedList<EventData> requestEvents(boolean orderByChronologicalDate) {
+		String query = "SELECT * FROM " + EventTable.TABLE_NAME
+				+ " INNER JOIN " + OccupationTypeTable.TABLE_NAME
+				+ " ON " + EventTable.KEY_TYPE + " = " + OccupationTypeTable.KEY_ID;
+
+		if (orderByChronologicalDate) {
+			query += " ORDER BY " + EventTable.KEY_DATE + " ASC";
+		} else {
+			query += " ORDER BY " + EventTable.KEY_DATE + " DESC";
+		}
+
+		try(SQLiteDatabase db= this.getReadableDatabase();
+			Cursor cursor = db.rawQuery(query, new String[] {})) {
+			LinkedList<EventData> eventDataList = new LinkedList<>();
+			while (cursor.moveToNext()) {
+				eventDataList.add(parseEventAndType(cursor));
+			}
+			return eventDataList;
+		}
+	}
+
 	///// OPERATION UTILS /////
 
 	private ContentValues checkAndBuildTypeContent(OccupationType type) {

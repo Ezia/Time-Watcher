@@ -117,4 +117,20 @@ class DatabaseTestHelper {
 
 		return list;
 	}
+
+	static LinkedList<Event> getListOfEvents(int number, boolean sortByChronologicalOrder) {
+		LinkedList<Event> list = new LinkedList<>();
+
+		if (sortByChronologicalOrder) {
+			for (int i = 0; i < number; i++) {
+				list.add(new Event(new DateTime(i+1)));
+			}
+		} else {
+			for (int i = number-1; i >= 0; i--) {
+				list.add(new Event(new DateTime(i+1)));
+			}
+		}
+
+		return list;
+	}
 }

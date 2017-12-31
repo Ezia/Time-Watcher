@@ -15,8 +15,10 @@ import java.util.LinkedList;
 
 import esia.timewatcher.adapters.TabPagerAdapter;
 import esia.timewatcher.database.DatabaseManager;
+import esia.timewatcher.database.EventData;
 import esia.timewatcher.database.HobbyData;
 import esia.timewatcher.database.OccupationTypeData;
+import esia.timewatcher.structures.Event;
 import esia.timewatcher.structures.Hobby;
 import esia.timewatcher.structures.OccupationType;
 
@@ -63,9 +65,20 @@ public class HomeActivity extends AppCompatActivity {
 		hobbies.add(new Hobby(new DateTime().minus(Period.months(1))));
 		hobbies.add(new Hobby(new DateTime().minus(Period.years(1))));
 
+		LinkedList<Event> events = new LinkedList<>();
+		events.add(new Event(new DateTime()));
+		events.add(new Event(new DateTime().minus(Period.seconds(1))));
+		events.add(new Event(new DateTime().minus(Period.minutes(1))));
+		events.add(new Event(new DateTime().minus(Period.hours(1))));
+		events.add(new Event(new DateTime().minus(Period.days(1))));
+		events.add(new Event(new DateTime().minus(Period.days(2))));
+		events.add(new Event(new DateTime().minus(Period.months(1))));
+		events.add(new Event(new DateTime().minus(Period.years(1))));
+
 		for (int i = 0; i < types.size(); ++i) {
 			OccupationTypeData data = DatabaseManager.getInstance().createType(types.get(i));
 			HobbyData d2 = DatabaseManager.getInstance().createHobby(hobbies.get(i), data.getId());
+			EventData d3 = DatabaseManager.getInstance().createEvent(events.get(i), data.getId());
 		}
     }
 }

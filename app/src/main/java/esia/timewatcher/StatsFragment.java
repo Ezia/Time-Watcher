@@ -9,6 +9,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import esia.timewatcher.adapters.EventRecyclerViewAdapter;
 import esia.timewatcher.adapters.StoppedHobbyRecyclerViewAdapter;
 import esia.timewatcher.database.DatabaseListener;
 import esia.timewatcher.database.DatabaseManager;
@@ -29,9 +30,15 @@ public class StatsFragment extends Fragment implements DatabaseListener {
 		StoppedHobbyRecyclerViewAdapter runningHobbiesAdapter =
 				new StoppedHobbyRecyclerViewAdapter(getContext());
 		RecyclerView runningHobbiesRecycler = view.findViewById(R.id.stopped_hobbies);
-		LinearLayoutManager layoutManager = new LinearLayoutManager(getContext());
-		runningHobbiesRecycler.setLayoutManager(layoutManager);
+		runningHobbiesRecycler.setLayoutManager(new LinearLayoutManager(getContext()));
 		runningHobbiesRecycler.setAdapter(runningHobbiesAdapter);
+
+		EventRecyclerViewAdapter eventAdapter =
+				new EventRecyclerViewAdapter(getContext());
+		RecyclerView eventRecyclerView = view.findViewById(R.id.events);
+		eventRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
+		eventRecyclerView.setAdapter(eventAdapter);
+
 		return view;
 	}
 
@@ -40,6 +47,9 @@ public class StatsFragment extends Fragment implements DatabaseListener {
 		if (getView() != null) {
 			RecyclerView runningHobbiesRecycler = getView().findViewById(R.id.stopped_hobbies);
 			((StoppedHobbyRecyclerViewAdapter)runningHobbiesRecycler.getAdapter())
+					.updateFromDatabase();
+			RecyclerView eventRecyclerView = getView().findViewById(R.id.events);
+			((EventRecyclerViewAdapter)eventRecyclerView.getAdapter())
 					.updateFromDatabase();
 		}
 	}
