@@ -12,13 +12,13 @@ import java.util.LinkedList;
 
 import esia.timewatcher.R;
 import esia.timewatcher.database.DatabaseManager;
-import esia.timewatcher.database.OccupationTypeData;
-import esia.timewatcher.structures.OccupationType;
+import esia.timewatcher.database.TypeData;
+import esia.timewatcher.structures.Type;
 
 public class TypeSpinnerAdapter implements SpinnerAdapter {
 
 	private Context context;
-	private LinkedList<OccupationTypeData> items;
+	private LinkedList<TypeData> items;
 
 	public TypeSpinnerAdapter(Context context) {
 		this.context = context;
@@ -34,7 +34,7 @@ public class TypeSpinnerAdapter implements SpinnerAdapter {
 			newView = convertView;
 		}
 
-		OccupationType type = items.get(position).getOccupationType();
+		Type type = items.get(position).getType();
 		ImageView icon = newView.findViewById(R.id.icon);
 		TextView name = newView.findViewById(R.id.name);
 		icon.setImageBitmap(type.getIcon());
@@ -82,7 +82,7 @@ public class TypeSpinnerAdapter implements SpinnerAdapter {
 			newView = convertView;
 		}
 
-		OccupationType type = items.get(position).getOccupationType();
+		Type type = items.get(position).getType();
 		ImageView icon = newView.findViewById(R.id.icon);
 		TextView name = newView.findViewById(R.id.name);
 		icon.setImageBitmap(type.getIcon());

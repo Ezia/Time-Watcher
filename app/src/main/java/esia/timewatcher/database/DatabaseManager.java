@@ -18,7 +18,7 @@ import esia.timewatcher.database.exceptions.EntryAlreadyExistsException;
 import esia.timewatcher.database.exceptions.UnexpectedSqlResultException;
 import esia.timewatcher.structures.Event;
 import esia.timewatcher.structures.Hobby;
-import esia.timewatcher.structures.OccupationType;
+import esia.timewatcher.structures.Type;
 
 public class DatabaseManager extends SQLiteOpenHelper {
 
@@ -134,7 +134,7 @@ public class DatabaseManager extends SQLiteOpenHelper {
 
     ///// ENTRY CREATIONS /////
 
-	public OccupationTypeData createType(OccupationType type) {
+	public TypeData createType(Type type) {
 		ContentValues values = checkAndBuildTypeContent(type);
 
 		try(SQLiteDatabase db = this.getWritableDatabase()) {
@@ -143,7 +143,7 @@ public class DatabaseManager extends SQLiteOpenHelper {
 				throw new UnexpectedSqlResultException();
 			} else {
 				notifyDatabaseChange();
-				return new OccupationTypeData(id, new OccupationType(type));
+				return new TypeData(id, new Type(type));
 			}
 		}
 	}
@@ -243,7 +243,7 @@ public class DatabaseManager extends SQLiteOpenHelper {
 		}
 	}
 
-    public OccupationTypeData requestType(long id) {
+    public TypeData requestType(long id) {
         if (!typeExists(id)) {
             throw new IllegalArgumentException();
         }
@@ -263,7 +263,7 @@ public class DatabaseManager extends SQLiteOpenHelper {
 		}
     }
 
-    public OccupationTypeData requestType(String name) {
+    public TypeData requestType(String name) {
         if (name == null || name.isEmpty() || !typeExists(name)) {
             throw new IllegalArgumentException();
         }
@@ -339,7 +339,7 @@ public class DatabaseManager extends SQLiteOpenHelper {
 
 	///// ENTRY UPDATES /////
 
-    public OccupationTypeData updateType(long id, OccupationType type) {
+    public TypeData updateType(long id, Type type) {
 		ContentValues values = checkAndBuildTypeContent(id, type);
 
 		try (SQLiteDatabase db = this.getWritableDatabase()) {
@@ -348,7 +348,7 @@ public class DatabaseManager extends SQLiteOpenHelper {
 					new String[] { String.valueOf(id) });
 			if (affectedRowsNbr == 1) {
 				notifyDatabaseChange();
-				return new OccupationTypeData(id, new OccupationType(type));
+				return new TypeData(id, new Type(type));
 			} else {
 				throw new UnexpectedSqlResultException();
 			}
@@ -442,12 +442,12 @@ public class DatabaseManager extends SQLiteOpenHelper {
 
     ///// SPECIFIC REQUESTS /////
 
-    public LinkedList<OccupationTypeData> requestAllTypes() {
+    public LinkedList<TypeData> requestAllTypes() {
     	String query = "SELECT * FROM " + OccupationTypeTable.TABLE_NAME;
 
 		try(SQLiteDatabase db = this.getReadableDatabase();
 			Cursor cursor = db.rawQuery(query, new String[] {})) {
-			LinkedList<OccupationTypeData> typeDataList = new LinkedList<>();
+			LinkedList<TypeData> typeDataList = new LinkedList<>();
 			while (cursor.moveToNext()) {
 				typeDataList.add(parseType(cursor));
 			}
@@ -455,7 +455,7 @@ public class DatabaseManager extends SQLiteOpenHelper {
 		}
     }
 
-    public LinkedList<OccupationTypeData> requestTypes(int maxNumber) {
+    public LinkedList<TypeData> requestTypes(int maxNumber) {
         if (maxNumber <= 0) {
             throw new IllegalArgumentException();
         }
@@ -465,7 +465,7 @@ public class DatabaseManager extends SQLiteOpenHelper {
 
 		try(SQLiteDatabase db = this.getReadableDatabase();
 			Cursor cursor = db.rawQuery(query, new String[] {})) {
-			LinkedList<OccupationTypeData> typeDataList = new LinkedList<>();
+			LinkedList<TypeData> typeDataList = new LinkedList<>();
 			while (cursor.moveToNext()) {
 				typeDataList.add(parseType(cursor));
 			}
@@ -540,7 +540,7 @@ public class DatabaseManager extends SQLiteOpenHelper {
 
 	///// OPERATION UTILS /////
 
-	private ContentValues checkAndBuildTypeContent(OccupationType type) {
+	private ContentValues checkAndBuildTypeContent(Type type) {
     	if (type == null || !type.isValid()) {
     		throw new  IllegalArgumentException();
 		} else if(typeExists(type.getName())) {
@@ -554,7 +554,7 @@ public class DatabaseManager extends SQLiteOpenHelper {
 		return values;
 	}
 
-	private ContentValues checkAndBuildTypeContent(long id, OccupationType type) {
+	private ContentValues checkAndBuildTypeContent(long id, Type type) {
 		if (type == null || !type.isValid() || !typeExists(id)) {
 			throw new  IllegalArgumentException();
 		} else if(typeExists(type.getName()) && requestType(type.getName()).getId() != id) {
@@ -618,14 +618,14 @@ public class DatabaseManager extends SQLiteOpenHelper {
 		return values;
 	}
 
-	private OccupationTypeData parseType(Cursor cursor) {
+	private TypeData parseType(Cursor cursor) {
 		if (cursor == null || cursor.isClosed() || cursor.getPosition() == -1) {
 			throw new IllegalArgumentException();
 		}
 
-		return new OccupationTypeData(
+		return new TypeData(
 				cursor.getLong(cursor.getColumnIndexOrThrow(OccupationTypeTable.KEY_ID)),
-				new OccupationType(
+				new Type(
 						cursor.getString(
 								cursor.getColumnIndexOrThrow(OccupationTypeTable.KEY_NAME)),
 						bytesToBitmap(cursor.getBlob(

@@ -8,19 +8,19 @@ import esia.timewatcher.structures.Hobby;
 
 public class HobbyData extends Data {
     private Hobby hobby;
-    private OccupationTypeData occupationTypeData;
+    private TypeData typeData;
 
-    HobbyData(long id, Hobby hobby, OccupationTypeData occupationTypeData) {
+    HobbyData(long id, Hobby hobby, TypeData typeData) {
         super(id);
         this.hobby = hobby;
-        this.occupationTypeData = occupationTypeData;
+        this.typeData = typeData;
     }
 
     public Hobby getHobby() {
         return hobby;
     }
 
-    public OccupationTypeData getOccupationTypeData() {
-        return occupationTypeData;
+    public TypeData getTypeData() {
+        return typeData;
     }
 }

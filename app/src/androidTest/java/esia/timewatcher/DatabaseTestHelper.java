@@ -9,12 +9,12 @@ import java.util.LinkedList;
 
 import esia.timewatcher.structures.Event;
 import esia.timewatcher.structures.Hobby;
-import esia.timewatcher.structures.OccupationType;
+import esia.timewatcher.structures.Type;
 
 class DatabaseTestHelper {
 
-	 static OccupationType getValidOccupationType1() {
-		return new OccupationType("test1",
+	 static Type getValidOccupationType1() {
+		return new Type("test1",
 				BitmapFactory.decodeResource(
 						InstrumentationRegistry.getTargetContext().getResources(),
 						R.drawable.lan
@@ -22,8 +22,8 @@ class DatabaseTestHelper {
 		);
 	}
 
-	 static OccupationType getValidOccupationType2() {
-		return new OccupationType("test2",
+	 static Type getValidOccupationType2() {
+		return new Type("test2",
 				BitmapFactory.decodeResource(
 						InstrumentationRegistry.getTargetContext().getResources(),
 						R.drawable.twitter
@@ -31,8 +31,8 @@ class DatabaseTestHelper {
 		);
 	}
 
-	 static OccupationType getInvalidOccupationType() {
-		return new OccupationType("",
+	 static Type getInvalidOccupationType() {
+		return new Type("",
 				BitmapFactory.decodeResource(
 						InstrumentationRegistry.getTargetContext().getResources(),
 						R.drawable.lan
@@ -58,15 +58,15 @@ class DatabaseTestHelper {
 
 	static Hobby getInvalidHobby() { return new Hobby((DateTime) null);}
 
-	static LinkedList<OccupationType> getListOfTypes(int number) {
-	 	LinkedList<OccupationType> list = new LinkedList<>();
+	static LinkedList<Type> getListOfTypes(int number) {
+	 	LinkedList<Type> list = new LinkedList<>();
 		Bitmap icon = BitmapFactory.decodeResource(
 				InstrumentationRegistry.getTargetContext().getResources(),
 				R.drawable.lan
 		);
 
 	 	for (int i = 0; i < number; i++) {
-			list.add(new OccupationType("test"+i, icon));
+			list.add(new Type("test"+i, icon));
 		}
 
 		return list;

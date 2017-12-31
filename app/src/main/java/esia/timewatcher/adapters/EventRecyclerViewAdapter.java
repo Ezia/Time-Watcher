@@ -45,9 +45,9 @@ public class EventRecyclerViewAdapter
 			EventData eventData = (EventData)data;
 			assert(eventData != null);
 
-			name.setText(eventData.getOccupationTypeData().getOccupationType().getName());
+			name.setText(eventData.getTypeData().getType().getName());
 			name.setBackground(new BitmapDrawable(context.getResources(),
-					eventData.getOccupationTypeData().getOccupationType().getIcon()
+					eventData.getTypeData().getType().getIcon()
 			));
 			date.setText(TimeUtils.toString(eventData.getEvent().getDate()));
 		}

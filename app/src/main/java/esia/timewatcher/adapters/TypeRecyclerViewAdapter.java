@@ -8,10 +8,10 @@ import android.widget.TextView;
 import esia.timewatcher.R;
 import esia.timewatcher.database.Data;
 import esia.timewatcher.database.DatabaseManager;
-import esia.timewatcher.database.OccupationTypeData;
+import esia.timewatcher.database.TypeData;
 
 public class TypeRecyclerViewAdapter
-		extends SimpleRecyclerViewAdapter<OccupationTypeData, TypeRecyclerViewAdapter.TypeViewHolder> {
+		extends SimpleRecyclerViewAdapter<TypeData, TypeRecyclerViewAdapter.TypeViewHolder> {
 
 	public TypeRecyclerViewAdapter(Context context) {
 		super(context, R.layout.type_view);
@@ -42,10 +42,10 @@ public class TypeRecyclerViewAdapter
 
 		@Override
 		public void set(Data data) {
-			OccupationTypeData typeData = (OccupationTypeData) data;
+			TypeData typeData = (TypeData) data;
 			assert(typeData != null);
-			icon.setImageBitmap(typeData.getOccupationType().getIcon());
-			name.setText(typeData.getOccupationType().getName());
+			icon.setImageBitmap(typeData.getType().getIcon());
+			name.setText(typeData.getType().getName());
 		}
 	}
 }

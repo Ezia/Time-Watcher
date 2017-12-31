@@ -2,17 +2,12 @@ package esia.timewatcher.adapters;
 
 import android.content.Context;
 import android.graphics.drawable.BitmapDrawable;
-import android.support.v7.widget.RecyclerView;
-import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.TextView;
 
 import org.joda.time.DateTime;
 import org.joda.time.Period;
-
-import java.util.LinkedList;
 
 import esia.timewatcher.R;
 import esia.timewatcher.database.Data;
@@ -71,9 +66,9 @@ public class RunningHobbyRecyclerViewAdapter
 			assert(hobbyData != null);
 
 			name.setBackground(new BitmapDrawable(context.getResources(),
-					hobbyData.getOccupationTypeData().getOccupationType().getIcon()
+					hobbyData.getTypeData().getType().getIcon()
 			));
-			name.setText(hobbyData.getOccupationTypeData().getOccupationType().getName());
+			name.setText(hobbyData.getTypeData().getType().getName());
 			startDate.setText(TimeUtils.toString(hobbyData.getHobby().getStartDate()));
 			updateTimer(hobbyData);
 			stopButton.setOnClickListener((v) -> onStopClick());
@@ -84,7 +79,7 @@ public class RunningHobbyRecyclerViewAdapter
 			HobbyData data = dataList.get(getAdapterPosition());
 			Hobby newHobby = new Hobby(data.getHobby().getStartDate(), new DateTime());
 			DatabaseManager.getInstance().updateHobby(data.getId(), newHobby,
-					data.getOccupationTypeData().getId());
+					data.getTypeData().getId());
 		}
 
 		public void updateTimer(HobbyData data) {
