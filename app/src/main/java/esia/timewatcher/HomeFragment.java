@@ -22,13 +22,7 @@ import esia.timewatcher.database.DatabaseManager;
 import esia.timewatcher.structures.Event;
 import esia.timewatcher.structures.Hobby;
 
-public class HomeFragment extends Fragment implements DatabaseListener {
-
-	@Override
-	public void onCreate(@Nullable Bundle savedInstanceState) {
-		super.onCreate(savedInstanceState);
-		DatabaseManager.getInstance().addListener(this);
-	}
+public class HomeFragment extends Fragment {
 
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -82,15 +76,5 @@ public class HomeFragment extends Fragment implements DatabaseListener {
 		Toast toast = Toast.makeText(getContext(), "Event created", Toast.LENGTH_SHORT);
 		toast.show();
 		return true;
-	}
-
-	@Override
-	public void onDatabaseChange() {
-		if (getView() != null) {
-			RecyclerView runningHobbiesRecycler = getView().findViewById(R.id.running_hobbies);
-			RunningHobbyRecyclerViewAdapter adapter = (RunningHobbyRecyclerViewAdapter)
-					runningHobbiesRecycler.getAdapter();
-			adapter.updateFromDatabase();
-		}
 	}
 }

@@ -15,33 +15,29 @@ import org.joda.time.Period;
 import java.util.LinkedList;
 
 import esia.timewatcher.R;
+import esia.timewatcher.database.Data;
 import esia.timewatcher.database.DatabaseManager;
 import esia.timewatcher.database.HobbyData;
 import esia.timewatcher.structures.Hobby;
 import esia.timewatcher.utils.TimeUtils;
 
 public class RunningHobbyRecyclerViewAdapter
-		extends RecyclerView.Adapter<RunningHobbyRecyclerViewAdapter.RunningHobbyItem> {
-
-	private Context context;
-	private RecyclerView recyclerView = null;
-	private LinkedList<HobbyData> itemList;
+		extends SimpleRecyclerViewAdapter<HobbyData, RunningHobbyRecyclerViewAdapter.RunningHobbyViewHolder> {
 
 	public RunningHobbyRecyclerViewAdapter(Context context) {
-		this.context = context;
-		itemList = DatabaseManager.getInstance().requestRunningHobbies(true);
-		setHasStableIds(true);
+		super(context, R.layout.running_hobby_view);
+		dataList = DatabaseManager.getInstance().requestRunningHobbies(true);
 	}
 
-	public void updateFromDatabase() {
-		itemList = DatabaseManager.getInstance().requestRunningHobbies(true);
+	public void onDatabaseChange() {
+		dataList = DatabaseManager.getInstance().requestRunningHobbies(true);
 		notifyDataSetChanged();
 	}
 
 	public void updateTimers() {
 		if (recyclerView != null) {
-			for (HobbyData data : itemList) {
-				RunningHobbyItem vh = (RunningHobbyItem)
+			for (HobbyData data : dataList) {
+				RunningHobbyViewHolder vh = (RunningHobbyViewHolder)
 						recyclerView.findViewHolderForItemId(data.getId());
 				if (vh != null) {
 					vh.updateTimer(data);
@@ -51,47 +47,17 @@ public class RunningHobbyRecyclerViewAdapter
 	}
 
 	@Override
-	public RunningHobbyItem onCreateViewHolder(ViewGroup parent, int viewType) {
-		View newView = LayoutInflater.from(context)
-				.inflate(R.layout.running_hobby_view, parent, false);
-		return new RunningHobbyItem(newView);
+	public RunningHobbyViewHolder createViewHolder(View v) {
+		return new RunningHobbyViewHolder(v);
 	}
 
-
-	@Override
-	public void onBindViewHolder(RunningHobbyItem holder, int position) {
-		holder.set(itemList.get(position));
-	}
-
-	@Override
-	public void onAttachedToRecyclerView(RecyclerView recyclerView) {
-		super.onAttachedToRecyclerView(recyclerView);
-		this.recyclerView = recyclerView;
-	}
-
-	@Override
-	public void onDetachedFromRecyclerView(RecyclerView recyclerView) {
-		super.onDetachedFromRecyclerView(recyclerView);
-		this.recyclerView = null;
-	}
-
-	@Override
-	public int getItemCount() {
-		return itemList.size();
-	}
-
-	@Override
-	public long getItemId(int position) {
-		return itemList.get(position).getId();
-	}
-
-	protected class RunningHobbyItem extends RecyclerView.ViewHolder {
+	protected class RunningHobbyViewHolder extends SimpleRecyclerViewAdapter.SimpleViewHolder {
 		TextView name;
 		TextView startDate;
 		TextView remainingTime;
 		Button stopButton;
 
-		public RunningHobbyItem(View itemView) {
+		public RunningHobbyViewHolder(View itemView) {
 			super(itemView);
 
 			name = itemView.findViewById(R.id.name);
@@ -100,17 +66,25 @@ public class RunningHobbyRecyclerViewAdapter
 			stopButton = itemView.findViewById(R.id.stop_button);
 		}
 
-		public void set(HobbyData data) {
+		public void set(Data data) {
+			HobbyData hobbyData = (HobbyData)data;
+			assert(hobbyData != null);
+
 			name.setBackground(new BitmapDrawable(context.getResources(),
-					data.getOccupationTypeData().getOccupationType().getIcon()
+					hobbyData.getOccupationTypeData().getOccupationType().getIcon()
 			));
-			name.setText(data.getOccupationTypeData().getOccupationType().getName());
-			startDate.setText(TimeUtils.toString(data.getHobby().getStartDate()));
-			updateTimer(data);
-			stopButton.setOnClickListener((v) -> {
-				stopButton.setOnClickListener(null);
-				onStopClick(getAdapterPosition());
-			});
+			name.setText(hobbyData.getOccupationTypeData().getOccupationType().getName());
+			startDate.setText(TimeUtils.toString(hobbyData.getHobby().getStartDate()));
+			updateTimer(hobbyData);
+			stopButton.setOnClickListener((v) -> onStopClick());
+		}
+
+		public void onStopClick() {
+			stopButton.setOnClickListener(null);
+			HobbyData data = dataList.get(getAdapterPosition());
+			Hobby newHobby = new Hobby(data.getHobby().getStartDate(), new DateTime());
+			DatabaseManager.getInstance().updateHobby(data.getId(), newHobby,
+					data.getOccupationTypeData().getId());
 		}
 
 		public void updateTimer(HobbyData data) {
@@ -119,12 +93,4 @@ public class RunningHobbyRecyclerViewAdapter
 			remainingTime.setText("(" + TimeUtils.toString(elapsedTime) + ")");
 		}
 	}
-
-	public void onStopClick(int position) {
-		HobbyData data = itemList.get(position);
-		Hobby newHobby = new Hobby(data.getHobby().getStartDate(), new DateTime());
-		DatabaseManager.getInstance().updateHobby(data.getId(), newHobby,
-				data.getOccupationTypeData().getId());
-	}
-
 }

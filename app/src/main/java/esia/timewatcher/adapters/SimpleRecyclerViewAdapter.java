@@ -10,6 +10,7 @@ import java.util.LinkedList;
 
 import esia.timewatcher.database.Data;
 import esia.timewatcher.database.DatabaseListener;
+import esia.timewatcher.database.DatabaseManager;
 
 public abstract class SimpleRecyclerViewAdapter
 		<D extends Data, VH extends SimpleRecyclerViewAdapter.SimpleViewHolder>
@@ -19,10 +20,13 @@ public abstract class SimpleRecyclerViewAdapter
 	protected LinkedList<D> dataList = new LinkedList<>();
 	protected final Context context;
 	protected final int viewResource;
+	protected RecyclerView recyclerView;
 
 	public SimpleRecyclerViewAdapter(Context context, int viewRessource) {
 		this.context = context;
 		this.viewResource = viewRessource;
+		setHasStableIds(true);
+		DatabaseManager.getInstance().addListener(this);
 	}
 
 	@Override
@@ -40,8 +44,25 @@ public abstract class SimpleRecyclerViewAdapter
 	}
 
 	@Override
+	public void onAttachedToRecyclerView(RecyclerView recyclerView) {
+		super.onAttachedToRecyclerView(recyclerView);
+		this.recyclerView = recyclerView;
+	}
+
+	@Override
+	public void onDetachedFromRecyclerView(RecyclerView recyclerView) {
+		super.onDetachedFromRecyclerView(recyclerView);
+		this.recyclerView = null;
+	}
+
+	@Override
 	public int getItemCount() {
 		return dataList.size();
+	}
+
+	@Override
+	public long getItemId(int position) {
+		return dataList.get(position).getId();
 	}
 
 	public abstract class SimpleViewHolder extends RecyclerView.ViewHolder {

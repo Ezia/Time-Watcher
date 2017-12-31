@@ -14,13 +14,8 @@ import esia.timewatcher.adapters.StoppedHobbyRecyclerViewAdapter;
 import esia.timewatcher.database.DatabaseListener;
 import esia.timewatcher.database.DatabaseManager;
 
-public class StatsFragment extends Fragment implements DatabaseListener {
+public class StatsFragment extends Fragment {
 
-	@Override
-	public void onCreate(@Nullable Bundle savedInstanceState) {
-		super.onCreate(savedInstanceState);
-		DatabaseManager.getInstance().addListener(this);
-	}
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
 							 Bundle savedInstanceState) {
@@ -40,17 +35,5 @@ public class StatsFragment extends Fragment implements DatabaseListener {
 		eventRecyclerView.setAdapter(eventAdapter);
 
 		return view;
-	}
-
-	@Override
-	public void onDatabaseChange() {
-		if (getView() != null) {
-			RecyclerView runningHobbiesRecycler = getView().findViewById(R.id.stopped_hobbies);
-			((StoppedHobbyRecyclerViewAdapter)runningHobbiesRecycler.getAdapter())
-					.updateFromDatabase();
-			RecyclerView eventRecyclerView = getView().findViewById(R.id.events);
-			((EventRecyclerViewAdapter)eventRecyclerView.getAdapter())
-					.updateFromDatabase();
-		}
 	}
 }

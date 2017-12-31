@@ -6,69 +6,44 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 import android.widget.TextView;
 
-import org.joda.time.DateTime;
 import org.joda.time.Period;
 
 import java.util.LinkedList;
 
 import esia.timewatcher.R;
+import esia.timewatcher.database.Data;
 import esia.timewatcher.database.DatabaseManager;
 import esia.timewatcher.database.HobbyData;
-import esia.timewatcher.structures.Hobby;
 import esia.timewatcher.utils.TimeUtils;
 
 
 public class StoppedHobbyRecyclerViewAdapter
-		extends RecyclerView.Adapter<StoppedHobbyRecyclerViewAdapter.StoppedHobbyItem>{
-
-
-	private Context context;
-	private LinkedList<HobbyData> itemList;
+		extends SimpleRecyclerViewAdapter<HobbyData, StoppedHobbyRecyclerViewAdapter.StoppedHobbyViewHolder> {
 
 	public StoppedHobbyRecyclerViewAdapter(Context context) {
-		this.context = context;
-		itemList = DatabaseManager.getInstance().requestStoppedHobbies(true);
-		setHasStableIds(true);
+		super(context, R.layout.stopped_hobby_view);
+		dataList = DatabaseManager.getInstance().requestStoppedHobbies(true);
 	}
 
-	public void updateFromDatabase() {
-		itemList = DatabaseManager.getInstance().requestStoppedHobbies(true);
+	public void onDatabaseChange() {
+		dataList = DatabaseManager.getInstance().requestStoppedHobbies(true);
 		notifyDataSetChanged();
 	}
 
 	@Override
-	public StoppedHobbyItem onCreateViewHolder(ViewGroup parent, int viewType) {
-		View newView = LayoutInflater.from(context)
-				.inflate(R.layout.stopped_hobby_view, parent, false);
-		return new StoppedHobbyItem(newView);
+	public StoppedHobbyViewHolder createViewHolder(View v) {
+		return new StoppedHobbyViewHolder(v);
 	}
 
-
-	@Override
-	public void onBindViewHolder(StoppedHobbyItem holder, int position) {
-		holder.set(itemList.get(position));
-	}
-
-	@Override
-	public int getItemCount() {
-		return itemList.size();
-	}
-
-	@Override
-	public long getItemId(int position) {
-		return itemList.get(position).getId();
-	}
-
-	protected class StoppedHobbyItem extends RecyclerView.ViewHolder {
+	protected class StoppedHobbyViewHolder extends SimpleRecyclerViewAdapter.SimpleViewHolder {
 		TextView name;
 		TextView startDate;
 		TextView stopDate;
 		TextView remainingTime;
 
-		public StoppedHobbyItem(View itemView) {
+		public StoppedHobbyViewHolder(View itemView) {
 			super(itemView);
 
 			name = itemView.findViewById(R.id.name);
@@ -77,15 +52,18 @@ public class StoppedHobbyRecyclerViewAdapter
 			stopDate = itemView.findViewById(R.id.stop_date);
 		}
 
-		public void set(HobbyData data) {
+		public void set(Data data) {
+			HobbyData hobbyData = (HobbyData)data;
+			assert(hobbyData != null);
+
 			name.setBackground(new BitmapDrawable(context.getResources(),
-					data.getOccupationTypeData().getOccupationType().getIcon()
+					hobbyData.getOccupationTypeData().getOccupationType().getIcon()
 			));
-			name.setText(data.getOccupationTypeData().getOccupationType().getName());
-			startDate.setText(TimeUtils.toString(data.getHobby().getStartDate()));
-			stopDate.setText(TimeUtils.toString(data.getHobby().getEndDate()));
-			Period elapsedTime = new Period(data.getHobby().getStartDate(),
-					data.getHobby().getEndDate());
+			name.setText(hobbyData.getOccupationTypeData().getOccupationType().getName());
+			startDate.setText(TimeUtils.toString(hobbyData.getHobby().getStartDate()));
+			stopDate.setText(TimeUtils.toString(hobbyData.getHobby().getEndDate()));
+			Period elapsedTime = new Period(hobbyData.getHobby().getStartDate(),
+					hobbyData.getHobby().getEndDate());
 			remainingTime.setText("(" + TimeUtils.toString(elapsedTime) + ")");
 		}
 	}
