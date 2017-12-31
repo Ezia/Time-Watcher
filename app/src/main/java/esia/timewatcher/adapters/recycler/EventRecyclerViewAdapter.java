@@ -1,4 +1,4 @@
-package esia.timewatcher.adapters;
+package esia.timewatcher.adapters.recycler;
 
 import android.content.Context;
 import android.graphics.drawable.BitmapDrawable;
