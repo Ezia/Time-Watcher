@@ -1,4 +1,4 @@
-package esia.timewatcher.adapters;
+package esia.timewatcher.adapters.spinner;
 
 import android.content.Context;
 import android.content.res.TypedArray;
