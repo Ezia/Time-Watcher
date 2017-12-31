@@ -72,9 +72,11 @@ public class HomeFragment extends Fragment implements DatabaseListener {
 
 	@Override
 	public void onDatabaseChange() {
-		RecyclerView runningHobbiesRecycler = getView().findViewById(R.id.running_hobbies);
-		RunningHobbyRecyclerViewAdapter adapter = (RunningHobbyRecyclerViewAdapter)
-				runningHobbiesRecycler.getAdapter();
-		adapter.updateFromDatabase();
+		if (getView() != null) {
+			RecyclerView runningHobbiesRecycler = getView().findViewById(R.id.running_hobbies);
+			RunningHobbyRecyclerViewAdapter adapter = (RunningHobbyRecyclerViewAdapter)
+					runningHobbiesRecycler.getAdapter();
+			adapter.updateFromDatabase();
+		}
 	}
 }

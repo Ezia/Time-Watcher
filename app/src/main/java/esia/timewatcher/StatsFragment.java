@@ -37,8 +37,10 @@ public class StatsFragment extends Fragment implements DatabaseListener {
 
 	@Override
 	public void onDatabaseChange() {
-		RecyclerView runningHobbiesRecycler = getView().findViewById(R.id.stopped_hobbies);
-		((StoppedHobbyRecyclerViewAdapter)runningHobbiesRecycler.getAdapter())
-				.updateFromDatabase();
+		if (getView() != null) {
+			RecyclerView runningHobbiesRecycler = getView().findViewById(R.id.stopped_hobbies);
+			((StoppedHobbyRecyclerViewAdapter)runningHobbiesRecycler.getAdapter())
+					.updateFromDatabase();
+		}
 	}
 }
