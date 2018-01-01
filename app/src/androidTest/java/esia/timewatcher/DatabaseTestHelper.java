@@ -13,7 +13,7 @@ import esia.timewatcher.structures.Type;
 
 class DatabaseTestHelper {
 
-	 static Type getValidOccupationType1() {
+	 static Type getValidType1() {
 		return new Type("test1",
 				BitmapFactory.decodeResource(
 						InstrumentationRegistry.getTargetContext().getResources(),
@@ -22,7 +22,7 @@ class DatabaseTestHelper {
 		);
 	}
 
-	 static Type getValidOccupationType2() {
+	 static Type getValidType2() {
 		return new Type("test2",
 				BitmapFactory.decodeResource(
 						InstrumentationRegistry.getTargetContext().getResources(),
@@ -31,7 +31,7 @@ class DatabaseTestHelper {
 		);
 	}
 
-	 static Type getInvalidOccupationType() {
+	 static Type getInvalidType() {
 		return new Type("",
 				BitmapFactory.decodeResource(
 						InstrumentationRegistry.getTargetContext().getResources(),
@@ -86,10 +86,26 @@ class DatabaseTestHelper {
 		return list;
 	}
 
-	static LinkedList<Hobby> getListOfStoppedHobbies(int number, boolean sortedByAscendantStartDate) {
+	static LinkedList<Hobby> getListOfStoppedHobbiesByStartDate(int number, boolean sortedByAscendantStartDate) {
 		LinkedList<Hobby> list = new LinkedList<>();
 
 		if (sortedByAscendantStartDate) {
+			for (int i = 0; i < number; i++) {
+				list.add(new Hobby(new DateTime(i+1), new DateTime(i+2)));
+			}
+		} else {
+			for (int i = number-1; i >= 0; i--) {
+				list.add(new Hobby(new DateTime(i+1), new DateTime(i+2)));
+			}
+		}
+
+		return list;
+	}
+
+	static LinkedList<Hobby> getListOfStoppedHobbiesByStopDate(int number, boolean sortedByAscendantStopDate) {
+		LinkedList<Hobby> list = new LinkedList<>();
+
+		if (sortedByAscendantStopDate) {
 			for (int i = 0; i < number; i++) {
 				list.add(new Hobby(new DateTime(i+1), new DateTime(i+2)));
 			}

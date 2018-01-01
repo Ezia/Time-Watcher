@@ -29,7 +29,7 @@ public class TestTypeDatabase {
 	@Test
 	public void createValidType() throws Exception {
 		long initTypeSize = DatabaseManager.getInstance().getTypeNumber();
-		Type type = DatabaseTestHelper.getValidOccupationType1();
+		Type type = DatabaseTestHelper.getValidType1();
 
 		TypeData data = DatabaseManager.getInstance().createType(type);
 
@@ -40,7 +40,7 @@ public class TestTypeDatabase {
 
 	@Test(expected = IllegalArgumentException.class)
 	public void createInvalidType() throws Exception {
-		Type type = DatabaseTestHelper.getInvalidOccupationType();
+		Type type = DatabaseTestHelper.getInvalidType();
 		DatabaseManager.getInstance().createType(type);
 	}
 
@@ -52,7 +52,7 @@ public class TestTypeDatabase {
     @Test(expected = EntryAlreadyExistsException.class)
     public void createExistentType() throws Exception {
         long initTypeSize = DatabaseManager.getInstance().getTypeNumber();
-        Type type = DatabaseTestHelper.getValidOccupationType1();
+        Type type = DatabaseTestHelper.getValidType1();
 
         DatabaseManager.getInstance().createType(type);
         TypeData data = DatabaseManager.getInstance().createType(type);
@@ -66,7 +66,7 @@ public class TestTypeDatabase {
     @Test
     public void requestExistentTypeById() throws Exception {
         long initTypeSize = DatabaseManager.getInstance().getTypeNumber();
-        Type type = DatabaseTestHelper.getValidOccupationType1();
+        Type type = DatabaseTestHelper.getValidType1();
 
         TypeData data1 = DatabaseManager.getInstance().createType(type);
         TypeData data2 = DatabaseManager.getInstance().requestType(data1.getId());
@@ -80,7 +80,7 @@ public class TestTypeDatabase {
     @Test
     public void requestExistentTypeByName() throws Exception {
         long initTypeSize = DatabaseManager.getInstance().getTypeNumber();
-        Type type = DatabaseTestHelper.getValidOccupationType1();
+        Type type = DatabaseTestHelper.getValidType1();
 
         TypeData data1 = DatabaseManager.getInstance().createType(type);
         TypeData data2 = DatabaseManager.getInstance().requestType(type.getName());
@@ -126,8 +126,8 @@ public class TestTypeDatabase {
     @Test
     public void updateValidExistentType() throws Exception {
         long initTypeSize = DatabaseManager.getInstance().getTypeNumber();
-        Type type1 = DatabaseTestHelper.getValidOccupationType1();
-        Type type2 = DatabaseTestHelper.getValidOccupationType2();
+        Type type1 = DatabaseTestHelper.getValidType1();
+        Type type2 = DatabaseTestHelper.getValidType2();
 
         TypeData data1 = DatabaseManager.getInstance().createType(type1);
         TypeData data2 = DatabaseManager.getInstance().updateType(data1.getId(), type2);
@@ -140,7 +140,7 @@ public class TestTypeDatabase {
 
 	@Test(expected = IllegalArgumentException.class)
 	public void updateNullExistentType() throws Exception {
-		Type type1 = DatabaseTestHelper.getValidOccupationType1();
+		Type type1 = DatabaseTestHelper.getValidType1();
 
 		TypeData data1 = DatabaseManager.getInstance().createType(type1);
 		DatabaseManager.getInstance().updateType(data1.getId(), null);
@@ -148,8 +148,8 @@ public class TestTypeDatabase {
 
     @Test(expected = IllegalArgumentException.class)
     public void updateInvalidExistentType() throws Exception {
-        Type type1 = DatabaseTestHelper.getValidOccupationType1();
-        Type type2 = DatabaseTestHelper.getInvalidOccupationType();
+        Type type1 = DatabaseTestHelper.getValidType1();
+        Type type2 = DatabaseTestHelper.getInvalidType();
 
         TypeData data1 = DatabaseManager.getInstance().createType(type1);
         DatabaseManager.getInstance().updateType(data1.getId(), type2);
@@ -157,8 +157,8 @@ public class TestTypeDatabase {
 
 	@Test(expected = EntryAlreadyExistsException.class)
 	public void updateDuplicateExistentType() throws Exception {
-		Type type1 = DatabaseTestHelper.getValidOccupationType1();
-		Type type2 = DatabaseTestHelper.getValidOccupationType2();
+		Type type1 = DatabaseTestHelper.getValidType1();
+		Type type2 = DatabaseTestHelper.getValidType2();
 
 		TypeData data1 = DatabaseManager.getInstance().createType(type1);
 		DatabaseManager.getInstance().createType(type2);
@@ -167,7 +167,7 @@ public class TestTypeDatabase {
 
     @Test(expected = IllegalArgumentException.class)
     public void updateNonexistentType() throws Exception {
-        Type type = DatabaseTestHelper.getValidOccupationType1();
+        Type type = DatabaseTestHelper.getValidType1();
         DatabaseManager.getInstance().updateType(1, type);
     }
 
@@ -176,7 +176,7 @@ public class TestTypeDatabase {
     @Test
     public void deleteExistentType() throws Exception {
         long initTypeSize = DatabaseManager.getInstance().getTypeNumber();
-        Type type = DatabaseTestHelper.getValidOccupationType1();
+        Type type = DatabaseTestHelper.getValidType1();
 
         TypeData data1 = DatabaseManager.getInstance().createType(type);
         DatabaseManager.getInstance().deleteType(data1.getId());
@@ -193,7 +193,7 @@ public class TestTypeDatabase {
 	@Test
 	public void testExistentTypeById() throws Exception {
 		long initTypeSize = DatabaseManager.getInstance().getTypeNumber();
-		Type type = DatabaseTestHelper.getValidOccupationType1();
+		Type type = DatabaseTestHelper.getValidType1();
 
 		TypeData data = DatabaseManager.getInstance().createType(type);
 		boolean exists = DatabaseManager.getInstance().typeExists(data.getId());
@@ -215,7 +215,7 @@ public class TestTypeDatabase {
 	@Test
 	public void testExistentTypeByName() throws Exception {
 		long initTypeSize = DatabaseManager.getInstance().getTypeNumber();
-		Type type = DatabaseTestHelper.getValidOccupationType1();
+		Type type = DatabaseTestHelper.getValidType1();
 
 		TypeData data = DatabaseManager.getInstance().createType(type);
 		boolean exists = DatabaseManager.getInstance().typeExists(data.getType().getName());
@@ -256,7 +256,7 @@ public class TestTypeDatabase {
 	@Test
 	public void requestExistentIdFromName() throws Exception {
 		long initTypeSize = DatabaseManager.getInstance().getTypeNumber();
-		Type type = DatabaseTestHelper.getValidOccupationType1();
+		Type type = DatabaseTestHelper.getValidType1();
 
 		TypeData data1 = DatabaseManager.getInstance().createType(type);
 		long id = DatabaseManager.getInstance().requestTypeId(type.getName());

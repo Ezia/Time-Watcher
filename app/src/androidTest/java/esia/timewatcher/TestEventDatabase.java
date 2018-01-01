@@ -31,7 +31,7 @@ public class TestEventDatabase {
 	public void createValidEvent() throws Exception {
 		long initEventTableSize = DatabaseManager.getInstance().getEventNumber();
 		Event event = DatabaseTestHelper.getValidEvent1();
-		Type type = DatabaseTestHelper.getValidOccupationType1();
+		Type type = DatabaseTestHelper.getValidType1();
 
 		TypeData data1 = DatabaseManager.getInstance().createType(type);
 		EventData data2 = DatabaseManager.getInstance().createEvent(event, data1.getId());
@@ -45,7 +45,7 @@ public class TestEventDatabase {
 	@Test(expected = IllegalArgumentException.class)
 	public void createInvalidEvent() throws Exception {
 		Event event = DatabaseTestHelper.getInvalidEvent();
-		Type type = DatabaseTestHelper.getValidOccupationType1();
+		Type type = DatabaseTestHelper.getValidType1();
 
 		TypeData data1 = DatabaseManager.getInstance().createType(type);
 		DatabaseManager.getInstance().createEvent(event, data1.getId());
@@ -53,7 +53,7 @@ public class TestEventDatabase {
 
 	@Test(expected = IllegalArgumentException.class)
 	public void createNullEvent() throws Exception {
-		Type type = DatabaseTestHelper.getValidOccupationType1();
+		Type type = DatabaseTestHelper.getValidType1();
 
 		TypeData data1 = DatabaseManager.getInstance().createType(type);
 		DatabaseManager.getInstance().createEvent(null, data1.getId());
@@ -71,7 +71,7 @@ public class TestEventDatabase {
 	public void requestExistentEvent() throws Exception {
 		long initEventTableSize = DatabaseManager.getInstance().getEventNumber();
 		Event event = DatabaseTestHelper.getValidEvent1();
-		Type type = DatabaseTestHelper.getValidOccupationType1();
+		Type type = DatabaseTestHelper.getValidType1();
 
 		TypeData data1 = DatabaseManager.getInstance().createType(type);
 		EventData data2 = DatabaseManager.getInstance().createEvent(event, data1.getId());
@@ -96,7 +96,7 @@ public class TestEventDatabase {
 		long initTypeSize = DatabaseManager.getInstance().getEventNumber();
 		Event event1 = DatabaseTestHelper.getValidEvent1();
 		Event event2 = DatabaseTestHelper.getValidEvent2();
-		Type type = DatabaseTestHelper.getValidOccupationType1();
+		Type type = DatabaseTestHelper.getValidType1();
 
 		TypeData data1 = DatabaseManager.getInstance().createType(type);
 		EventData data2 = DatabaseManager.getInstance().createEvent(event1, data1.getId());
@@ -113,8 +113,8 @@ public class TestEventDatabase {
 	public void updateExistentEventType() throws Exception {
 		long initEventSize = DatabaseManager.getInstance().getEventNumber();
 		Event event1 = DatabaseTestHelper.getValidEvent1();
-		Type type1 = DatabaseTestHelper.getValidOccupationType1();
-		Type type2 = DatabaseTestHelper.getValidOccupationType2();
+		Type type1 = DatabaseTestHelper.getValidType1();
+		Type type2 = DatabaseTestHelper.getValidType2();
 
 		TypeData data1 = DatabaseManager.getInstance().createType(type1);
 		TypeData data2 = DatabaseManager.getInstance().createType(type2);
@@ -131,7 +131,7 @@ public class TestEventDatabase {
 	@Test(expected = IllegalArgumentException.class)
 	public void updateNonexistentEvent() throws Exception {
 		Event event1 = DatabaseTestHelper.getValidEvent1();
-		Type type = DatabaseTestHelper.getValidOccupationType1();
+		Type type = DatabaseTestHelper.getValidType1();
 
 		TypeData data1 = DatabaseManager.getInstance().createType(type);
 		DatabaseManager.getInstance().updateEvent(1, event1, data1.getId());
@@ -141,7 +141,7 @@ public class TestEventDatabase {
 	public void updateExistentEventNonexistentType() throws Exception {
 		Event event1 = DatabaseTestHelper.getValidEvent1();
 		Event event2 = DatabaseTestHelper.getValidEvent2();
-		Type type = DatabaseTestHelper.getValidOccupationType1();
+		Type type = DatabaseTestHelper.getValidType1();
 
 		TypeData data1 = DatabaseManager.getInstance().createType(type);
 		EventData data2 = DatabaseManager.getInstance().createEvent(event1, data1.getId());
@@ -152,7 +152,7 @@ public class TestEventDatabase {
 	public void updateInvalidExistentEvent() throws Exception {
 		Event event1 = DatabaseTestHelper.getValidEvent1();
 		Event event2 = DatabaseTestHelper.getInvalidEvent();
-		Type type = DatabaseTestHelper.getValidOccupationType1();
+		Type type = DatabaseTestHelper.getValidType1();
 
 		TypeData data1 = DatabaseManager.getInstance().createType(type);
 		EventData data2 = DatabaseManager.getInstance().createEvent(event1, data1.getId());
@@ -162,7 +162,7 @@ public class TestEventDatabase {
 	@Test(expected = IllegalArgumentException.class)
 	public void updateNullExistentEvent() throws Exception {
 		Event event1 = DatabaseTestHelper.getValidEvent1();
-		Type type = DatabaseTestHelper.getValidOccupationType1();
+		Type type = DatabaseTestHelper.getValidType1();
 
 		TypeData data1 = DatabaseManager.getInstance().createType(type);
 		EventData data2 = DatabaseManager.getInstance().createEvent(event1, data1.getId());
@@ -175,7 +175,7 @@ public class TestEventDatabase {
 	public void deleteExistentEvent() throws Exception {
 		long initEventTableSize = DatabaseManager.getInstance().getEventNumber();
 		Event event = DatabaseTestHelper.getValidEvent1();
-		Type type = DatabaseTestHelper.getValidOccupationType1();
+		Type type = DatabaseTestHelper.getValidType1();
 
 		TypeData data1 = DatabaseManager.getInstance().createType(type);
 		EventData data2 = DatabaseManager.getInstance().createEvent(event, data1.getId());
@@ -194,7 +194,7 @@ public class TestEventDatabase {
 	@Test
 	public void testExistentEvent() throws Exception {
 		long initEventSize = DatabaseManager.getInstance().getEventNumber();
-		Type type = DatabaseTestHelper.getValidOccupationType1();
+		Type type = DatabaseTestHelper.getValidType1();
 		Event event = DatabaseTestHelper.getValidEvent1();
 
 		TypeData data1 = DatabaseManager.getInstance().createType(type);

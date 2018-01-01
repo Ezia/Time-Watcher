@@ -539,6 +539,39 @@ public class DatabaseManager extends SQLiteOpenHelper {
 		}
 	}
 
+	public int deleteHobbiesOlderThan(DateTime oldestEndDate) {
+    	if (oldestEndDate == null || oldestEndDate.getMillis() == 0) {
+    		throw new IllegalArgumentException();
+		}
+
+		try (SQLiteDatabase db = this.getWritableDatabase()) {
+			int affectedRowNbr = db.delete(HobbyTable.TABLE_NAME,
+					HobbyTable.KEY_END_DATE + "<>?"
+					+ " AND " + HobbyTable.KEY_END_DATE + "<?",
+					new String[] { String.valueOf(0), String.valueOf(oldestEndDate.getMillis()) });
+			if (affectedRowNbr != 0) {
+				notifyDatabaseChange();
+			}
+			return affectedRowNbr;
+		}
+	}
+
+	public int deleteEventsOlderThan(DateTime oldestDate) {
+		if (oldestDate == null) {
+			throw new IllegalArgumentException();
+		}
+
+		try (SQLiteDatabase db = this.getWritableDatabase()) {
+			int affectedRowNbr = db.delete(EventTable.TABLE_NAME,
+					EventTable.KEY_DATE + "<?",
+					new String[] { String.valueOf(oldestDate.getMillis()) });
+			if (affectedRowNbr != 0) {
+				notifyDatabaseChange();
+			}
+			return affectedRowNbr;
+		}
+	}
+
 	///// OPERATION UTILS /////
 
 	private ContentValues checkAndBuildTypeContent(Type type) {

@@ -31,7 +31,7 @@ public class TestHobbyDatabase {
 	public void createValidHobby() throws Exception {
 		long initHobbySize = DatabaseManager.getInstance().getHobbyNumber();
 		Hobby hobby = DatabaseTestHelper.getValidHobby1();
-		Type type = DatabaseTestHelper.getValidOccupationType1();
+		Type type = DatabaseTestHelper.getValidType1();
 
 		TypeData data1 = DatabaseManager.getInstance().createType(type);
 		HobbyData data2 = DatabaseManager.getInstance().createHobby(hobby, data1.getId());
@@ -45,7 +45,7 @@ public class TestHobbyDatabase {
 	@Test(expected = IllegalArgumentException.class)
 	public void createInvalidHobby() throws Exception {
 		Hobby hobby = DatabaseTestHelper.getInvalidHobby();
-		Type type = DatabaseTestHelper.getValidOccupationType1();
+		Type type = DatabaseTestHelper.getValidType1();
 
 		TypeData data1 = DatabaseManager.getInstance().createType(type);
 		DatabaseManager.getInstance().createHobby(hobby, data1.getId());
@@ -53,7 +53,7 @@ public class TestHobbyDatabase {
 
 	@Test(expected = IllegalArgumentException.class)
 	public void createNullHobby() throws Exception {
-		Type type = DatabaseTestHelper.getValidOccupationType1();
+		Type type = DatabaseTestHelper.getValidType1();
 
 		TypeData data1 = DatabaseManager.getInstance().createType(type);
 		DatabaseManager.getInstance().createHobby(null, data1.getId());
@@ -71,7 +71,7 @@ public class TestHobbyDatabase {
 	public void requestExistentHobby() throws Exception {
 		long initHobbyTableSize = DatabaseManager.getInstance().getHobbyNumber();
 		Hobby hobby = DatabaseTestHelper.getValidHobby1();
-		Type type = DatabaseTestHelper.getValidOccupationType1();
+		Type type = DatabaseTestHelper.getValidType1();
 
 		TypeData data1 = DatabaseManager.getInstance().createType(type);
 		HobbyData data2 = DatabaseManager.getInstance().createHobby(hobby, data1.getId());
@@ -96,7 +96,7 @@ public class TestHobbyDatabase {
 		long initTypeSize = DatabaseManager.getInstance().getHobbyNumber();
 		Hobby hobby1 = DatabaseTestHelper.getValidHobby1();
 		Hobby hobby2 = DatabaseTestHelper.getValidHobby2();
-		Type type = DatabaseTestHelper.getValidOccupationType1();
+		Type type = DatabaseTestHelper.getValidType1();
 
 		TypeData data1 = DatabaseManager.getInstance().createType(type);
 		HobbyData data2 = DatabaseManager.getInstance().createHobby(hobby1, data1.getId());
@@ -113,8 +113,8 @@ public class TestHobbyDatabase {
 	public void updateExistentHobbyType() throws Exception {
 		long initHobbySize = DatabaseManager.getInstance().getHobbyNumber();
 		Hobby hobby1 = DatabaseTestHelper.getValidHobby1();
-		Type type1 = DatabaseTestHelper.getValidOccupationType1();
-		Type type2 = DatabaseTestHelper.getValidOccupationType2();
+		Type type1 = DatabaseTestHelper.getValidType1();
+		Type type2 = DatabaseTestHelper.getValidType2();
 
 		TypeData data1 = DatabaseManager.getInstance().createType(type1);
 		TypeData data2 = DatabaseManager.getInstance().createType(type2);
@@ -131,7 +131,7 @@ public class TestHobbyDatabase {
 	@Test(expected = IllegalArgumentException.class)
 	public void updateNonexistentHobby() throws Exception {
 		Hobby hobby1 = DatabaseTestHelper.getValidHobby1();
-		Type type = DatabaseTestHelper.getValidOccupationType1();
+		Type type = DatabaseTestHelper.getValidType1();
 
 		TypeData data1 = DatabaseManager.getInstance().createType(type);
 		DatabaseManager.getInstance().updateHobby(1, hobby1, data1.getId());
@@ -141,7 +141,7 @@ public class TestHobbyDatabase {
 	public void updateExistentHobbyNonexistentType() throws Exception {
 		Hobby hobby1 = DatabaseTestHelper.getValidHobby1();
 		Hobby hobby2 = DatabaseTestHelper.getValidHobby2();
-		Type type = DatabaseTestHelper.getValidOccupationType1();
+		Type type = DatabaseTestHelper.getValidType1();
 
 		TypeData data1 = DatabaseManager.getInstance().createType(type);
 		HobbyData data2 = DatabaseManager.getInstance().createHobby(hobby1, data1.getId());
@@ -152,7 +152,7 @@ public class TestHobbyDatabase {
 	public void updateInvalidExistentHobby() throws Exception {
 		Hobby hobby1 = DatabaseTestHelper.getValidHobby1();
 		Hobby hobby2 = DatabaseTestHelper.getInvalidHobby();
-		Type type = DatabaseTestHelper.getValidOccupationType1();
+		Type type = DatabaseTestHelper.getValidType1();
 
 		TypeData data1 = DatabaseManager.getInstance().createType(type);
 		HobbyData data2 = DatabaseManager.getInstance().createHobby(hobby1, data1.getId());
@@ -162,7 +162,7 @@ public class TestHobbyDatabase {
 	@Test(expected = IllegalArgumentException.class)
 	public void updateNullExistentHobby() throws Exception {
 		Hobby hobby1 = DatabaseTestHelper.getValidHobby1();
-		Type type = DatabaseTestHelper.getValidOccupationType1();
+		Type type = DatabaseTestHelper.getValidType1();
 
 		TypeData data1 = DatabaseManager.getInstance().createType(type);
 		HobbyData data2 = DatabaseManager.getInstance().createHobby(hobby1, data1.getId());
@@ -175,7 +175,7 @@ public class TestHobbyDatabase {
 	public void deleteExistentHobby() throws Exception {
 		long initHobbyTableSize = DatabaseManager.getInstance().getHobbyNumber();
 		Hobby hobby = DatabaseTestHelper.getValidHobby1();
-		Type type = DatabaseTestHelper.getValidOccupationType1();
+		Type type = DatabaseTestHelper.getValidType1();
 
 		TypeData data1 = DatabaseManager.getInstance().createType(type);
 		HobbyData data2 = DatabaseManager.getInstance().createHobby(hobby, data1.getId());
@@ -194,7 +194,7 @@ public class TestHobbyDatabase {
 	@Test
 	public void testExistentHobby() throws Exception {
 		long initHobbySize = DatabaseManager.getInstance().getHobbyNumber();
-		Type type = DatabaseTestHelper.getValidOccupationType1();
+		Type type = DatabaseTestHelper.getValidType1();
 		Hobby hobby = DatabaseTestHelper.getValidHobby1();
 
 		TypeData data1 = DatabaseManager.getInstance().createType(type);
