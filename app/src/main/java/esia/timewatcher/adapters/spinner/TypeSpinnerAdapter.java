@@ -5,24 +5,28 @@ import android.database.DataSetObserver;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.Spinner;
 import android.widget.SpinnerAdapter;
 import android.widget.TextView;
 
 import java.util.LinkedList;
 
 import esia.timewatcher.R;
+import esia.timewatcher.database.DatabaseListener;
 import esia.timewatcher.database.DatabaseManager;
 import esia.timewatcher.database.TypeData;
 import esia.timewatcher.structures.Type;
 
-public class TypeSpinnerAdapter implements SpinnerAdapter {
+public class TypeSpinnerAdapter implements SpinnerAdapter, DatabaseListener {
 
 	private Context context;
-	private LinkedList<TypeData> items;
+	private LinkedList<TypeData> dataList;
+	private LinkedList<DataSetObserver> observers = new LinkedList<>();
 
 	public TypeSpinnerAdapter(Context context) {
 		this.context = context;
-		items = DatabaseManager.getInstance().requestAllTypes();
+		DatabaseManager.getInstance().addListener(this);
+		dataList = DatabaseManager.getInstance().requestAllTypes();
 	}
 
 	@Override
@@ -34,7 +38,7 @@ public class TypeSpinnerAdapter implements SpinnerAdapter {
 			newView = convertView;
 		}
 
-		Type type = items.get(position).getType();
+		Type type = dataList.get(position).getType();
 		ImageView icon = newView.findViewById(R.id.icon);
 		TextView name = newView.findViewById(R.id.name);
 		icon.setImageBitmap(type.getIcon());
@@ -45,27 +49,27 @@ public class TypeSpinnerAdapter implements SpinnerAdapter {
 
 	@Override
 	public void registerDataSetObserver(DataSetObserver observer) {
-		// TODO
+		observers.add(observer);
 	}
 
 	@Override
 	public void unregisterDataSetObserver(DataSetObserver observer) {
-		// TODO
+		observers.remove(observer);
 	}
 
 	@Override
 	public int getCount() {
-		return items.size();
+		return dataList.size();
 	}
 
 	@Override
 	public Object getItem(int position) {
-		return items.get(position);
+		return dataList.get(position);
 	}
 
 	@Override
 	public long getItemId(int position) {
-		return items.get(position).getId();
+		return dataList.get(position).getId();
 	}
 
 	@Override
@@ -82,7 +86,7 @@ public class TypeSpinnerAdapter implements SpinnerAdapter {
 			newView = convertView;
 		}
 
-		Type type = items.get(position).getType();
+		Type type = dataList.get(position).getType();
 		ImageView icon = newView.findViewById(R.id.icon);
 		TextView name = newView.findViewById(R.id.name);
 		icon.setImageBitmap(type.getIcon());
@@ -103,6 +107,12 @@ public class TypeSpinnerAdapter implements SpinnerAdapter {
 
 	@Override
 	public boolean isEmpty() {
-		return items.isEmpty();
+		return dataList.isEmpty();
+	}
+
+	@Override
+	public void onDatabaseChange() {
+		dataList = DatabaseManager.getInstance().requestAllTypes();
+		observers.stream().forEach((o) -> o.onChanged());
 	}
 }

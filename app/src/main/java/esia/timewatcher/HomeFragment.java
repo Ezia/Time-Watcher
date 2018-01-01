@@ -2,7 +2,6 @@ package esia.timewatcher;
 
 import android.os.Bundle;
 import android.os.Handler;
-import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -15,9 +14,8 @@ import android.widget.Toast;
 
 import org.joda.time.DateTime;
 
-import esia.timewatcher.adapters.RunningHobbyRecyclerViewAdapter;
-import esia.timewatcher.adapters.TypeSpinnerAdapter;
-import esia.timewatcher.database.DatabaseListener;
+import esia.timewatcher.adapters.recycler.RunningHobbyRecyclerViewAdapter;
+import esia.timewatcher.adapters.spinner.TypeSpinnerAdapter;
 import esia.timewatcher.database.DatabaseManager;
 import esia.timewatcher.structures.Event;
 import esia.timewatcher.structures.Hobby;

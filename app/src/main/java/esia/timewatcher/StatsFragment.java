@@ -1,7 +1,6 @@
 package esia.timewatcher;
 
 import android.os.Bundle;
-import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -9,10 +8,8 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import esia.timewatcher.adapters.EventRecyclerViewAdapter;
-import esia.timewatcher.adapters.StoppedHobbyRecyclerViewAdapter;
-import esia.timewatcher.database.DatabaseListener;
-import esia.timewatcher.database.DatabaseManager;
+import esia.timewatcher.adapters.recycler.EventRecyclerViewAdapter;
+import esia.timewatcher.adapters.recycler.StoppedHobbyRecyclerViewAdapter;
 
 public class StatsFragment extends Fragment {
 
