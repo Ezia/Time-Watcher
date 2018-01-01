@@ -15,9 +15,11 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
+import android.widget.CompoundButton;
 import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.Spinner;
+import android.widget.Switch;
 import android.widget.Toast;
 
 import org.joda.time.DateTime;
@@ -62,6 +64,9 @@ public class SettingsFragment extends Fragment {
 
 		Button clearOlderThanButton = view.findViewById(R.id.clear_button);
 		clearOlderThanButton.setOnClickListener((v) -> onClearButtonClick(v));
+
+		Switch showUsageSwitch = view.findViewById(R.id.show_unused_types_switch);
+		showUsageSwitch.setOnCheckedChangeListener((c, b) -> onShowUsageSwitchChange(c, b));
 
 		return view;
 	}
@@ -130,5 +135,11 @@ public class SettingsFragment extends Fragment {
 					+ deletedHobbyNbr + " hobbies deleted",
 					Toast.LENGTH_SHORT).show();
 		}
+	}
+
+	public void onShowUsageSwitchChange(CompoundButton compoundButton, boolean b) {
+		RecyclerView typeRecyclerView = getView().findViewById(R.id.type_recycler_view);
+		TypeRecyclerViewAdapter adapter = (TypeRecyclerViewAdapter)typeRecyclerView.getAdapter();
+		adapter.setShowUsage(b);
 	}
 }

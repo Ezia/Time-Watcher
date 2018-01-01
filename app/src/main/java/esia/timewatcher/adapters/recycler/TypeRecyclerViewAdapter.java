@@ -13,9 +13,18 @@ import esia.timewatcher.database.TypeData;
 public class TypeRecyclerViewAdapter
 		extends SimpleRecyclerViewAdapter<TypeData, TypeRecyclerViewAdapter.TypeViewHolder> {
 
+	private boolean showUsage = false;
+
 	public TypeRecyclerViewAdapter(Context context) {
 		super(context, R.layout.type_view);
 		dataList = DatabaseManager.getInstance().requestAllTypes();
+	}
+
+	public void setShowUsage(boolean showUsage) {
+		if (this.showUsage != showUsage) {
+			notifyDataSetChanged();
+		}
+		this.showUsage = showUsage;
 	}
 
 	@Override
@@ -46,6 +55,11 @@ public class TypeRecyclerViewAdapter
 			assert(typeData != null);
 			icon.setImageBitmap(typeData.getType().getIcon());
 			name.setText(typeData.getType().getName());
+			if (showUsage && DatabaseManager.getInstance().isTypeUsed(typeData.getId())) {
+				itemView.setBackgroundColor(context.getColor(R.color.primaryColor));
+			} else {
+				itemView.setBackgroundColor(android.R.drawable.btn_default);
+			}
 		}
 	}
 }
