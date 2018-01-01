@@ -1,6 +1,7 @@
 package esia.timewatcher;
 
 import android.app.Activity;
+import android.app.DatePickerDialog;
 import android.graphics.Bitmap;
 import android.graphics.drawable.Drawable;
 import android.graphics.drawable.VectorDrawable;
@@ -8,6 +9,7 @@ import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.text.InputType;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -41,7 +43,18 @@ public class SettingsFragment extends Fragment {
 		Button createTypeButton = view.findViewById(R.id.create_type_button);
 		createTypeButton.setOnClickListener((v) -> onCreateTypeButtonClick(v));
 
+		EditText dateEditText = view.findViewById(R.id.date_edit_text);
+		dateEditText.setInputType(InputType.TYPE_NULL);
+		dateEditText.setOnFocusChangeListener((v, f) -> onDateEditTextClick(v, f));
+		dateEditText.setOnClickListener((v) -> onDateEditTextClick(v, true));
+
 		return view;
+	}
+
+	public void onDateEditTextClick(View v, boolean focus) {
+		if (focus) {
+			new DatePickerDialog(getContext()).show();
+		}
 	}
 
 	public void onCreateTypeButtonClick(View v) {
