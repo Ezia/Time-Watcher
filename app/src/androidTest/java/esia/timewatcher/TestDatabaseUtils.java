@@ -382,4 +382,59 @@ public class TestDatabaseUtils {
 	public void deleteEventsOlderThanOldestDate() throws Exception {
 		createAndDeleteEventsOlderThan(10,10);
 	}
+
+	///// CHECK TYPE USAGE /////
+
+	@Test
+	public void checkUnusedType() throws Exception {
+		Type type = DatabaseTestHelper.getValidType1();
+
+		TypeData data = DatabaseManager.getInstance().createType(type);
+		boolean typeUsed = DatabaseManager.getInstance().isTypeUsed(data.getId());
+
+		Assert.assertFalse(typeUsed);
+	}
+
+	@Test(expected = IllegalArgumentException.class)
+	public void checkNonexistentType() throws Exception {
+		DatabaseManager.getInstance().isTypeUsed(1);
+	}
+
+	@Test
+	public void checkUsedByEventType() throws Exception {
+		Type type = DatabaseTestHelper.getValidType1();
+		Event event = DatabaseTestHelper.getValidEvent1();
+
+		TypeData data = DatabaseManager.getInstance().createType(type);
+		DatabaseManager.getInstance().createEvent(event, data.getId());
+		boolean typeUsed = DatabaseManager.getInstance().isTypeUsed(data.getId());
+
+		Assert.assertTrue(typeUsed);
+	}
+
+	@Test
+	public void checkUsedByHobbyType() throws Exception {
+		Type type = DatabaseTestHelper.getValidType1();
+		Hobby hobby = DatabaseTestHelper.getValidHobby1();
+
+		TypeData data = DatabaseManager.getInstance().createType(type);
+		DatabaseManager.getInstance().createHobby(hobby, data.getId());
+		boolean typeUsed = DatabaseManager.getInstance().isTypeUsed(data.getId());
+
+		Assert.assertTrue(typeUsed);
+	}
+
+	@Test
+	public void checkUsedByEventAndHobbyType() throws Exception {
+		Type type = DatabaseTestHelper.getValidType1();
+		Event event = DatabaseTestHelper.getValidEvent1();
+		Hobby hobby = DatabaseTestHelper.getValidHobby1();
+
+		TypeData data = DatabaseManager.getInstance().createType(type);
+		DatabaseManager.getInstance().createEvent(event, data.getId());
+		DatabaseManager.getInstance().createHobby(hobby, data.getId());
+		boolean typeUsed = DatabaseManager.getInstance().isTypeUsed(data.getId());
+
+		Assert.assertTrue(typeUsed);
+	}
 }

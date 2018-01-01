@@ -38,6 +38,11 @@
         android:layout_height="0dp"
         android:layout_weight="1" />
 
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/clear_description"/>
+
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -47,7 +52,7 @@
             android:id="@+id/date_edit_text"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:hint="Clear data before ..."
+            android:hint="Clear data prior to ..."
             android:layout_weight="1"/>
 
         <Button
@@ -55,6 +60,24 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Clear"/>
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="@string/show_unused_types_description"/>
+
+        <Switch
+            android:id="@+id/show_unused_types_switch"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"/>
+
     </LinearLayout>
 
 </LinearLayout>

@@ -572,6 +572,34 @@ public class DatabaseManager extends SQLiteOpenHelper {
 		}
 	}
 
+	public boolean isTypeUsed(long typeId) {
+    	if (!typeExists(typeId)) {
+    		throw new IllegalArgumentException();
+		}
+
+		try (SQLiteDatabase db = this.getWritableDatabase()) {
+			long numberOfEvents = DatabaseUtils.queryNumEntries(db,
+					EventTable.TABLE_NAME,
+					EventTable.KEY_TYPE + "=?",
+					new String[] {String.valueOf(typeId)});
+
+			if (numberOfEvents == 0) {
+				long numberOfHobbies = DatabaseUtils.queryNumEntries(db,
+						HobbyTable.TABLE_NAME,
+						HobbyTable.KEY_TYPE + "=?",
+						new String[] {String.valueOf(typeId)});
+
+				if (numberOfHobbies == 0) {
+					return false;
+				} else {
+					return true;
+				}
+			} else {
+				return true;
+			}
+		}
+	}
+
 	///// OPERATION UTILS /////
 
 	private ContentValues checkAndBuildTypeContent(Type type) {

@@ -8,4 +8,9 @@
     <string name="more_start_button">Start options</string>
     <string name="title_activity_main">MainActivity</string>
 
+    <string name="clear_description">Delete events and hobbies prior to the given date.
+Based on end date for hobbies.</string>
+
+    <string name="show_unused_types_description">Show types that are not used by any event or hobby.</string>
+
 </resources>
