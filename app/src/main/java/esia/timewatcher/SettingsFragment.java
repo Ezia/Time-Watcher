@@ -60,6 +60,9 @@ public class SettingsFragment extends Fragment {
 			}
 		});
 
+		Button clearOlderThanButton = view.findViewById(R.id.clear_button);
+		clearOlderThanButton.setOnClickListener((v) -> onClearButtonClick(v));
+
 		return view;
 	}
 
@@ -109,6 +112,23 @@ public class SettingsFragment extends Fragment {
 			iconSpinner.setSelection(0);
 			InputMethodManager imm = (InputMethodManager) getContext().getSystemService(Activity.INPUT_METHOD_SERVICE);
 			imm.hideSoftInputFromWindow(getView().getWindowToken(), 0);
+		}
+	}
+
+	public void onClearButtonClick(View view) {
+		EditText dateEditText = getView().findViewById(R.id.date_edit_text);
+		DateTime date;
+		if (dateEditText.getText().length() == 0) {
+			dateEditText.setError("No date");
+		} else {
+			date = TimeUtils.stringToDate(dateEditText.getText().toString());
+			int deletedHobbyNbr = DatabaseManager.getInstance().deleteHobbiesOlderThan(date);
+			int deletedEvenNbr = DatabaseManager.getInstance().deleteEventsOlderThan(date);
+			Toast.makeText(getContext(),
+					""
+					+ deletedEvenNbr + " events and "
+					+ deletedHobbyNbr + " hobbies deleted",
+					Toast.LENGTH_SHORT).show();
 		}
 	}
 }
