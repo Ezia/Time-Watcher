@@ -11,7 +11,31 @@ import org.joda.time.format.PeriodFormatterBuilder;
 
 public class TimeUtils {
 
-	public static String toString(DateTime time) {
+	public static String dateToString(DateTime time) {
+		DateTimeFormatterBuilder formatBuilder = new DateTimeFormatterBuilder();
+
+		formatBuilder.appendDayOfMonth(2);
+		formatBuilder.appendLiteral(" ");
+		formatBuilder.appendMonthOfYearShortText();
+		formatBuilder.appendLiteral(" ");
+		formatBuilder.appendYear(4, 4);
+
+		return time.toString(formatBuilder.toFormatter());
+	}
+
+	public static DateTime stringToDate(String stringDate) {
+		DateTimeFormatterBuilder formatBuilder = new DateTimeFormatterBuilder();
+
+		formatBuilder.appendDayOfMonth(2);
+		formatBuilder.appendLiteral(" ");
+		formatBuilder.appendMonthOfYearShortText();
+		formatBuilder.appendLiteral(" ");
+		formatBuilder.appendYear(4, 4);
+
+		return formatBuilder.toFormatter().parseDateTime(stringDate);
+	}
+
+	public static String toSimpleString(DateTime time) {
 		DateTimeFormatterBuilder formatBuilder = new DateTimeFormatterBuilder();
 		DateTime now = DateTime.now();
 
@@ -41,7 +65,7 @@ public class TimeUtils {
 		return time.toString(formatBuilder.toFormatter());
 	}
 
-	public static String toString(Period time) {
+	public static String toSimpleString(Period time) {
 		Duration duration = time.toDurationTo(DateTime.now());
 
 		PeriodFormatterBuilder formatBuilder = new PeriodFormatterBuilder();

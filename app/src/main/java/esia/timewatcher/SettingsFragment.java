@@ -15,15 +15,19 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
+import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.Spinner;
 import android.widget.Toast;
+
+import org.joda.time.DateTime;
 
 import esia.timewatcher.adapters.spinner.TypeIconSpinnerAdapter;
 import esia.timewatcher.adapters.recycler.TypeRecyclerViewAdapter;
 import esia.timewatcher.database.DatabaseManager;
 import esia.timewatcher.structures.Type;
 import esia.timewatcher.utils.BitmapUtils;
+import esia.timewatcher.utils.TimeUtils;
 
 
 public class SettingsFragment extends Fragment {
@@ -48,12 +52,40 @@ public class SettingsFragment extends Fragment {
 		dateEditText.setOnFocusChangeListener((v, f) -> onDateEditTextClick(v, f));
 		dateEditText.setOnClickListener((v) -> onDateEditTextClick(v, true));
 
+		EditText nameEditText = view.findViewById(R.id.type_name_edit_text);
+		nameEditText.setOnFocusChangeListener((v, f) -> {
+			if (!f) {
+				InputMethodManager imm = (InputMethodManager) getContext().getSystemService(Activity.INPUT_METHOD_SERVICE);
+				imm.hideSoftInputFromWindow(getView().getWindowToken(), 0);
+			}
+		});
+
 		return view;
+	}
+
+	public void onDatePickerDataSet(DatePicker view, int year, int month, int day) {
+		EditText dateEditText = getView().findViewById(R.id.date_edit_text);
+		DateTime date = new DateTime(year, month+1, day, 0, 0);
+		String stringDate = TimeUtils.dateToString(date);
+		dateEditText.setText(stringDate);
 	}
 
 	public void onDateEditTextClick(View v, boolean focus) {
 		if (focus) {
-			new DatePickerDialog(getContext()).show();
+			EditText dateEditText = getView().findViewById(R.id.date_edit_text);
+			DateTime date;
+			if (dateEditText.getText().length() == 0) {
+				date = DateTime.now();
+			} else {
+				date = TimeUtils.stringToDate(dateEditText.getText().toString());
+			}
+			new DatePickerDialog(
+					getContext(),
+					(view, y, m, d) -> onDatePickerDataSet(view, y, m, d),
+					date.getYear(),
+					date.getMonthOfYear()-1,
+					date.getDayOfMonth()
+					).show();
 		}
 	}
 

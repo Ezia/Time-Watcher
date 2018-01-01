@@ -69,7 +69,7 @@ public class RunningHobbyRecyclerViewAdapter
 					hobbyData.getTypeData().getType().getIcon()
 			));
 			name.setText(hobbyData.getTypeData().getType().getName());
-			startDate.setText(TimeUtils.toString(hobbyData.getHobby().getStartDate()));
+			startDate.setText(TimeUtils.toSimpleString(hobbyData.getHobby().getStartDate()));
 			updateTimer(hobbyData);
 			stopButton.setOnClickListener((v) -> onStopClick());
 		}
@@ -85,7 +85,7 @@ public class RunningHobbyRecyclerViewAdapter
 		public void updateTimer(HobbyData data) {
 			Period elapsedTime = new Period(data.getHobby().getStartDate(),
 					DateTime.now());
-			remainingTime.setText("(" + TimeUtils.toString(elapsedTime) + ")");
+			remainingTime.setText("(" + TimeUtils.toSimpleString(elapsedTime) + ")");
 		}
 	}
 }

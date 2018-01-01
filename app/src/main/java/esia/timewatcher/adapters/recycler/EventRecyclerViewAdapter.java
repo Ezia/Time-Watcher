@@ -49,7 +49,7 @@ public class EventRecyclerViewAdapter
 			name.setBackground(new BitmapDrawable(context.getResources(),
 					eventData.getTypeData().getType().getIcon()
 			));
-			date.setText(TimeUtils.toString(eventData.getEvent().getDate()));
+			date.setText(TimeUtils.toSimpleString(eventData.getEvent().getDate()));
 		}
 	}
 }

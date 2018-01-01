@@ -55,11 +55,11 @@ public class StoppedHobbyRecyclerViewAdapter
 					hobbyData.getTypeData().getType().getIcon()
 			));
 			name.setText(hobbyData.getTypeData().getType().getName());
-			startDate.setText(TimeUtils.toString(hobbyData.getHobby().getStartDate()));
-			stopDate.setText(TimeUtils.toString(hobbyData.getHobby().getEndDate()));
+			startDate.setText(TimeUtils.toSimpleString(hobbyData.getHobby().getStartDate()));
+			stopDate.setText(TimeUtils.toSimpleString(hobbyData.getHobby().getEndDate()));
 			Period elapsedTime = new Period(hobbyData.getHobby().getStartDate(),
 					hobbyData.getHobby().getEndDate());
-			remainingTime.setText("(" + TimeUtils.toString(elapsedTime) + ")");
+			remainingTime.setText("(" + TimeUtils.toSimpleString(elapsedTime) + ")");
 		}
 	}
 }
