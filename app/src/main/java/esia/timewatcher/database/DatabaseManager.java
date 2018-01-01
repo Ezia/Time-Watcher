@@ -19,6 +19,7 @@ import esia.timewatcher.database.exceptions.UnexpectedSqlResultException;
 import esia.timewatcher.structures.Event;
 import esia.timewatcher.structures.Hobby;
 import esia.timewatcher.structures.Type;
+import esia.timewatcher.utils.BitmapUtils;
 
 public class DatabaseManager extends SQLiteOpenHelper {
 
@@ -549,7 +550,7 @@ public class DatabaseManager extends SQLiteOpenHelper {
 
 		ContentValues values = new ContentValues();
 		values.put(OccupationTypeTable.KEY_NAME, type.getName());
-		values.put(OccupationTypeTable.KEY_ICON, bitmapToBytes(type.getIcon()));
+		values.put(OccupationTypeTable.KEY_ICON, BitmapUtils.bitmapToBytes(type.getIcon()));
 
 		return values;
 	}
@@ -563,7 +564,7 @@ public class DatabaseManager extends SQLiteOpenHelper {
 
 		ContentValues values = new ContentValues();
 		values.put(OccupationTypeTable.KEY_NAME, type.getName());
-		values.put(OccupationTypeTable.KEY_ICON, bitmapToBytes(type.getIcon()));
+		values.put(OccupationTypeTable.KEY_ICON, BitmapUtils.bitmapToBytes(type.getIcon()));
 
 		return values;
 	}
@@ -628,7 +629,7 @@ public class DatabaseManager extends SQLiteOpenHelper {
 				new Type(
 						cursor.getString(
 								cursor.getColumnIndexOrThrow(OccupationTypeTable.KEY_NAME)),
-						bytesToBitmap(cursor.getBlob(
+						BitmapUtils.bytesToBitmap(cursor.getBlob(
 								cursor.getColumnIndexOrThrow(OccupationTypeTable.KEY_ICON)))
 				)
 		);
@@ -664,21 +665,6 @@ public class DatabaseManager extends SQLiteOpenHelper {
                 ),
                 parseType(cursor)
         );
-    }
-
-    ///// BITMAP UTILS /////
-
-    // convert from bitmap to byte array
-    private static byte[] bitmapToBytes(Bitmap bitmap) {
-        assert(bitmap != null);
-        ByteArrayOutputStream stream = new ByteArrayOutputStream();
-        bitmap.compress(Bitmap.CompressFormat.PNG, 0, stream);
-        return stream.toByteArray();
-    }
-
-    // convert from byte array to bitmap
-    private static Bitmap bytesToBitmap(byte[] image) {
-        return BitmapFactory.decodeByteArray(image, 0, image.length);
     }
 
     ///// LISTENERS /////

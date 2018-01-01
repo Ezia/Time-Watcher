@@ -1,7 +1,7 @@
 package esia.timewatcher;
 
+import android.app.Activity;
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.graphics.drawable.Drawable;
 import android.graphics.drawable.VectorDrawable;
 import android.os.Bundle;
@@ -11,6 +11,7 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Spinner;
@@ -52,14 +53,17 @@ public class SettingsFragment extends Fragment {
 		} else if (DatabaseManager.getInstance().typeExists(nameEditText.getText().toString())) {
 			nameEditText.setError("Already exists");
 		} else {
-			VectorDrawable selectedIcon = (VectorDrawable) iconSpinner.getSelectedItem();
+			Drawable selectedIcon = (Drawable)iconSpinner.getSelectedItem();
 			assert (selectedIcon != null);
 			Bitmap icon =
-					BitmapUtils.getBitmapFromVectorDrawable(getContext(), selectedIcon);
+					BitmapUtils.drawableToBitmap(getContext(), selectedIcon);
 			DatabaseManager.getInstance().createType(
 					new Type(nameEditText.getText().toString(), icon));
 			Toast.makeText(getContext(), "Created a type", Toast.LENGTH_SHORT).show();
+			nameEditText.setText("");
+			iconSpinner.setSelection(0);
+			InputMethodManager imm = (InputMethodManager) getContext().getSystemService(Activity.INPUT_METHOD_SERVICE);
+			imm.hideSoftInputFromWindow(getView().getWindowToken(), 0);
 		}
-
 	}
 }
