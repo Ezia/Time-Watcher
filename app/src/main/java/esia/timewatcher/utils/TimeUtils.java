@@ -1,6 +1,8 @@
 package esia.timewatcher.utils;
 
 import org.joda.time.DateTime;
+import org.joda.time.Days;
+import org.joda.time.Duration;
 import org.joda.time.Interval;
 import org.joda.time.Period;
 import org.joda.time.format.DateTimeFormat;
@@ -27,12 +29,12 @@ public class TimeUtils {
 		} else if (Math.abs(time.getDayOfMonth() - now.getDayOfMonth()) == 1) {
 			formatBuilder.appendLiteral("yesterday ");
 			formatBuilder.appendHourOfDay(2);
-			formatBuilder.appendLiteral(":");
+			formatBuilder.appendLiteral(" h ");
 			formatBuilder.appendMinuteOfHour(2);
 		} else {
 			formatBuilder.appendLiteral("today ");
 			formatBuilder.appendHourOfDay(2);
-			formatBuilder.appendLiteral(":");
+			formatBuilder.appendLiteral(" h ");
 			formatBuilder.appendMinuteOfHour(2);
 		}
 
@@ -40,37 +42,37 @@ public class TimeUtils {
 	}
 
 	public static String toString(Period time) {
-		DateTime now = DateTime.now();
+		Duration duration = time.toDurationTo(DateTime.now());
 
 		PeriodFormatterBuilder formatBuilder = new PeriodFormatterBuilder();
-		formatBuilder.printZeroAlways();
 
-		if (time.getYears() != 0) {
-			formatBuilder.appendYears();
-			formatBuilder.appendLiteral(" years ");
-			formatBuilder.appendDays();
-			formatBuilder.appendLiteral(" days");
-		} else if (time.getMonths() != 0 || time.getDays() > 1) {
-			formatBuilder.appendDays();
-			formatBuilder.appendLiteral(" days");
-		} else if (time.getDays() == 1) {
-			formatBuilder.appendDays();
-			formatBuilder.appendLiteral(" days ");
-			formatBuilder.appendHours();
-			formatBuilder.appendLiteral(" h");
-		} else if (time.getHours() != 0){
-			formatBuilder.appendHours();
-			formatBuilder.appendLiteral(" h ");
-			formatBuilder.appendMinutes();
-			formatBuilder.appendLiteral(" min");
-		} else if (time.getMinutes() != 0){
-			formatBuilder.appendMinutes();
-			formatBuilder.appendLiteral(" min ");
-			formatBuilder.appendSeconds();
-			formatBuilder.appendLiteral(" sec");
-		} else {
-			formatBuilder.appendSeconds();
-			formatBuilder.appendLiteral(" sec");
+		formatBuilder
+				.appendYears()
+				.appendSuffix(" year")
+				.appendSeparator(" ")
+				.appendMonths()
+				.appendSuffix(" months")
+				.appendSeparator(" ")
+				.appendDays()
+				.appendSuffix(" days")
+				.appendSeparator(" ");
+
+		if (duration.isShorterThan(Duration.standardDays(2))) {
+			formatBuilder
+					.appendHours()
+					.appendSuffix(" h")
+					.appendSeparator(" ");
+			if (duration.isShorterThan(Duration.standardDays(1))) {
+				formatBuilder
+						.appendMinutes()
+						.appendSuffix(" min")
+						.appendSeparator(" ");
+				if (duration.isShorterThan(Duration.standardHours(1))) {
+					formatBuilder
+							.appendSeconds()
+							.appendSuffix(" sec");
+				}
+			}
 		}
 
 		return formatBuilder.toFormatter().print(time);
