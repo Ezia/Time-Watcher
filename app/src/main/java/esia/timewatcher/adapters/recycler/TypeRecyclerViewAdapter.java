@@ -70,7 +70,7 @@ public class TypeRecyclerViewAdapter
 			switch (item.getItemId()) {
 				case R.id.delete_menu_item:
 					DatabaseManager.getInstance().deleteType(getItemId());
-					Toast.makeText(context, "Type deleted", Toast.LENGTH_SHORT);
+					Toast.makeText(context, "Type deleted", Toast.LENGTH_SHORT).show();
 					return true;
 				default:
 					return false;
