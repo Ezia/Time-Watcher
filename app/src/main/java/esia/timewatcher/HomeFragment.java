@@ -6,15 +6,18 @@ import android.os.Handler;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.PopupMenu;
 import android.widget.Spinner;
 import android.widget.Toast;
 
 import org.joda.time.DateTime;
 
 import esia.timewatcher.adapters.recycler.RunningHobbyRecyclerViewAdapter;
+import esia.timewatcher.adapters.spinner.StartButtonSpinnerAdapter;
 import esia.timewatcher.adapters.spinner.TypeSpinnerAdapter;
 import esia.timewatcher.database.DatabaseManager;
 import esia.timewatcher.structures.Event;
@@ -54,7 +57,34 @@ public class HomeFragment extends Fragment {
 		startButton.setOnClickListener((v) -> onStartClick(v));
 		startButton.setOnLongClickListener((v) -> onStartLongClick(v));
 
+		Spinner startSpinner = view.findViewById(R.id.start_spinner);
+		StartButtonSpinnerAdapter startSpinnerAdapter = new StartButtonSpinnerAdapter(getContext());
+		startSpinnerAdapter.setButtonClickListener(action -> onStartClick(action));
+		startSpinner.setAdapter(startSpinnerAdapter);
+
 		return view;
+	}
+
+	public void onStartClick(StartButtonSpinnerAdapter.ActionType action) {
+		Spinner typeSpinner = getView().findViewById(R.id.typeSpinner);
+		long selectedTypeId = typeSpinner.getSelectedItemId();
+
+		switch (action) {
+			case EVENT:
+				Event event = new Event(new DateTime());
+				DatabaseManager.getInstance().createEvent(event, selectedTypeId);
+				Toast.makeText(getContext(), "Event created", Toast.LENGTH_SHORT).show();
+				break;
+			case HOBBY:
+				Hobby newHobby = new Hobby(new DateTime());
+				DatabaseManager.getInstance().createHobby(newHobby, selectedTypeId);
+				Toast.makeText(getContext(), "Hobby created", Toast.LENGTH_SHORT).show();
+				break;
+			case EVENT_PLUS:
+
+			case HOBBY_PLUS:
+
+		}
 	}
 
 	public void onStartClick(View v) {
@@ -75,4 +105,5 @@ public class HomeFragment extends Fragment {
 		toast.show();
 		return true;
 	}
+
 }
