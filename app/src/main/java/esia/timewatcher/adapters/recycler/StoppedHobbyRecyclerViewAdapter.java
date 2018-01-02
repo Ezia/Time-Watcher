@@ -48,8 +48,6 @@ public class StoppedHobbyRecyclerViewAdapter
 			startDate = itemView.findViewById(R.id.start_date);
 			remainingTime = itemView.findViewById(R.id.elapsed_time);
 			stopDate = itemView.findViewById(R.id.stop_date);
-
-			itemView.setOnLongClickListener(v -> onLongClick(v));
 		}
 
 		@Override

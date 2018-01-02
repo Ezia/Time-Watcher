@@ -75,7 +75,6 @@ public class RunningHobbyRecyclerViewAdapter
 			startDate.setText(TimeUtils.toSimpleString(hobbyData.getHobby().getStartDate()));
 			updateTimer(hobbyData);
 			stopButton.setOnClickListener((v) -> onStopClick());
-			itemView.setOnLongClickListener(v -> onLongClick(v));
 		}
 
 		public void onStopClick() {

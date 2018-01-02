@@ -42,7 +42,6 @@ public class EventRecyclerViewAdapter
 			super(itemView);
 			name = itemView.findViewById(R.id.name);
 			date = itemView.findViewById(R.id.date);
-			itemView.setOnLongClickListener(v -> onLongClick(v));
 		}
 
 		@Override

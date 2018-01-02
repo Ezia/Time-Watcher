@@ -51,7 +51,6 @@ public class TypeRecyclerViewAdapter
 			super(itemView);
 			icon = itemView.findViewById(R.id.icon);
 			name = itemView.findViewById(R.id.name);
-			itemView.setOnLongClickListener(view -> onLongClick(view));
 		}
 
 		@Override
