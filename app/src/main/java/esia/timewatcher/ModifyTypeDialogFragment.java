@@ -3,6 +3,7 @@ package esia.timewatcher;
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.app.DialogFragment;
+import android.content.DialogInterface;
 import android.graphics.Bitmap;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
@@ -13,12 +14,14 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Spinner;
+import android.widget.Toast;
 
 import java.util.LinkedList;
 
 import esia.timewatcher.adapters.spinner.TypeIconSpinnerAdapter;
 import esia.timewatcher.database.DatabaseManager;
 import esia.timewatcher.database.TypeData;
+import esia.timewatcher.structures.Type;
 import esia.timewatcher.utils.BitmapUtils;
 
 /**
@@ -73,11 +76,23 @@ public class ModifyTypeDialogFragment extends DialogFragment {
 
 		AlertDialog d = new AlertDialog.Builder(getActivity())
 				.setView(view)
-				.setPositiveButton("Done", null)
+				.setPositiveButton("Done",
+						(dialogInterface, i1) -> onPositiveButtonClicked(dialogInterface, i1))
 				.setNegativeButton("Cancel", null)
 				.create();
 
 		return d;
 	}
 
+	private void onPositiveButtonClicked(DialogInterface d, int i) {
+		Spinner spinner = getDialog().findViewById(R.id.type_icon_spinner);
+		EditText nameEditText = getDialog().findViewById(R.id.type_name_edit_text);
+
+		Bitmap icon = (Bitmap)spinner.getSelectedItem();
+		String name = nameEditText.getText().toString();
+
+		DatabaseManager.getInstance().updateType(typeId, new Type(name, icon));
+
+		Toast.makeText(getContext(), "Type updated", Toast.LENGTH_SHORT).show();
+	}
 }
