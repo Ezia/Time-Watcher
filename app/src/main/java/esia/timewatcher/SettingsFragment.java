@@ -2,11 +2,12 @@ package esia.timewatcher;
 
 import android.app.Activity;
 import android.app.DatePickerDialog;
+import android.app.Fragment;
+import android.app.FragmentTransaction;
 import android.graphics.Bitmap;
 import android.graphics.drawable.Drawable;
 import android.graphics.drawable.VectorDrawable;
 import android.os.Bundle;
-import android.support.v4.app.Fragment;
 import android.support.v4.util.LogWriter;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -45,10 +46,15 @@ public class SettingsFragment extends Fragment {
 
 		RecyclerView typeRecyclerView = view.findViewById(R.id.type_recycler_view);
 		typeRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
-		typeRecyclerView.setAdapter(new TypeRecyclerViewAdapter(getContext()));
+		TypeRecyclerViewAdapter typeAdapter = new TypeRecyclerViewAdapter(getContext());
+		typeAdapter.setDialogListener((frag) -> {
+			frag.show(getFragmentManager(), "dialog");
+		});
+		typeRecyclerView.setAdapter(typeAdapter);
 
 		Spinner typeIconSpinner = view.findViewById(R.id.type_icon_spinner);
-		typeIconSpinner.setAdapter(new TypeIconSpinnerAdapter(getContext()));
+		typeIconSpinner.setAdapter(new TypeIconSpinnerAdapter(getContext(),
+				BitmapUtils.loadTypeIcons(getContext())));
 
 		Button createTypeButton = view.findViewById(R.id.create_type_button);
 		createTypeButton.setOnClickListener((v) -> onCreateTypeButtonClick(v));
@@ -110,10 +116,8 @@ public class SettingsFragment extends Fragment {
 		} else if (DatabaseManager.getInstance().typeExists(nameEditText.getText().toString())) {
 			nameEditText.setError("Already exists");
 		} else {
-			Drawable selectedIcon = (Drawable)iconSpinner.getSelectedItem();
-			assert (selectedIcon != null);
-			Bitmap icon =
-					BitmapUtils.drawableToBitmap(getContext(), selectedIcon);
+			Bitmap icon = (Bitmap) iconSpinner.getSelectedItem();
+			assert (icon != null);
 			DatabaseManager.getInstance().createType(
 					new Type(nameEditText.getText().toString(), icon));
 			Toast.makeText(getContext(), "Created a type", Toast.LENGTH_SHORT).show();

@@ -1,0 +1,83 @@
+package esia.timewatcher;
+
+import android.app.AlertDialog;
+import android.app.Dialog;
+import android.app.DialogFragment;
+import android.graphics.Bitmap;
+import android.graphics.drawable.Drawable;
+import android.os.Bundle;
+import android.support.annotation.Nullable;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.Button;
+import android.widget.EditText;
+import android.widget.Spinner;
+
+import java.util.LinkedList;
+
+import esia.timewatcher.adapters.spinner.TypeIconSpinnerAdapter;
+import esia.timewatcher.database.DatabaseManager;
+import esia.timewatcher.database.TypeData;
+import esia.timewatcher.utils.BitmapUtils;
+
+/**
+ * Created by esia on 01/01/18.
+ */
+
+public class ModifyTypeDialogFragment extends DialogFragment {
+
+	long typeId = 0;
+
+
+	public static ModifyTypeDialogFragment newInstance(long typeid) {
+		ModifyTypeDialogFragment f = new ModifyTypeDialogFragment();
+
+		Bundle args = new Bundle();
+		args.putLong("type_id", typeid);
+		f.setArguments(args);
+
+		return f;
+	}
+
+	@Override
+	public void onCreate(Bundle savedInstanceState) {
+		super.onCreate(savedInstanceState);
+		typeId = getArguments().getLong("type_id");
+	}
+
+	@Override
+	public Dialog onCreateDialog(Bundle savedInstanceState) {
+
+		TypeData data = DatabaseManager.getInstance().requestType(typeId);
+
+		View view = getActivity().getLayoutInflater().inflate(R.layout.modify_type_fragment, null);
+
+		EditText nameEditText = view.findViewById(R.id.type_name_edit_text);
+		nameEditText.setText(data.getType().getName());
+
+		Spinner spinner = view.findViewById(R.id.type_icon_spinner);
+		LinkedList<Bitmap> icons =  BitmapUtils.loadTypeIcons(getContext());
+		int i;
+		for (i = 0; i < icons.size(); ++i) {
+			if (icons.get(i).sameAs(data.getType().getIcon())) {
+				break;
+			}
+		}
+		if (i == icons.size()) {
+			icons.add(data.getType().getIcon());
+		}
+		TypeIconSpinnerAdapter spinnerAdapter = new TypeIconSpinnerAdapter(getContext(), icons);
+		spinner.setAdapter(spinnerAdapter);
+		spinner.setSelection(i);
+
+		AlertDialog d = new AlertDialog.Builder(getActivity())
+				.setView(view)
+				.setPositiveButton("Done", null)
+				.setNegativeButton("Cancel", null)
+				.create();
+
+		return d;
+	}
+
+}

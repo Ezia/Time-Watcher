@@ -3,21 +3,25 @@ package esia.timewatcher.adapters.spinner;
 import android.content.Context;
 import android.content.res.TypedArray;
 import android.database.DataSetObserver;
+import android.graphics.Bitmap;
 import android.graphics.drawable.Drawable;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.SpinnerAdapter;
 
+import java.util.LinkedList;
+
 import esia.timewatcher.R;
 
 public class TypeIconSpinnerAdapter implements SpinnerAdapter {
 
 	private Context context;
-	private int typedArrayId = R.array.type_icons;
+	private LinkedList<Bitmap> icons;
 
-	public TypeIconSpinnerAdapter(Context context) {
+	public TypeIconSpinnerAdapter(Context context, LinkedList<Bitmap> icons) {
 		this.context = context;
+		this.icons = icons;
 	}
 
 	@Override
@@ -29,11 +33,8 @@ public class TypeIconSpinnerAdapter implements SpinnerAdapter {
 			newView = convertView;
 		}
 
-		TypedArray typedArray = context.getResources().obtainTypedArray(typedArrayId);
-		Drawable icon = typedArray.getDrawable(position);
-		typedArray.recycle();
 		ImageView iconView = newView.findViewById(R.id.icon);
-		iconView.setImageDrawable(icon);
+		iconView.setImageBitmap(icons.get(position));
 
 		return newView;
 	}
@@ -50,31 +51,22 @@ public class TypeIconSpinnerAdapter implements SpinnerAdapter {
 
 	@Override
 	public int getCount() {
-		TypedArray typedArray = context.getResources().obtainTypedArray(typedArrayId);
-		int len = typedArray.length();
-		typedArray.recycle();
-		return len;
+		return icons.size();
 	}
 
 	@Override
 	public Object getItem(int position) {
-		TypedArray typedArray = context.getResources().obtainTypedArray(typedArrayId);
-		Drawable dr = typedArray.getDrawable(position);
-		typedArray.recycle();
-		return dr;
+		return icons.get(position);
 	}
 
 	@Override
 	public long getItemId(int position) {
-		TypedArray typedArray = context.getResources().obtainTypedArray(typedArrayId);
-		long id = typedArray.getResourceId(position, 0);
-		typedArray.recycle();
-		return id;
+		return icons.get(position).hashCode();
 	}
 
 	@Override
 	public boolean hasStableIds() {
-		return false;
+		return true;
 	}
 
 	@Override
@@ -94,9 +86,6 @@ public class TypeIconSpinnerAdapter implements SpinnerAdapter {
 
 	@Override
 	public boolean isEmpty() {
-		TypedArray typedArray = context.getResources().obtainTypedArray(typedArrayId);
-		boolean empty = typedArray.getIndexCount() == 0;
-		typedArray.recycle();
-		return empty;
+		return getCount() == 0;
 	}
 }

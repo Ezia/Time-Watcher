@@ -8,6 +8,7 @@ import android.widget.PopupMenu;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import esia.timewatcher.ModifyTypeDialogFragment;
 import esia.timewatcher.R;
 import esia.timewatcher.database.Data;
 import esia.timewatcher.database.DatabaseManager;
@@ -58,6 +59,18 @@ public class TypeRecyclerViewAdapter
 			if (!DatabaseManager.getInstance().isTypeUsed(getItemId())) {
 				super.fillPopup(popup);
 			}
+			popup.inflate(R.menu.modify_menu);
+		}
+
+		@Override
+		public boolean onPopupItemClick(MenuItem item) {
+			if (item.getItemId() == R.id.modify_menu_item) {
+				ModifyTypeDialogFragment frag = ModifyTypeDialogFragment.newInstance(getItemId());
+				notifyDialogRequest(frag);
+				return true;
+			}
+
+			return super.onPopupItemClick(item);
 		}
 
 		@Override
@@ -79,6 +92,5 @@ public class TypeRecyclerViewAdapter
 			}
 		}
 	}
-
 
 }

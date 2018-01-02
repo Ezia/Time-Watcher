@@ -1,5 +1,6 @@
 package esia.timewatcher.adapters.recycler;
 
+import android.app.DialogFragment;
 import android.content.Context;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -25,7 +26,6 @@ public abstract class SimpleRecyclerViewAdapter
 	protected final Context context;
 	protected final int viewResource;
 	protected RecyclerView recyclerView;
-
 	public SimpleRecyclerViewAdapter(Context context, int viewRessource) {
 		this.context = context;
 		this.viewResource = viewRessource;
@@ -101,5 +101,24 @@ public abstract class SimpleRecyclerViewAdapter
 		}
 
 		public abstract void deleteData();
+
+	}
+
+	///// dialog listener /////
+
+	private DialogListener dialogListener = null;
+
+	public interface DialogListener {
+		abstract void onDialogRequest(DialogFragment dialog);
+	}
+
+	public void setDialogListener(DialogListener dialogListener) {
+		this.dialogListener = dialogListener;
+	}
+
+	protected void notifyDialogRequest(DialogFragment dialog) {
+		if (dialogListener != null) {
+			dialogListener.onDialogRequest(dialog);
+		}
 	}
 }
