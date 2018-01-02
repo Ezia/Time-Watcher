@@ -391,7 +391,7 @@ public class DatabaseManager extends SQLiteOpenHelper {
     ///// ENTRY DELETION /////
 
     public void deleteType(long id) {
-        if (!typeExists(id)) {
+        if (!typeExists(id) || isTypeUsed(id)) {
             throw new IllegalArgumentException();
         }
 

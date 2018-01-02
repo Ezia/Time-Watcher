@@ -1,9 +1,15 @@
 package esia.timewatcher.adapters.recycler;
 
 import android.content.Context;
+import android.util.Log;
+import android.view.ContextMenu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageView;
+import android.widget.PopupMenu;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import esia.timewatcher.R;
 import esia.timewatcher.database.Data;
@@ -47,6 +53,28 @@ public class TypeRecyclerViewAdapter
 			super(itemView);
 			icon = itemView.findViewById(R.id.icon);
 			name = itemView.findViewById(R.id.name);
+			itemView.setOnLongClickListener(view -> onLongClick(view));
+		}
+
+		public boolean onLongClick(View v) {
+			if (!DatabaseManager.getInstance().isTypeUsed(getItemId())) {
+				PopupMenu popup = new PopupMenu(context, v);
+				popup.getMenuInflater().inflate(R.menu.type_menu, popup.getMenu());
+				popup.setOnMenuItemClickListener(menuItem -> onPopupItemClick(menuItem));
+				popup.show();
+			}
+			return true;
+		}
+
+		public boolean onPopupItemClick(MenuItem item) {
+			switch (item.getItemId()) {
+				case R.id.delete_menu_item:
+					DatabaseManager.getInstance().deleteType(getItemId());
+					Toast.makeText(context, "Type deleted", Toast.LENGTH_SHORT);
+					return true;
+				default:
+					return false;
+			}
 		}
 
 		@Override
@@ -62,4 +90,6 @@ public class TypeRecyclerViewAdapter
 			}
 		}
 	}
+
+
 }
