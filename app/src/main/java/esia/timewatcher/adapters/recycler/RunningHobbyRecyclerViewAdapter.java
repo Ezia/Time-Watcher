@@ -2,9 +2,12 @@ package esia.timewatcher.adapters.recycler;
 
 import android.content.Context;
 import android.graphics.drawable.BitmapDrawable;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
+import android.widget.PopupMenu;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import org.joda.time.DateTime;
 import org.joda.time.Period;
@@ -72,6 +75,7 @@ public class RunningHobbyRecyclerViewAdapter
 			startDate.setText(TimeUtils.toSimpleString(hobbyData.getHobby().getStartDate()));
 			updateTimer(hobbyData);
 			stopButton.setOnClickListener((v) -> onStopClick());
+			itemView.setOnLongClickListener(v -> onLongClick(v));
 		}
 
 		public void onStopClick() {
@@ -80,6 +84,12 @@ public class RunningHobbyRecyclerViewAdapter
 			Hobby newHobby = new Hobby(data.getHobby().getStartDate(), new DateTime());
 			DatabaseManager.getInstance().updateHobby(data.getId(), newHobby,
 					data.getTypeData().getId());
+		}
+
+		@Override
+		public void deleteData() {
+			DatabaseManager.getInstance().deleteHobby(getItemId());
+			Toast.makeText(context, "Hobby deleted", Toast.LENGTH_SHORT).show();
 		}
 
 		public void updateTimer(HobbyData data) {

@@ -3,11 +3,15 @@ package esia.timewatcher.adapters.recycler;
 import android.content.Context;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.PopupMenu;
+import android.widget.Toast;
 
 import java.util.LinkedList;
 
+import esia.timewatcher.R;
 import esia.timewatcher.database.Data;
 import esia.timewatcher.database.DatabaseListener;
 import esia.timewatcher.database.DatabaseManager;
@@ -69,8 +73,33 @@ public abstract class SimpleRecyclerViewAdapter
 
 		public SimpleViewHolder(View itemView) {
 			super(itemView);
+			itemView.setOnLongClickListener(v -> onLongClick(v));
 		}
 
 		public abstract void set(Data data);
+
+		public void fillPopup(PopupMenu popup) {
+			popup.getMenuInflater().inflate(R.menu.deletion_menu, popup.getMenu());
+		}
+
+		public boolean onPopupItemClick(MenuItem item) {
+			switch (item.getItemId()) {
+				case R.id.delete_menu_item:
+					deleteData();
+					return true;
+				default:
+					return false;
+			}
+		}
+
+		public boolean onLongClick(View v) {
+			PopupMenu popup = new PopupMenu(context, itemView);
+			fillPopup(popup);
+			popup.setOnMenuItemClickListener(menuItem -> onPopupItemClick(menuItem));
+			popup.show();
+			return true;
+		}
+
+		public abstract void deleteData();
 	}
 }

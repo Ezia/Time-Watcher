@@ -2,8 +2,11 @@ package esia.timewatcher.adapters.recycler;
 
 import android.content.Context;
 import android.graphics.drawable.BitmapDrawable;
+import android.view.MenuItem;
 import android.view.View;
+import android.widget.PopupMenu;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import org.joda.time.Period;
 
@@ -45,6 +48,14 @@ public class StoppedHobbyRecyclerViewAdapter
 			startDate = itemView.findViewById(R.id.start_date);
 			remainingTime = itemView.findViewById(R.id.elapsed_time);
 			stopDate = itemView.findViewById(R.id.stop_date);
+
+			itemView.setOnLongClickListener(v -> onLongClick(v));
+		}
+
+		@Override
+		public void deleteData() {
+			DatabaseManager.getInstance().deleteHobby(getItemId());
+			Toast.makeText(context, "Hobby deleted", Toast.LENGTH_SHORT).show();
 		}
 
 		public void set(Data data) {
