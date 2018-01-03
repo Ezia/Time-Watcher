@@ -7,42 +7,25 @@ import android.view.ViewGroup;
 import android.widget.SpinnerAdapter;
 import android.widget.TextView;
 
+import java.util.Collection;
+import java.util.Collections;
+import java.util.LinkedList;
+
 import esia.timewatcher.R;
 
-public class StartButtonSpinnerAdapter implements SpinnerAdapter {
-
-	public enum ActionType {
-		HOBBY("Hobby"),
-		HOBBY_PLUS("Hobby+"),
-		EVENT("Event"),
-		EVENT_PLUS("Event+");
-
-		private String toString;
-		ActionType(String toString) {
-			this.toString = toString;
-		}
-
-		@Override
-		public String toString() {
-			return toString;
-		}
-	}
+public class ActionSpinnerAdapter implements SpinnerAdapter {
 
 	public interface ButtonClickListener {
-		void onButtonClick(ActionType action);
+		void onButtonClick(Action action);
 	}
 
 	private Context context;
-	private ActionType[] actions = {
-			ActionType.HOBBY,
-			ActionType.HOBBY_PLUS,
-			ActionType.EVENT,
-			ActionType.EVENT_PLUS
-	};
+	private LinkedList<Action> actions;
 	private ButtonClickListener listener;
 
-	public StartButtonSpinnerAdapter(Context context) {
+	public ActionSpinnerAdapter(Context context, Collection<? extends Action> actions) {
 		this.context = context;
+		this.actions = new LinkedList<>(actions);
 	}
 
 	public void setButtonClickListener(ButtonClickListener listener) {
@@ -53,13 +36,13 @@ public class StartButtonSpinnerAdapter implements SpinnerAdapter {
 	public View getDropDownView(int position, View convertView, ViewGroup parent) {
 		View newView;
 		if (convertView == null) {
-			newView = View.inflate(context, R.layout.start_button_drop_down_view, null);
+			newView = View.inflate(context, R.layout.action_drop_down_view, null);
 		} else {
 			newView = convertView;
 		}
 
 		TextView text = newView.findViewById(R.id.text);
-		text.setText(actions[position].toString());
+		text.setText(actions.get(position).getName());
 
 		return newView;
 	}
@@ -68,19 +51,19 @@ public class StartButtonSpinnerAdapter implements SpinnerAdapter {
 	public View getView(int position, View convertView, ViewGroup parent) {
 		View newView;
 		if (convertView == null) {
-			newView = View.inflate(context, R.layout.start_button_view, null);
+			newView = View.inflate(context, R.layout.action_button_view, null);
 		} else {
 			newView = convertView;
 		}
 
 		newView.setOnClickListener(view -> {
 			if (listener != null) {
-				listener.onButtonClick(actions[position]);
+				listener.onButtonClick(actions.get(position));
 			}
 		});
 
 		TextView text = newView.findViewById(R.id.button);
-		text.setText(actions[position].toString());
+		text.setText(actions.get(position).getName());
 
 		return newView;
 	}
@@ -93,17 +76,17 @@ public class StartButtonSpinnerAdapter implements SpinnerAdapter {
 
 	@Override
 	public int getCount() {
-		return actions.length;
+		return actions.size();
 	}
 
 	@Override
 	public Object getItem(int position) {
-		return actions[position];
+		return actions.get(position);
 	}
 
 	@Override
 	public long getItemId(int position) {
-		return actions[position].ordinal();
+		return actions.get(position).getId();
 	}
 
 	@Override

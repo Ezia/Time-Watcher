@@ -1,7 +1,6 @@
 package esia.timewatcher;
 
 import android.app.Fragment;
-import android.app.FragmentTransaction;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.v7.widget.LinearLayoutManager;
@@ -15,14 +14,40 @@ import android.widget.Toast;
 
 import org.joda.time.DateTime;
 
+import java.util.Arrays;
+
 import esia.timewatcher.adapters.recycler.RunningHobbyRecyclerViewAdapter;
-import esia.timewatcher.adapters.spinner.StartButtonSpinnerAdapter;
+import esia.timewatcher.adapters.spinner.Action;
+import esia.timewatcher.adapters.spinner.ActionSpinnerAdapter;
 import esia.timewatcher.adapters.spinner.TypeSpinnerAdapter;
 import esia.timewatcher.database.DatabaseManager;
 import esia.timewatcher.structures.Event;
 import esia.timewatcher.structures.Hobby;
 
 public class HomeFragment extends Fragment {
+
+	private enum  StartAction implements Action {
+		HOBBY("Hobby"),
+		HOBBY_PLUS("Hobby+"),
+		EVENT("Event"),
+		EVENT_PLUS("Event+");
+
+		private String name;
+
+		StartAction(String name) {
+			this.name = name;
+		}
+
+		@Override
+		public long getId() {
+			return ordinal();
+		}
+
+		@Override
+		public String getName() {
+			return name;
+		}
+	}
 
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -57,18 +82,19 @@ public class HomeFragment extends Fragment {
 		startButton.setOnLongClickListener((v) -> onStartLongClick(v));
 
 		Spinner startSpinner = view.findViewById(R.id.start_spinner);
-		StartButtonSpinnerAdapter startSpinnerAdapter = new StartButtonSpinnerAdapter(getContext());
+		ActionSpinnerAdapter startSpinnerAdapter = new ActionSpinnerAdapter(getContext(),
+				Arrays.asList(StartAction.values()));
 		startSpinnerAdapter.setButtonClickListener(action -> onStartClick(action));
 		startSpinner.setAdapter(startSpinnerAdapter);
 
 		return view;
 	}
 
-	public void onStartClick(StartButtonSpinnerAdapter.ActionType action) {
+	public void onStartClick(Action action) {
 		Spinner typeSpinner = getView().findViewById(R.id.type_spinner);
 		long selectedTypeId = typeSpinner.getSelectedItemId();
 
-		switch (action) {
+		switch (((StartAction)action)) {
 			case EVENT:
 				Event event = new Event(new DateTime());
 				DatabaseManager.getInstance().createEvent(event, selectedTypeId);
