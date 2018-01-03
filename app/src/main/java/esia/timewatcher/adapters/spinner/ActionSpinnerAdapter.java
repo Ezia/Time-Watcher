@@ -8,7 +8,6 @@ import android.widget.SpinnerAdapter;
 import android.widget.TextView;
 
 import java.util.Collection;
-import java.util.Collections;
 import java.util.LinkedList;
 
 import esia.timewatcher.R;
@@ -51,7 +50,7 @@ public class ActionSpinnerAdapter implements SpinnerAdapter {
 	public View getView(int position, View convertView, ViewGroup parent) {
 		View newView;
 		if (convertView == null) {
-			newView = View.inflate(context, R.layout.action_button_view, null);
+			newView = View.inflate(context, R.layout.action_view, null);
 		} else {
 			newView = convertView;
 		}

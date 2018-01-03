@@ -1,15 +1,11 @@
 package esia.timewatcher;
 
 import android.app.AlertDialog;
-import android.app.DatePickerDialog;
 import android.app.Dialog;
 import android.app.DialogFragment;
 import android.content.DialogInterface;
 import android.os.Bundle;
-import android.text.InputType;
 import android.view.View;
-import android.widget.DatePicker;
-import android.widget.EditText;
 import android.widget.Spinner;
 import android.widget.Toast;
 
@@ -17,10 +13,8 @@ import org.joda.time.DateTime;
 
 import esia.timewatcher.adapters.spinner.TypeSpinnerAdapter;
 import esia.timewatcher.database.DatabaseManager;
-import esia.timewatcher.database.TypeData;
 import esia.timewatcher.structures.Event;
 import esia.timewatcher.structures.Hobby;
-import esia.timewatcher.utils.TimeUtils;
 import esia.timewatcher.view.DateEditText;
 import esia.timewatcher.view.TimeEditText;
 
@@ -65,7 +59,7 @@ public class CustomStartDialogFragment extends DialogFragment {
 	@Override
 	public Dialog onCreateDialog(Bundle savedInstanceState) {
 
-		View view = getActivity().getLayoutInflater().inflate(R.layout.custom_start_dialog_fragment, null);
+		View view = getActivity().getLayoutInflater().inflate(R.layout.custom_start_dialog_view, null);
 
 		TypeSpinnerAdapter typeSpinnerAdapter = new TypeSpinnerAdapter(getContext());
 		Spinner typeSpinner = view.findViewById(R.id.type_spinner);

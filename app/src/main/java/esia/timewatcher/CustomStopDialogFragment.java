@@ -10,7 +10,6 @@ import android.widget.Toast;
 
 import org.joda.time.DateTime;
 
-import esia.timewatcher.database.Data;
 import esia.timewatcher.database.DatabaseManager;
 import esia.timewatcher.database.HobbyData;
 import esia.timewatcher.structures.Hobby;
@@ -40,7 +39,7 @@ public class CustomStopDialogFragment extends DialogFragment {
 	@Override
 	public Dialog onCreateDialog(Bundle savedInstanceState) {
 
-		View view = getActivity().getLayoutInflater().inflate(R.layout.custom_stop_view, null);
+		View view = getActivity().getLayoutInflater().inflate(R.layout.custom_stop_dialog_view, null);
 
 		AlertDialog d = new AlertDialog.Builder(getActivity())
 				.setView(view)

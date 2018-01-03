@@ -5,13 +5,8 @@ import android.app.Dialog;
 import android.app.DialogFragment;
 import android.content.DialogInterface;
 import android.graphics.Bitmap;
-import android.graphics.drawable.Drawable;
 import android.os.Bundle;
-import android.support.annotation.Nullable;
-import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
-import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Spinner;
 import android.widget.Toast;
@@ -54,7 +49,7 @@ public class ModifyTypeDialogFragment extends DialogFragment {
 
 		TypeData data = DatabaseManager.getInstance().requestType(typeId);
 
-		View view = getActivity().getLayoutInflater().inflate(R.layout.modify_type_fragment, null);
+		View view = getActivity().getLayoutInflater().inflate(R.layout.type_modification_dialog_view, null);
 
 		EditText nameEditText = view.findViewById(R.id.type_name_edit_text);
 		nameEditText.setText(data.getType().getName());

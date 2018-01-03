@@ -33,7 +33,7 @@ public class TypeSpinnerAdapter implements SpinnerAdapter, DatabaseListener {
 	public View getDropDownView(int position, View convertView, ViewGroup parent) {
 		View newView;
 		if (convertView == null) {
-			newView = View.inflate(context, R.layout.type_dropdown_view, null);
+			newView = View.inflate(context, R.layout.type_view, null);
 		} else {
 			newView = convertView;
 		}
