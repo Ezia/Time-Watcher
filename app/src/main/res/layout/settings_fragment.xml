@@ -48,11 +48,10 @@
         android:layout_height="wrap_content"
         android:orientation="horizontal">
 
-        <EditText
+        <esia.timewatcher.view.DateEditText
             android:id="@+id/date_edit_text"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:hint="Clear data prior to ..."
             android:layout_weight="1"/>
 
         <Button

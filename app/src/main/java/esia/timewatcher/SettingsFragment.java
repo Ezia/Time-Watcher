@@ -35,6 +35,7 @@ import esia.timewatcher.database.DatabaseManager;
 import esia.timewatcher.structures.Type;
 import esia.timewatcher.utils.BitmapUtils;
 import esia.timewatcher.utils.TimeUtils;
+import esia.timewatcher.view.DateEditText;
 
 
 public class SettingsFragment extends Fragment {
@@ -59,11 +60,6 @@ public class SettingsFragment extends Fragment {
 		Button createTypeButton = view.findViewById(R.id.create_type_button);
 		createTypeButton.setOnClickListener((v) -> onCreateTypeButtonClick(v));
 
-		EditText dateEditText = view.findViewById(R.id.date_edit_text);
-		dateEditText.setInputType(InputType.TYPE_NULL);
-		dateEditText.setOnFocusChangeListener((v, f) -> onDateEditTextClick(v, f));
-		dateEditText.setOnClickListener((v) -> onDateEditTextClick(v, true));
-
 		EditText nameEditText = view.findViewById(R.id.type_name_edit_text);
 		nameEditText.setOnFocusChangeListener((v, f) -> {
 			if (!f) {
@@ -79,32 +75,6 @@ public class SettingsFragment extends Fragment {
 		showUsageSwitch.setOnCheckedChangeListener((c, b) -> onShowUsageSwitchChange(c, b));
 
 		return view;
-	}
-
-	public void onDatePickerDataSet(DatePicker view, int year, int month, int day) {
-		EditText dateEditText = getView().findViewById(R.id.date_edit_text);
-		DateTime date = new DateTime(year, month+1, day, 0, 0);
-		String stringDate = TimeUtils.dateToString(date);
-		dateEditText.setText(stringDate);
-	}
-
-	public void onDateEditTextClick(View v, boolean focus) {
-		if (focus) {
-			EditText dateEditText = getView().findViewById(R.id.date_edit_text);
-			DateTime date;
-			if (dateEditText.getText().length() == 0) {
-				date = DateTime.now();
-			} else {
-				date = TimeUtils.stringToDate(dateEditText.getText().toString());
-			}
-			new DatePickerDialog(
-					getContext(),
-					(view, y, m, d) -> onDatePickerDataSet(view, y, m, d),
-					date.getYear(),
-					date.getMonthOfYear()-1,
-					date.getDayOfMonth()
-					).show();
-		}
 	}
 
 	public void onCreateTypeButtonClick(View v) {
@@ -129,20 +99,20 @@ public class SettingsFragment extends Fragment {
 	}
 
 	public void onClearButtonClick(View view) {
-		EditText dateEditText = getView().findViewById(R.id.date_edit_text);
-		DateTime date;
-		if (dateEditText.getText().length() == 0) {
-			dateEditText.setError("No date");
-		} else {
-			date = TimeUtils.stringToDate(dateEditText.getText().toString());
-			int deletedHobbyNbr = DatabaseManager.getInstance().deleteHobbiesOlderThan(date);
-			int deletedEvenNbr = DatabaseManager.getInstance().deleteEventsOlderThan(date);
-			Toast.makeText(getContext(),
-					""
-					+ deletedEvenNbr + " events and "
-					+ deletedHobbyNbr + " hobbies deleted",
-					Toast.LENGTH_SHORT).show();
-		}
+		DateEditText dateEditText = getView().findViewById(R.id.date_edit_text);
+		DateTime date = new DateTime(
+				dateEditText.getYear(),
+				dateEditText.getMonth(),
+				dateEditText.getDay(),
+				0,
+				0);
+		int deletedHobbyNbr = DatabaseManager.getInstance().deleteHobbiesOlderThan(date);
+		int deletedEvenNbr = DatabaseManager.getInstance().deleteEventsOlderThan(date);
+		Toast.makeText(getContext(),
+				""
+				+ deletedEvenNbr + " events and "
+				+ deletedHobbyNbr + " hobbies deleted",
+				Toast.LENGTH_SHORT).show();
 	}
 
 	public void onShowUsageSwitchChange(CompoundButton compoundButton, boolean b) {
