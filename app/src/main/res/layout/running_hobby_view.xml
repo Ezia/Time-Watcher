@@ -39,12 +39,10 @@
             android:text="(2h13)"
             android:gravity="center_vertical|end"/>
 
-        <Button
-            android:id="@+id/stop_button"
+        <Spinner
+            android:id="@+id/action_spinner"
             android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:text="@string/stop_button"
-            android:gravity="center"/>
+            android:layout_height="match_parent" />
 
 
 </LinearLayout>

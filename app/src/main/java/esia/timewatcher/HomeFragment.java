@@ -1,5 +1,6 @@
 package esia.timewatcher;
 
+import android.app.DialogFragment;
 import android.app.Fragment;
 import android.os.Bundle;
 import android.os.Handler;
@@ -17,6 +18,7 @@ import org.joda.time.DateTime;
 import java.util.Arrays;
 
 import esia.timewatcher.adapters.recycler.RunningHobbyRecyclerViewAdapter;
+import esia.timewatcher.adapters.recycler.SimpleRecyclerViewAdapter;
 import esia.timewatcher.adapters.spinner.Action;
 import esia.timewatcher.adapters.spinner.ActionSpinnerAdapter;
 import esia.timewatcher.adapters.spinner.TypeSpinnerAdapter;
@@ -24,7 +26,12 @@ import esia.timewatcher.database.DatabaseManager;
 import esia.timewatcher.structures.Event;
 import esia.timewatcher.structures.Hobby;
 
-public class HomeFragment extends Fragment {
+public class HomeFragment extends Fragment implements SimpleRecyclerViewAdapter.DialogListener {
+
+	@Override
+	public void onDialogRequest(DialogFragment dialog) {
+		dialog.show(getFragmentManager(), "dialog");
+	}
 
 	private enum  StartAction implements Action {
 		HOBBY("New hobby"),
@@ -65,6 +72,7 @@ public class HomeFragment extends Fragment {
 		LinearLayoutManager layoutManager = new LinearLayoutManager(getContext());
 		runningHobbiesRecycler.setLayoutManager(layoutManager);
 		runningHobbiesRecycler.setAdapter(runningHobbiesAdapter);
+		runningHobbiesAdapter.setDialogListener(this);
 
 		final Handler handler = new Handler();
 		Runnable updateRunningList = new Runnable() {
