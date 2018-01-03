@@ -115,4 +115,13 @@ public class TypeSpinnerAdapter implements SpinnerAdapter, DatabaseListener {
 		dataList = DatabaseManager.getInstance().requestAllTypes();
 		observers.stream().forEach((o) -> o.onChanged());
 	}
+
+	public int getItemPosition(long id) {
+		for (int i = 0; i < getCount(); ++i) {
+			if (dataList.get(i).getId() == id) {
+				return i;
+			}
+		}
+		return -1;
+	}
 }

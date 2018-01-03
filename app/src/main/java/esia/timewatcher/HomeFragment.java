@@ -1,16 +1,15 @@
 package esia.timewatcher;
 
 import android.app.Fragment;
+import android.app.FragmentTransaction;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
-import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
-import android.widget.PopupMenu;
 import android.widget.Spinner;
 import android.widget.Toast;
 
@@ -32,7 +31,7 @@ public class HomeFragment extends Fragment {
 		View view = inflater.inflate(R.layout.home_fragment, container, false);
 
 		TypeSpinnerAdapter typeSpinnerAdapter = new TypeSpinnerAdapter(getContext());
-		Spinner typeSpinner = view.findViewById(R.id.typeSpinner);
+		Spinner typeSpinner = view.findViewById(R.id.type_spinner);
 		typeSpinner.setAdapter(typeSpinnerAdapter);
 
 		RunningHobbyRecyclerViewAdapter runningHobbiesAdapter =
@@ -66,7 +65,7 @@ public class HomeFragment extends Fragment {
 	}
 
 	public void onStartClick(StartButtonSpinnerAdapter.ActionType action) {
-		Spinner typeSpinner = getView().findViewById(R.id.typeSpinner);
+		Spinner typeSpinner = getView().findViewById(R.id.type_spinner);
 		long selectedTypeId = typeSpinner.getSelectedItemId();
 
 		switch (action) {
@@ -81,14 +80,18 @@ public class HomeFragment extends Fragment {
 				Toast.makeText(getContext(), "Hobby created", Toast.LENGTH_SHORT).show();
 				break;
 			case EVENT_PLUS:
-
+				CustomStartDialogFragment.newEventInstance(selectedTypeId)
+						.show(getFragmentManager(), "dialog");
+				break;
 			case HOBBY_PLUS:
-
+				CustomStartDialogFragment.newHobbyInstance(selectedTypeId)
+						.show(getFragmentManager(), "dialog");
+				break;
 		}
 	}
 
 	public void onStartClick(View v) {
-		Spinner typeSpinner = getView().findViewById(R.id.typeSpinner);
+		Spinner typeSpinner = getView().findViewById(R.id.type_spinner);
 		long selectedTypeId = typeSpinner.getSelectedItemId();
 		Hobby newHobby = new Hobby(new DateTime());
 		DatabaseManager.getInstance().createHobby(newHobby, selectedTypeId);
@@ -97,7 +100,7 @@ public class HomeFragment extends Fragment {
 	}
 
 	public boolean onStartLongClick(View v) {
-		Spinner typeSpinner = getView().findViewById(R.id.typeSpinner);
+		Spinner typeSpinner = getView().findViewById(R.id.type_spinner);
 		long selectedTypeId = typeSpinner.getSelectedItemId();
 		Event newEvent = new Event(new DateTime());
 		DatabaseManager.getInstance().createEvent(newEvent, selectedTypeId);
