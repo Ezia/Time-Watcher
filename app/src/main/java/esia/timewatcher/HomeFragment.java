@@ -27,10 +27,10 @@ import esia.timewatcher.structures.Hobby;
 public class HomeFragment extends Fragment {
 
 	private enum  StartAction implements Action {
-		HOBBY("Hobby"),
-		HOBBY_PLUS("Hobby+"),
-		EVENT("Event"),
-		EVENT_PLUS("Event+");
+		HOBBY("New hobby"),
+		HOBBY_PLUS("New hobby..."),
+		EVENT("New event"),
+		EVENT_PLUS("New Event...");
 
 		private String name;
 
@@ -77,10 +77,6 @@ public class HomeFragment extends Fragment {
 		this.getActivity().runOnUiThread(updateRunningList);
 		handler.post(updateRunningList);
 
-		Button startButton = view.findViewById(R.id.start_button);
-		startButton.setOnClickListener((v) -> onStartClick(v));
-		startButton.setOnLongClickListener((v) -> onStartLongClick(v));
-
 		Spinner startSpinner = view.findViewById(R.id.start_spinner);
 		ActionSpinnerAdapter startSpinnerAdapter = new ActionSpinnerAdapter(getContext(),
 				Arrays.asList(StartAction.values()));
@@ -115,24 +111,4 @@ public class HomeFragment extends Fragment {
 				break;
 		}
 	}
-
-	public void onStartClick(View v) {
-		Spinner typeSpinner = getView().findViewById(R.id.type_spinner);
-		long selectedTypeId = typeSpinner.getSelectedItemId();
-		Hobby newHobby = new Hobby(new DateTime());
-		DatabaseManager.getInstance().createHobby(newHobby, selectedTypeId);
-		Toast toast = Toast.makeText(getContext(), "Hobby created", Toast.LENGTH_SHORT);
-		toast.show();
-	}
-
-	public boolean onStartLongClick(View v) {
-		Spinner typeSpinner = getView().findViewById(R.id.type_spinner);
-		long selectedTypeId = typeSpinner.getSelectedItemId();
-		Event newEvent = new Event(new DateTime());
-		DatabaseManager.getInstance().createEvent(newEvent, selectedTypeId);
-		Toast toast = Toast.makeText(getContext(), "Event created", Toast.LENGTH_SHORT);
-		toast.show();
-		return true;
-	}
-
 }

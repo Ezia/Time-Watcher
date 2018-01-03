@@ -27,12 +27,6 @@
             android:layout_height="wrap_content"
             android:spinnerMode="dropdown"/>
 
-        <Button
-            android:id="@+id/start_button"
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:text="@string/start_button" />
-
     </LinearLayout>
 
 
