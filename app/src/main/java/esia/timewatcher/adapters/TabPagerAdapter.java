@@ -24,11 +24,11 @@ public class TabPagerAdapter extends FragmentPagerAdapter {
 	public Fragment getItem(int position) {
 		switch (position) {
 			case 0:
-				return new SettingsFragment();
-			case 1:
 				return new HomeFragment();
-			case 2:
+			case 1:
 				return new StatsFragment();
+			case 2:
+				return new SettingsFragment();
 			default:
 				throw new IllegalArgumentException();
 		}
@@ -39,11 +39,11 @@ public class TabPagerAdapter extends FragmentPagerAdapter {
 	public CharSequence getPageTitle(int position) {
 		switch (position) {
 			case 0:
-				return "Settings";
-			case 1:
 				return "Home";
-			case 2:
+			case 1:
 				return "Stats";
+			case 2:
+				return "Settings";
 			default:
 				throw new IllegalArgumentException();
 		}
