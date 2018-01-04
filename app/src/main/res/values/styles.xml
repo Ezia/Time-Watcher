@@ -1,22 +1,48 @@
 <resources>
 
-    <style name="AppTheme" parent="Theme.AppCompat.NoActionBar">
-        <item name="android:colorPrimary">@color/primaryColor</item>
-        <item name="android:colorPrimaryDark">@color/primaryDarkColor</item>
-        <item name="android:textColorPrimary">@color/secondaryTextColor</item>
-        <item name="android:textColorSecondary">@color/primaryTextColor</item>
+    <!--Theme-->
+
+    <style name="AppTheme" parent="Theme.Design.NoActionBar">
+        <!--Misc-->
+        <item name="colorPrimary">@color/primaryColor</item>
+        <item name="colorPrimaryDark">@color/primaryDarkColor</item>
+        <item name="colorAccent">@color/secondaryColor</item>
         <item name="android:colorBackground">@color/primaryLightColor</item>
         <item name="android:colorForeground">@color/secondaryDarkColor</item>
-        <item name="android:colorAccent">@color/secondaryColor</item>
-        <item name="android:navigationBarColor">@color/primaryColor</item>
-        <item name="android:windowBackground">@color/secondaryLightColor</item>
-        <item name="android:textColorSecondaryInverse">@color/secondaryTextColor</item>
-        <item name="android:textColorPrimaryInverse">@color/primaryTextColor</item>
+        <item name="android:textColorPrimary">@color/primaryTextColor</item>
+        <item name="android:textColorSecondary">@color/secondaryTextColor</item>
+        <item name="android:navigationBarColor">@color/primaryDarkColor</item>
+
+        <!--Toolbar-->
+        <item name="android:toolbarStyle">@style/Toolbar</item>
+
+        <!--Spinner-->
+        <item name="android:spinnerStyle">@style/Spinner</item>
     </style>
 
-    <style name="AppTheme.TextTheme">
-        <item name="android:textSize">@dimen/font_size</item>
-        <item name="android:padding">@dimen/text_padding</item>
+    <!--Toolbar-->
+
+    <style name="Toolbar" parent="Widget.AppCompat.Toolbar">
+        <item name="android:title">@string/app_name</item>
+        <item name="android:titleTextAppearance">@style/Title</item>
+    </style>
+
+    <style name="Title" parent="TextAppearance.AppCompat.Title">
+        <item name="android:textSize">@dimen/title_size</item>
+        <item name="android:textColor">@color/secondaryColor</item>
+    </style>
+
+    <!--Tabs-->
+
+    <style name="TabStyle" parent="Widget.Design.TabLayout">
+        <item name="tabTextColor">@color/secondaryDarkColor</item>
+        <item name="tabSelectedTextColor">@color/secondaryLightColor</item>
+    </style>
+
+    <!--Spinner-->
+
+    <style name="Spinner" parent="Widget.AppCompat.Spinner">
+        <item name="android:backgroundTint">@color/primaryDarkColor</item>
     </style>
 
 </resources>

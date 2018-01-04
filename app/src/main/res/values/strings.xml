@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="app_name">TimeWatcher</string>
+    <string name="app_name">Time Watcher</string>
 
     <string name="stop_button">Stop</string>
     <string name="start_button">Start</string>
