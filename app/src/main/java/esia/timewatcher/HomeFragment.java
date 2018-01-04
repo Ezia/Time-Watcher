@@ -63,12 +63,12 @@ public class HomeFragment extends Fragment implements SimpleRecyclerViewAdapter.
 		View view = inflater.inflate(R.layout.home_fragment, container, false);
 
 		TypeSpinnerAdapter typeSpinnerAdapter = new TypeSpinnerAdapter(getContext());
-		Spinner typeSpinner = view.findViewById(R.id.type_spinner);
+		Spinner typeSpinner = (Spinner) view.findViewById(R.id.type_spinner);
 		typeSpinner.setAdapter(typeSpinnerAdapter);
 
 		RunningHobbyRecyclerViewAdapter runningHobbiesAdapter =
 				new RunningHobbyRecyclerViewAdapter(getContext());
-		RecyclerView runningHobbiesRecycler = view.findViewById(R.id.running_hobbies);
+		RecyclerView runningHobbiesRecycler = (RecyclerView) view.findViewById(R.id.running_hobbies);
 		LinearLayoutManager layoutManager = new LinearLayoutManager(getContext());
 		runningHobbiesRecycler.setLayoutManager(layoutManager);
 		runningHobbiesRecycler.setAdapter(runningHobbiesAdapter);
@@ -85,7 +85,7 @@ public class HomeFragment extends Fragment implements SimpleRecyclerViewAdapter.
 		this.getActivity().runOnUiThread(updateRunningList);
 		handler.post(updateRunningList);
 
-		Spinner startSpinner = view.findViewById(R.id.start_spinner);
+		Spinner startSpinner = (Spinner) view.findViewById(R.id.start_spinner);
 		ActionSpinnerAdapter startSpinnerAdapter = new ActionSpinnerAdapter(getContext(),
 				Arrays.asList(StartAction.values()));
 		startSpinnerAdapter.setButtonClickListener(action -> onStartClick(action));
@@ -95,7 +95,7 @@ public class HomeFragment extends Fragment implements SimpleRecyclerViewAdapter.
 	}
 
 	public void onStartClick(Action action) {
-		Spinner typeSpinner = getView().findViewById(R.id.type_spinner);
+		Spinner typeSpinner = (Spinner) getView().findViewById(R.id.type_spinner);
 		long selectedTypeId = typeSpinner.getSelectedItemId();
 
 		switch (((StartAction)action)) {

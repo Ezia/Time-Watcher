@@ -31,8 +31,8 @@ public class HomeActivity extends AppCompatActivity {
 
         initializeDatabase();
 
-		ViewPager pager = findViewById(R.id.view_pager);
-		TabLayout tab = findViewById(R.id.tab_layout);
+		ViewPager pager = (ViewPager) findViewById(R.id.view_pager);
+		TabLayout tab = (TabLayout) findViewById(R.id.tab_layout);
 
 		pager.setAdapter(new TabPagerAdapter(getFragmentManager()));
 		pager.setCurrentItem(1);

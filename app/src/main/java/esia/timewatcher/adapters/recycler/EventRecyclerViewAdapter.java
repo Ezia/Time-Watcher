@@ -40,8 +40,8 @@ public class EventRecyclerViewAdapter
 
 		public EventViewHolder(View itemView) {
 			super(itemView);
-			name = itemView.findViewById(R.id.name);
-			date = itemView.findViewById(R.id.date);
+			name = (TextView) itemView.findViewById(R.id.name);
+			date = (TextView) itemView.findViewById(R.id.date);
 		}
 
 		@Override

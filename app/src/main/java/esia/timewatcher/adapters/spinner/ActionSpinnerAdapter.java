@@ -40,7 +40,7 @@ public class ActionSpinnerAdapter implements SpinnerAdapter {
 			newView = convertView;
 		}
 
-		TextView text = newView.findViewById(R.id.text);
+		TextView text = (TextView) newView.findViewById(R.id.text);
 		text.setText(actions.get(position).getName());
 
 		return newView;
@@ -61,7 +61,7 @@ public class ActionSpinnerAdapter implements SpinnerAdapter {
 			}
 		});
 
-		TextView text = newView.findViewById(R.id.button);
+		TextView text = (TextView) newView.findViewById(R.id.button);
 		text.setText(actions.get(position).getName());
 
 		return newView;

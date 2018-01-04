@@ -33,7 +33,7 @@ public class TypeIconSpinnerAdapter implements SpinnerAdapter {
 			newView = convertView;
 		}
 
-		ImageView iconView = newView.findViewById(R.id.icon);
+		ImageView iconView = (ImageView) newView.findViewById(R.id.icon);
 		iconView.setImageBitmap(icons.get(position));
 
 		return newView;

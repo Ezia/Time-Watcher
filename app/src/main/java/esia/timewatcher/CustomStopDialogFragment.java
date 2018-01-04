@@ -54,8 +54,8 @@ public class CustomStopDialogFragment extends DialogFragment {
 	private void onPositiveButtonClicked(DialogInterface d, int i) {
 		HobbyData hobbyData = DatabaseManager.getInstance().requestHobby(hobbyId);
 
-		DateEditText dateEditText = getDialog().findViewById(R.id.date_edit_text);
-		TimeEditText timeEditText = getDialog().findViewById(R.id.time_edit_text);
+		DateEditText dateEditText = (DateEditText) getDialog().findViewById(R.id.date_edit_text);
+		TimeEditText timeEditText = (TimeEditText) getDialog().findViewById(R.id.time_edit_text);
 
 		DatabaseManager.getInstance().updateHobby(hobbyId,
 				new Hobby(hobbyData.getHobby().getStartDate(),

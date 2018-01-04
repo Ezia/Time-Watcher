@@ -21,13 +21,13 @@ public class StatsFragment extends Fragment {
 
 		StoppedHobbyRecyclerViewAdapter runningHobbiesAdapter =
 				new StoppedHobbyRecyclerViewAdapter(getContext());
-		RecyclerView runningHobbiesRecycler = view.findViewById(R.id.stopped_hobbies);
+		RecyclerView runningHobbiesRecycler = (RecyclerView) view.findViewById(R.id.stopped_hobbies);
 		runningHobbiesRecycler.setLayoutManager(new LinearLayoutManager(getContext()));
 		runningHobbiesRecycler.setAdapter(runningHobbiesAdapter);
 
 		EventRecyclerViewAdapter eventAdapter =
 				new EventRecyclerViewAdapter(getContext());
-		RecyclerView eventRecyclerView = view.findViewById(R.id.events);
+		RecyclerView eventRecyclerView = (RecyclerView) view.findViewById(R.id.events);
 		eventRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
 		eventRecyclerView.setAdapter(eventAdapter);
 

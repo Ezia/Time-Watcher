@@ -285,7 +285,9 @@ public class TestDatabaseUtils {
 		List<Hobby> remainingHobbies = hobbies.subList(expectedRemovedNbr, initStoppedNbr+initRunningNbr);
 
 		TypeData typeData = DatabaseManager.getInstance().createType(type);
-		hobbies.forEach((h) -> DatabaseManager.getInstance().createHobby(h, typeData.getId()));
+		for (Hobby h : hobbies) {
+			DatabaseManager.getInstance().createHobby(h, typeData.getId());
+		}
 
 		int deletedNbr = DatabaseManager.getInstance().deleteHobbiesOlderThan(limitDate);
 		LinkedList<HobbyData> remainingHobbyData =
@@ -296,9 +298,9 @@ public class TestDatabaseUtils {
 		Assert.assertEquals(deletedNbr, expectedRemovedNbr);
 		Assert.assertEquals(remainingHobbyData.size(),
 				initStoppedNbr + initRunningNbr - expectedRemovedNbr);
-		remainingHobbyData.forEach((hd) ->
-				Assert.assertTrue(remainingHobbies.contains(hd.getHobby()))
-		);
+		for (HobbyData hd : remainingHobbyData) {
+			Assert.assertTrue(remainingHobbies.contains(hd.getHobby()));
+		}
 	}
 
 	@Test
@@ -342,7 +344,9 @@ public class TestDatabaseUtils {
 		List<Event> remainingEvents = events.subList(expectedRemovedNbr, initEventNbr);
 
 		TypeData typeData = DatabaseManager.getInstance().createType(type);
-		events.forEach((h) -> DatabaseManager.getInstance().createEvent(h, typeData.getId()));
+		for (Event h : events) {
+			DatabaseManager.getInstance().createEvent(h, typeData.getId());
+		}
 
 		int deletedNbr = DatabaseManager.getInstance().deleteEventsOlderThan(limitDate);
 		LinkedList<EventData> remainingEventsData =
@@ -351,9 +355,9 @@ public class TestDatabaseUtils {
 		Assert.assertEquals(deletedNbr, expectedRemovedNbr);
 		Assert.assertEquals(remainingEventsData.size(),
 				initEventNbr - expectedRemovedNbr);
-		remainingEventsData.forEach((hd) ->
-				Assert.assertTrue(remainingEvents.contains(hd.getEvent()))
-		);
+		for (EventData hd : remainingEventsData) {
+			Assert.assertTrue(remainingEvents.contains(hd.getEvent()));
+		}
 	}
 
 	@Test

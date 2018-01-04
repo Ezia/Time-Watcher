@@ -44,10 +44,10 @@ public class StoppedHobbyRecyclerViewAdapter
 		public StoppedHobbyViewHolder(View itemView) {
 			super(itemView);
 
-			name = itemView.findViewById(R.id.name);
-			startDate = itemView.findViewById(R.id.start_date);
-			remainingTime = itemView.findViewById(R.id.elapsed_time);
-			stopDate = itemView.findViewById(R.id.stop_date);
+			name = (TextView) itemView.findViewById(R.id.name);
+			startDate = (TextView) itemView.findViewById(R.id.start_date);
+			remainingTime = (TextView) itemView.findViewById(R.id.elapsed_time);
+			stopDate = (TextView) itemView.findViewById(R.id.stop_date);
 		}
 
 		@Override

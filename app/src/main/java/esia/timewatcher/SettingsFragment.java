@@ -45,7 +45,7 @@ public class SettingsFragment extends Fragment {
 		// Inflate the layout for this fragment
 		View view = inflater.inflate(R.layout.settings_fragment, container, false);
 
-		RecyclerView typeRecyclerView = view.findViewById(R.id.type_recycler_view);
+		RecyclerView typeRecyclerView = (RecyclerView) view.findViewById(R.id.type_recycler_view);
 		typeRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
 		TypeRecyclerViewAdapter typeAdapter = new TypeRecyclerViewAdapter(getContext());
 		typeAdapter.setDialogListener((frag) -> {
@@ -53,14 +53,14 @@ public class SettingsFragment extends Fragment {
 		});
 		typeRecyclerView.setAdapter(typeAdapter);
 
-		Spinner typeIconSpinner = view.findViewById(R.id.type_icon_spinner);
+		Spinner typeIconSpinner = (Spinner) view.findViewById(R.id.type_icon_spinner);
 		typeIconSpinner.setAdapter(new TypeIconSpinnerAdapter(getContext(),
 				BitmapUtils.loadTypeIcons(getContext())));
 
-		Button createTypeButton = view.findViewById(R.id.create_type_button);
+		Button createTypeButton = (Button) view.findViewById(R.id.create_type_button);
 		createTypeButton.setOnClickListener((v) -> onCreateTypeButtonClick(v));
 
-		EditText nameEditText = view.findViewById(R.id.type_name_edit_text);
+		EditText nameEditText = (EditText) view.findViewById(R.id.type_name_edit_text);
 		nameEditText.setOnFocusChangeListener((v, f) -> {
 			if (!f) {
 				InputMethodManager imm = (InputMethodManager) getContext().getSystemService(Activity.INPUT_METHOD_SERVICE);
@@ -68,18 +68,18 @@ public class SettingsFragment extends Fragment {
 			}
 		});
 
-		Button clearOlderThanButton = view.findViewById(R.id.clear_button);
+		Button clearOlderThanButton = (Button) view.findViewById(R.id.clear_button);
 		clearOlderThanButton.setOnClickListener((v) -> onClearButtonClick(v));
 
-		Switch showUsageSwitch = view.findViewById(R.id.show_unused_types_switch);
+		Switch showUsageSwitch = (Switch) view.findViewById(R.id.show_unused_types_switch);
 		showUsageSwitch.setOnCheckedChangeListener((c, b) -> onShowUsageSwitchChange(c, b));
 
 		return view;
 	}
 
 	public void onCreateTypeButtonClick(View v) {
-		EditText nameEditText = getView().findViewById(R.id.type_name_edit_text);
-		Spinner iconSpinner = getView().findViewById(R.id.type_icon_spinner);
+		EditText nameEditText = (EditText) getView().findViewById(R.id.type_name_edit_text);
+		Spinner iconSpinner = (Spinner) getView().findViewById(R.id.type_icon_spinner);
 
 		if (nameEditText.length() == 0) {
 			nameEditText.setError("No name");
@@ -99,7 +99,7 @@ public class SettingsFragment extends Fragment {
 	}
 
 	public void onClearButtonClick(View view) {
-		DateEditText dateEditText = getView().findViewById(R.id.date_edit_text);
+		DateEditText dateEditText = (DateEditText) getView().findViewById(R.id.date_edit_text);
 		DateTime date = new DateTime(
 				dateEditText.getYear(),
 				dateEditText.getMonth(),
@@ -116,7 +116,7 @@ public class SettingsFragment extends Fragment {
 	}
 
 	public void onShowUsageSwitchChange(CompoundButton compoundButton, boolean b) {
-		RecyclerView typeRecyclerView = getView().findViewById(R.id.type_recycler_view);
+		RecyclerView typeRecyclerView = (RecyclerView) getView().findViewById(R.id.type_recycler_view);
 		TypeRecyclerViewAdapter adapter = (TypeRecyclerViewAdapter)typeRecyclerView.getAdapter();
 		adapter.setShowUsage(b);
 	}

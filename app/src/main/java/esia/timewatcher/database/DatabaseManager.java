@@ -739,6 +739,8 @@ public class DatabaseManager extends SQLiteOpenHelper {
     }
 
     private void notifyDatabaseChange() {
-        listeners.stream().forEach((l) -> l.onDatabaseChange());
+    	for (DatabaseListener l : listeners) {
+			l.onDatabaseChange();
+		}
     }
 }

@@ -62,7 +62,7 @@ public class CustomStartDialogFragment extends DialogFragment {
 		View view = getActivity().getLayoutInflater().inflate(R.layout.custom_start_dialog_view, null);
 
 		TypeSpinnerAdapter typeSpinnerAdapter = new TypeSpinnerAdapter(getContext());
-		Spinner typeSpinner = view.findViewById(R.id.type_spinner);
+		Spinner typeSpinner = (Spinner) view.findViewById(R.id.type_spinner);
 		typeSpinner.setAdapter(typeSpinnerAdapter);
 		typeSpinner.setSelection(typeSpinnerAdapter.getItemPosition(typeId));
 
@@ -78,9 +78,9 @@ public class CustomStartDialogFragment extends DialogFragment {
 	}
 
 	private void onPositiveButtonClicked(DialogInterface d, int i) {
-		DateEditText dateEditText = getDialog().findViewById(R.id.date_edit_text);
-		TimeEditText timeEditText = getDialog().findViewById(R.id.time_edit_text);
-		Spinner typeSpinner = getDialog().findViewById(R.id.type_spinner);
+		DateEditText dateEditText = (DateEditText) getDialog().findViewById(R.id.date_edit_text);
+		TimeEditText timeEditText = (TimeEditText) getDialog().findViewById(R.id.time_edit_text);
+		Spinner typeSpinner = (Spinner) getDialog().findViewById(R.id.type_spinner);
 
 		DateTime dateTime = new DateTime(
 				dateEditText.getYear(),

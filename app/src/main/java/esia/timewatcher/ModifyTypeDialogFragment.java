@@ -51,10 +51,10 @@ public class ModifyTypeDialogFragment extends DialogFragment {
 
 		View view = getActivity().getLayoutInflater().inflate(R.layout.type_modification_dialog_view, null);
 
-		EditText nameEditText = view.findViewById(R.id.type_name_edit_text);
+		EditText nameEditText = (EditText) view.findViewById(R.id.type_name_edit_text);
 		nameEditText.setText(data.getType().getName());
 
-		Spinner spinner = view.findViewById(R.id.type_icon_spinner);
+		Spinner spinner = (Spinner) view.findViewById(R.id.type_icon_spinner);
 		LinkedList<Bitmap> icons =  BitmapUtils.loadTypeIcons(getContext());
 		int i;
 		for (i = 0; i < icons.size(); ++i) {
@@ -80,8 +80,8 @@ public class ModifyTypeDialogFragment extends DialogFragment {
 	}
 
 	private void onPositiveButtonClicked(DialogInterface d, int i) {
-		Spinner spinner = getDialog().findViewById(R.id.type_icon_spinner);
-		EditText nameEditText = getDialog().findViewById(R.id.type_name_edit_text);
+		Spinner spinner = (Spinner) getDialog().findViewById(R.id.type_icon_spinner);
+		EditText nameEditText = (EditText) getDialog().findViewById(R.id.type_name_edit_text);
 
 		Bitmap icon = (Bitmap)spinner.getSelectedItem();
 		String name = nameEditText.getText().toString();

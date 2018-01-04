@@ -83,11 +83,11 @@ public class RunningHobbyRecyclerViewAdapter
 		public RunningHobbyViewHolder(View itemView) {
 			super(itemView);
 
-			name = itemView.findViewById(R.id.name);
-			startDate = itemView.findViewById(R.id.start_date);
-			remainingTime = itemView.findViewById(R.id.elapsed_time);
+			name = (TextView) itemView.findViewById(R.id.name);
+			startDate = (TextView) itemView.findViewById(R.id.start_date);
+			remainingTime = (TextView) itemView.findViewById(R.id.elapsed_time);
 
-			Spinner actionSpinner = itemView.findViewById(R.id.action_spinner);
+			Spinner actionSpinner = (Spinner) itemView.findViewById(R.id.action_spinner);
 			ActionSpinnerAdapter actionAdapter = new ActionSpinnerAdapter(context,
 					Arrays.asList(RunningHobbyAction.values()));
 			actionAdapter.setButtonClickListener(action -> onActionClick(action));

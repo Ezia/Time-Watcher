@@ -39,8 +39,8 @@ public class TypeSpinnerAdapter implements SpinnerAdapter, DatabaseListener {
 		}
 
 		Type type = dataList.get(position).getType();
-		ImageView icon = newView.findViewById(R.id.icon);
-		TextView name = newView.findViewById(R.id.name);
+		ImageView icon = (ImageView) newView.findViewById(R.id.icon);
+		TextView name = (TextView) newView.findViewById(R.id.name);
 		icon.setImageBitmap(type.getIcon());
 		name.setText(type.getName());
 
@@ -87,8 +87,8 @@ public class TypeSpinnerAdapter implements SpinnerAdapter, DatabaseListener {
 		}
 
 		Type type = dataList.get(position).getType();
-		ImageView icon = newView.findViewById(R.id.icon);
-		TextView name = newView.findViewById(R.id.name);
+		ImageView icon = (ImageView) newView.findViewById(R.id.icon);
+		TextView name = (TextView) newView.findViewById(R.id.name);
 		icon.setImageBitmap(type.getIcon());
 		name.setText(type.getName());
 
@@ -113,7 +113,9 @@ public class TypeSpinnerAdapter implements SpinnerAdapter, DatabaseListener {
 	@Override
 	public void onDatabaseChange() {
 		dataList = DatabaseManager.getInstance().requestAllTypes();
-		observers.stream().forEach((o) -> o.onChanged());
+		for (DataSetObserver o: observers) {
+			o.onChanged();
+		}
 	}
 
 	public int getItemPosition(long id) {

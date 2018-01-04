@@ -50,8 +50,8 @@ public class TypeRecyclerViewAdapter
 
 		public TypeViewHolder(View itemView) {
 			super(itemView);
-			icon = itemView.findViewById(R.id.icon);
-			name = itemView.findViewById(R.id.name);
+			icon = (ImageView) itemView.findViewById(R.id.icon);
+			name = (TextView) itemView.findViewById(R.id.name);
 		}
 
 		@Override
