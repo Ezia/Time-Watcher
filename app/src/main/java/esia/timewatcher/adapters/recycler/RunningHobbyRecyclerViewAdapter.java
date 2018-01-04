@@ -3,7 +3,10 @@ package esia.timewatcher.adapters.recycler;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.graphics.drawable.BitmapDrawable;
+import android.view.MenuItem;
 import android.view.View;
+import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.PopupMenu;
 import android.widget.Spinner;
 import android.widget.TextView;
@@ -87,31 +90,33 @@ public class RunningHobbyRecyclerViewAdapter
 			startDate = (TextView) itemView.findViewById(R.id.start_date);
 			remainingTime = (TextView) itemView.findViewById(R.id.elapsed_time);
 
-			Spinner actionSpinner = (Spinner) itemView.findViewById(R.id.action_spinner);
-			ActionSpinnerAdapter actionAdapter = new ActionSpinnerAdapter(context,
-					Arrays.asList(RunningHobbyAction.values()));
-			actionAdapter.setButtonClickListener(action -> onActionClick(action));
-			actionSpinner.setAdapter(actionAdapter);
-			actionSpinner.setSelection(RunningHobbyAction.STOP.ordinal());
+			ImageButton moreButton = (ImageButton) itemView.findViewById(R.id.more_button);
+			moreButton.setOnClickListener(v -> {
+					PopupMenu popup = new PopupMenu(context, v);
+					popup.inflate(R.menu.running_hobby_menu);
+					popup.setOnMenuItemClickListener(item -> onPopupMenuItemClick(item));
+					popup.show();
+			});
 		}
 
-		private void onActionClick(Action action) {
-			switch (((RunningHobbyAction)action)) {
-				case STOP:
+		private boolean onPopupMenuItemClick(MenuItem item) {
+			switch (item.getItemId()) {
+				case R.id.stop_menu_item:
 					HobbyData data = dataList.get(getAdapterPosition());
 					Hobby newHobby = new Hobby(data.getHobby().getStartDate(), new DateTime());
 					DatabaseManager.getInstance().updateHobby(data.getId(), newHobby,
 							data.getTypeData().getId());
 					Toast.makeText(context, "Hobby stopped", Toast.LENGTH_SHORT).show();
-					break;
-				case CANCEL:
+					return true;
+				case R.id.stop_plus_menu_item:
+					notifyDialogRequest(CustomStopDialogFragment.newInstance(getItemId()));
+					return true;
+				case R.id.cancel_menu_item:
 					DatabaseManager.getInstance().deleteHobby(getItemId());
 					Toast.makeText(context, "Hobby deleted", Toast.LENGTH_SHORT).show();
-					break;
-				case STOP_PLUS:
-					notifyDialogRequest(CustomStopDialogFragment.newInstance(getItemId()));
-					break;
+					return true;
 			}
+			return false;
 		}
 
 		public void set(Data data) {

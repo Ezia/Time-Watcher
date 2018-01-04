@@ -45,12 +45,17 @@
             android:text="(2h13)"/>
     </LinearLayout>
 
-
-    <Spinner
-        android:id="@+id/action_spinner"
+    <ImageButton
+        android:id="@+id/more_button"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center_vertical|right" />
+        android:layout_height="match_parent"
+        style="@style/BorderlessButton"/>
+
+    <!--<Spinner-->
+        <!--android:id="@+id/action_spinner"-->
+        <!--android:layout_width="wrap_content"-->
+        <!--android:layout_height="wrap_content"-->
+        <!--android:layout_gravity="center_vertical|right" />-->
 
 
 </LinearLayout>

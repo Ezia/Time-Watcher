@@ -75,6 +75,12 @@
         <item name="android:padding">@dimen/small_margin</item>
     </style>
 
+    <style name="BorderlessButton" parent="Widget.AppCompat.ImageButton">
+        <item name="android:src">@drawable/vertical_dots</item>
+        <item name="android:background" />
+        <item name="android:tint">@color/borderless_button_tint</item>
+    </style>
+
     <!--Item-->
 
     <style name="AppTheme.Item">
