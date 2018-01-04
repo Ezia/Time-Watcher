@@ -4,9 +4,7 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:orientation="horizontal"
-    style="@style/AppTheme.Item"
-    android:layout_margin="@dimen/tiny_margin"
-    android:padding="@dimen/small_margin">
+    style="@style/AppTheme.Item">
 
     <ImageView
         android:id="@+id/icon"

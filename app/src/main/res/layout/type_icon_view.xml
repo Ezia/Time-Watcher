@@ -2,9 +2,7 @@
 <android.support.constraint.ConstraintLayout
     xmlns:android="http://schemas.android.com/apk/res/android" android:layout_width="match_parent"
     android:layout_height="match_parent"
-    style="@style/AppTheme.Item"
-    android:layout_margin="@dimen/tiny_margin"
-    android:padding="@dimen/small_margin">
+    style="@style/AppTheme.Item">
 
     <ImageView
         android:id="@+id/icon"

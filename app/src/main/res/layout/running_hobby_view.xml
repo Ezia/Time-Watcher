@@ -3,8 +3,6 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_margin="@dimen/tiny_margin"
-    android:padding="@dimen/small_margin"
     android:orientation="horizontal"
     style="@style/AppTheme.Item">
 
@@ -19,10 +17,10 @@
         android:text="Lecture" />
 
     <Space
-        android:layout_width="10dp"
+        android:layout_width="@dimen/small_margin"
         android:layout_height="match_parent" />
 
-    <LinearLayout
+    <android.support.constraint.ConstraintLayout
         android:layout_width="0dp"
         android:layout_height="match_parent"
         android:layout_weight="1"
@@ -30,32 +28,29 @@
 
         <TextView
             android:id="@+id/start_date"
-            android:layout_width="match_parent"
+            android:layout_width="wrap_content"
             android:layout_height="0dp"
             android:layout_weight="1"
             android:gravity="center_vertical"
-            android:text="18h30" />
+            android:text="18h30"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toTopOf="@+id/elapsed_time"/>
 
         <TextView
             android:id="@+id/elapsed_time"
-            android:layout_width="match_parent"
-            android:layout_height="9dp"
+            android:layout_width="wrap_content"
+            android:layout_height="0dp"
             android:layout_weight="1"
             android:gravity="center_vertical"
-            android:text="(2h13)"/>
-    </LinearLayout>
+            android:text="(2h13)"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/start_date"/>
+    </android.support.constraint.ConstraintLayout>
 
     <ImageButton
         android:id="@+id/more_button"
         android:layout_width="wrap_content"
         android:layout_height="match_parent"
         style="@style/BorderlessButton"/>
-
-    <!--<Spinner-->
-        <!--android:id="@+id/action_spinner"-->
-        <!--android:layout_width="wrap_content"-->
-        <!--android:layout_height="wrap_content"-->
-        <!--android:layout_gravity="center_vertical|right" />-->
-
 
 </LinearLayout>

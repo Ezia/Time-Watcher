@@ -1,9 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-
-    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical">
@@ -12,15 +9,17 @@
         android:id="@+id/start_layout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:layout_margin="@dimen/small_margin">
+        android:orientation="horizontal">
 
         <Spinner
             android:id="@+id/type_spinner"
             android:layout_width="0dp"
             android:layout_height="match_parent"
-            android:layout_weight="1"
-            android:layout_marginRight="@dimen/small_margin"/>
+            android:layout_weight="1"/>
+
+        <Space
+            android:layout_width="@dimen/small_margin"
+            android:layout_height="match_parent" />
 
         <Spinner
             android:id="@+id/start_spinner"
@@ -29,11 +28,14 @@
 
     </LinearLayout>
 
+    <Space
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/small_margin" />
+
     <android.support.v7.widget.RecyclerView
         android:id="@+id/running_hobbies"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_margin="@dimen/small_margin"
         style="@style/RecyclerView"/>
 
 </LinearLayout>
