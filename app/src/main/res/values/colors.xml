@@ -1,6 +1,7 @@
 <!--?xml version="1.0" encoding="UTF-8"?-->
 <resources>
     <color name="primaryColor">#3e2723</color>
+    <color name="primaryColorHalfTranslucent">#c43e2723</color>
     <color name="primaryLightColor">#6a4f4b</color>
     <color name="primaryDarkColor">#1b0000</color>
     <color name="secondaryColor">#fbc02d</color>

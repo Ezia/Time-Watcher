@@ -42,8 +42,17 @@
     <!--Spinner-->
 
     <style name="Spinner" parent="Widget.AppCompat.Spinner">
-        <item name="android:background">@drawable/spinner</item>
-        <item name="android:backgroundTint">@color/primaryDarkColor</item>
+        <item name="android:background">@drawable/spinner_background</item>
+        <!--<item name="android:backgroundTint">@color/primaryColor</item>-->
+        <!--<item name="android:backgroundTintMode">multiply</item>-->
+    </style>
+
+    <!--Recycler view-->
+
+    <style name="RecyclerView" parent="Widget.AppCompat.ListView">
+        <item name="android:background">@drawable/square</item>
+        <item name="android:backgroundTint">@color/primaryColor</item>
+        <item name="android:backgroundTintMode">multiply</item>
     </style>
 
 </resources>
