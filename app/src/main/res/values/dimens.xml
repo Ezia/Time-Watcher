@@ -3,6 +3,9 @@
     <!--Title-->
     <dimen name="title_size">40sp</dimen>
 
+    <!--Margin-->
+    <dimen name="small_margin">4dp</dimen>
+
     <dimen name="text_padding">5dp</dimen>
     <dimen name="card_margin">5dp</dimen>
     <dimen name="fab_margin">16dp</dimen>

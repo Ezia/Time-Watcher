@@ -42,6 +42,7 @@
     <!--Spinner-->
 
     <style name="Spinner" parent="Widget.AppCompat.Spinner">
+        <item name="android:background">@drawable/spinner</item>
         <item name="android:backgroundTint">@color/primaryDarkColor</item>
     </style>
 
