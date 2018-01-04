@@ -73,12 +73,12 @@ public class TimeUtils {
 		} else if (Math.abs(time.getDayOfMonth() - now.getDayOfMonth()) == 1) {
 			formatBuilder.appendLiteral("yesterday ");
 			formatBuilder.appendHourOfDay(2);
-			formatBuilder.appendLiteral(" h ");
+			formatBuilder.appendLiteral(":");
 			formatBuilder.appendMinuteOfHour(2);
 		} else {
 			formatBuilder.appendLiteral("today ");
 			formatBuilder.appendHourOfDay(2);
-			formatBuilder.appendLiteral(" h ");
+			formatBuilder.appendLiteral(":");
 			formatBuilder.appendMinuteOfHour(2);
 		}
 

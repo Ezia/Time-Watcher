@@ -1,6 +1,7 @@
 package esia.timewatcher.adapters.recycler;
 
 import android.content.Context;
+import android.content.res.ColorStateList;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageView;
@@ -85,9 +86,13 @@ public class TypeRecyclerViewAdapter
 			icon.setImageBitmap(typeData.getType().getIcon());
 			name.setText(typeData.getType().getName());
 			if (showUsage && DatabaseManager.getInstance().isTypeUsed(typeData.getId())) {
-				itemView.setBackgroundColor(context.getColor(R.color.primaryColor));
+				itemView.setBackgroundTintList(context.getResources().
+						getColorStateList(R.color.secondaryColor,
+						context.getTheme()));
 			} else {
-				itemView.setBackgroundColor(android.R.drawable.btn_default);
+				itemView.setBackgroundTintList(context.getResources().
+						getColorStateList(R.color.primaryLightColor,
+								context.getTheme()));
 			}
 		}
 	}

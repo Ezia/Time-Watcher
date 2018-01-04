@@ -18,6 +18,13 @@
 
         <!--Spinner-->
         <item name="android:spinnerStyle">@style/Spinner</item>
+
+        <!--Text-->
+        <item name="android:textSize">@dimen/text_size</item>
+        <item name="android:textAppearance">@style/TextAppearance</item>
+
+        <!--Button-->
+        <item name="android:buttonStyle">@style/Button</item>
     </style>
 
     <!--Toolbar-->
@@ -43,16 +50,36 @@
 
     <style name="Spinner" parent="Widget.AppCompat.Spinner">
         <item name="android:background">@drawable/spinner_background</item>
-        <!--<item name="android:backgroundTint">@color/primaryColor</item>-->
-        <!--<item name="android:backgroundTintMode">multiply</item>-->
     </style>
 
-    <!--Recycler view-->
+    <!--Recycler View-->
 
     <style name="RecyclerView" parent="Widget.AppCompat.ListView">
         <item name="android:background">@drawable/square</item>
         <item name="android:backgroundTint">@color/primaryColor</item>
         <item name="android:backgroundTintMode">multiply</item>
+    </style>
+
+    <!--Text Appearance-->
+
+    <style name="TextAppearance" parent="TextAppearance.AppCompat">
+        <item name="android:textSize">@dimen/text_size</item>
+    </style>
+
+    <!--Button-->
+
+    <style name="Button" parent="Widget.AppCompat.Button">
+        <item name="android:background">@drawable/button</item>
+        <item name="android:minHeight">0dp</item>
+        <item name="android:minWidth">0dp</item>
+        <item name="android:padding">@dimen/small_margin</item>
+    </style>
+
+    <!--Item-->
+
+    <style name="AppTheme.Item">
+        <item name="android:background">@drawable/recycler_view_background</item>
+        <item name="android:backgroundTint">@color/primaryLightColor</item>
     </style>
 
 </resources>

@@ -8,26 +8,37 @@
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        android:padding="@dimen/small_margin">
 
         <Spinner
             android:id="@+id/type_icon_spinner"
             android:layout_width="wrap_content"
-            android:layout_height="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
             android:spinnerMode="dropdown"/>
 
+        <Space
+            android:layout_width="@dimen/tiny_margin"
+            android:layout_height="match_parent" />
 
         <EditText
             android:id="@+id/type_name_edit_text"
             android:layout_weight="1"
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:hint="Type name"/>
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
+            android:hint="Type name" />
+
+        <Space
+            android:layout_width="@dimen/tiny_margin"
+            android:layout_height="match_parent" />
 
         <Button
             android:id="@+id/create_type_button"
             android:layout_width="wrap_content"
-            android:layout_height="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
             android:text="Create"/>
 
     </LinearLayout>
@@ -36,35 +47,16 @@
         android:id="@+id/type_recycler_view"
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_weight="1" />
-
-    <TextView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="@string/clear_description"/>
+        android:layout_weight="1"
+        android:layout_margin="@dimen/small_margin"
+        style="@style/RecyclerView"/>
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="horizontal">
-
-        <esia.timewatcher.view.DateEditText
-            android:id="@+id/date_edit_text"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"/>
-
-        <Button
-            android:id="@+id/clear_button"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Clear"/>
-    </LinearLayout>
-
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal">
+        android:orientation="horizontal"
+        android:layout_margin="@dimen/small_margin"
+        style="@style/RecyclerView">
 
         <TextView
             android:layout_width="0dp"
@@ -72,11 +64,53 @@
             android:layout_weight="1"
             android:text="@string/show_unused_types_description"/>
 
+        <Space
+            android:layout_width="@dimen/small_margin"
+            android:layout_height="match_parent" />
+
         <Switch
             android:id="@+id/show_unused_types_switch"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"/>
 
     </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="@dimen/small_margin"
+        style="@style/RecyclerView"
+        android:orientation="vertical">
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/clear_description"/>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <esia.timewatcher.view.DateEditText
+                android:id="@+id/date_edit_text"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"/>
+
+            <Space
+                android:layout_width="@dimen/small_margin"
+                android:layout_height="match_parent" />
+
+            <Button
+                android:id="@+id/clear_button"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Clear"/>
+        </LinearLayout>
+    </LinearLayout>
+
+
+
 
 </LinearLayout>
