@@ -9,6 +9,7 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.Spinner;
 import android.widget.Toast;
@@ -90,6 +91,15 @@ public class HomeFragment extends Fragment implements SimpleRecyclerViewAdapter.
 				Arrays.asList(StartAction.values()));
 		startSpinnerAdapter.setButtonClickListener(action -> onStartClick(action));
 		startSpinner.setAdapter(startSpinnerAdapter);
+		startSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+			@Override
+			public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+				onStartClick(StartAction.values()[(int)id]);
+			}
+
+			@Override
+			public void onNothingSelected(AdapterView<?> parent) {}
+		});
 
 		return view;
 	}
