@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.res.ColorStateList;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.PopupMenu;
 import android.widget.TextView;
@@ -47,36 +48,39 @@ public class TypeRecyclerViewAdapter
 
 		ImageView icon;
 		TextView name;
+		ImageButton moreButton;
+		private boolean deletable = false;
 
 		public TypeViewHolder(View itemView) {
 			super(itemView);
 			icon = (ImageView) itemView.findViewById(R.id.icon);
 			name = (TextView) itemView.findViewById(R.id.name);
+
+			moreButton = (ImageButton) itemView.findViewById(R.id.more_button);
+
+			moreButton.setOnClickListener(v -> {
+				PopupMenu popup = new PopupMenu(context, v);
+				popup.inflate(R.menu.modify_menu);
+				if (deletable) {
+					popup.inflate(R.menu.deletion_menu);
+				}
+				popup.setOnMenuItemClickListener(item -> onPopupMenuItemClick(item));
+				popup.show();
+			});
 		}
 
-		@Override
-		public void fillPopup(PopupMenu popup) {
-			if (!DatabaseManager.getInstance().isTypeUsed(getItemId())) {
-				super.fillPopup(popup);
+		private boolean onPopupMenuItemClick(MenuItem item) {
+			switch (item.getItemId()) {
+				case R.id.delete_menu_item:
+					DatabaseManager.getInstance().deleteType(getItemId());
+					Toast.makeText(context, "Type deleted", Toast.LENGTH_SHORT).show();
+					return true;
+				case R.id.modify_menu_item:
+					ModifyTypeDialogFragment frag = ModifyTypeDialogFragment.newInstance(getItemId());
+					notifyDialogRequest(frag);
+					return true;
 			}
-			popup.inflate(R.menu.modify_menu);
-		}
-
-		@Override
-		public boolean onPopupItemClick(MenuItem item) {
-			if (item.getItemId() == R.id.modify_menu_item) {
-				ModifyTypeDialogFragment frag = ModifyTypeDialogFragment.newInstance(getItemId());
-				notifyDialogRequest(frag);
-				return true;
-			}
-
-			return super.onPopupItemClick(item);
-		}
-
-		@Override
-		public void deleteData() {
-			DatabaseManager.getInstance().deleteType(getItemId());
-			Toast.makeText(context, "Type deleted", Toast.LENGTH_SHORT).show();
+			return false;
 		}
 
 		@Override
@@ -85,11 +89,15 @@ public class TypeRecyclerViewAdapter
 			assert(typeData != null);
 			icon.setImageBitmap(typeData.getType().getIcon());
 			name.setText(typeData.getType().getName());
-			if (showUsage && DatabaseManager.getInstance().isTypeUsed(typeData.getId())) {
-				itemView.setBackgroundTintList(context.getResources().
-						getColorStateList(R.color.secondaryColor,
-						context.getTheme()));
+			if (DatabaseManager.getInstance().isTypeUsed(typeData.getId())) {
+				deletable = false;
+				if (showUsage) {
+					itemView.setBackgroundTintList(context.getResources().
+							getColorStateList(R.color.secondaryColor,
+									context.getTheme()));
+				}
 			} else {
+				deletable = true;
 				itemView.setBackgroundTintList(context.getResources().
 						getColorStateList(R.color.primaryLightColor,
 								context.getTheme()));

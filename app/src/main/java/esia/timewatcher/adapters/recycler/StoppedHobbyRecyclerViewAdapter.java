@@ -4,16 +4,20 @@ import android.content.Context;
 import android.graphics.drawable.BitmapDrawable;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.ImageButton;
 import android.widget.PopupMenu;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import org.joda.time.DateTime;
 import org.joda.time.Period;
 
+import esia.timewatcher.CustomStopDialogFragment;
 import esia.timewatcher.R;
 import esia.timewatcher.database.Data;
 import esia.timewatcher.database.DatabaseManager;
 import esia.timewatcher.database.HobbyData;
+import esia.timewatcher.structures.Hobby;
 import esia.timewatcher.utils.TimeUtils;
 
 
@@ -40,6 +44,7 @@ public class StoppedHobbyRecyclerViewAdapter
 		TextView startDate;
 		TextView stopDate;
 		TextView remainingTime;
+		ImageButton more_button;
 
 		public StoppedHobbyViewHolder(View itemView) {
 			super(itemView);
@@ -48,12 +53,24 @@ public class StoppedHobbyRecyclerViewAdapter
 			startDate = (TextView) itemView.findViewById(R.id.start_date);
 			remainingTime = (TextView) itemView.findViewById(R.id.elapsed_time);
 			stopDate = (TextView) itemView.findViewById(R.id.stop_date);
+			more_button = (ImageButton) itemView.findViewById(R.id.more_button);
+
+			more_button.setOnClickListener(v -> {
+				PopupMenu popup = new PopupMenu(context, v);
+				popup.inflate(R.menu.deletion_menu);
+				popup.setOnMenuItemClickListener(item -> onPopupMenuItemClick(item));
+				popup.show();
+			});
 		}
 
-		@Override
-		public void deleteData() {
-			DatabaseManager.getInstance().deleteHobby(getItemId());
-			Toast.makeText(context, "Hobby deleted", Toast.LENGTH_SHORT).show();
+		private boolean onPopupMenuItemClick(MenuItem item) {
+			switch (item.getItemId()) {
+				case R.id.delete_menu_item:
+					DatabaseManager.getInstance().deleteHobby(getItemId());
+					Toast.makeText(context, "Hobby deleted", Toast.LENGTH_SHORT).show();
+					return true;
+			}
+			return false;
 		}
 
 		public void set(Data data) {

@@ -24,10 +24,4 @@
         android:text="DefaultType"
         android:layout_gravity="center_vertical"
         android:layout_weight="1"/>
-
-    <ImageButton
-        android:id="@+id/more_button"
-        android:layout_width="wrap_content"
-        android:layout_height="match_parent"
-        style="@style/BorderlessButton"/>
 </LinearLayout>

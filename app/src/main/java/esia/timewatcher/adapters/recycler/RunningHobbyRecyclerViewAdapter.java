@@ -131,12 +131,6 @@ public class RunningHobbyRecyclerViewAdapter
 			updateTimer(hobbyData);
 		}
 
-		@Override
-		public void fillPopup(PopupMenu popup) {}
-
-		@Override
-		public void deleteData() {}
-
 		public void updateTimer(HobbyData data) {
 			Period elapsedTime = new Period(data.getHobby().getStartDate(),
 					DateTime.now());

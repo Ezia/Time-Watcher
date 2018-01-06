@@ -23,8 +23,14 @@
 
     <TextView
         android:id="@+id/date"
-        android:layout_width="wrap_content"
+        android:layout_width="0dp"
         android:layout_height="match_parent"
         android:text="18h30"
-        android:gravity="center_vertical|left" />
+        android:layout_weight="1" />
+
+    <ImageButton
+        android:id="@+id/more_button"
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        style="@style/BorderlessButton" />
 </LinearLayout>

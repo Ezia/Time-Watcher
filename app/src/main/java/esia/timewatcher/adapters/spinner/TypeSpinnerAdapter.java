@@ -25,15 +25,15 @@ public class TypeSpinnerAdapter implements SpinnerAdapter, DatabaseListener {
 
 	public TypeSpinnerAdapter(Context context) {
 		this.context = context;
-		DatabaseManager.getInstance().addListener(this);
 		dataList = DatabaseManager.getInstance().requestAllTypes();
+		DatabaseManager.getInstance().addListener(this);
 	}
 
 	@Override
 	public View getDropDownView(int position, View convertView, ViewGroup parent) {
 		View newView;
 		if (convertView == null) {
-			newView = View.inflate(context, R.layout.type_view, null);
+			newView = View.inflate(context, R.layout.type_spinner_view, null);
 		} else {
 			newView = convertView;
 		}
@@ -69,7 +69,11 @@ public class TypeSpinnerAdapter implements SpinnerAdapter, DatabaseListener {
 
 	@Override
 	public long getItemId(int position) {
-		return dataList.get(position).getId();
+		try {
+			return dataList.get(position).getId();
+		} catch (Exception e) {
+			return -1;
+		}
 	}
 
 	@Override
@@ -81,7 +85,7 @@ public class TypeSpinnerAdapter implements SpinnerAdapter, DatabaseListener {
 	public View getView(int position, View convertView, ViewGroup parent) {
 		View newView;
 		if (convertView == null) {
-			newView = View.inflate(context, R.layout.type_view, null);
+			newView = View.inflate(context, R.layout.type_spinner_view, null);
 		} else {
 			newView = convertView;
 		}

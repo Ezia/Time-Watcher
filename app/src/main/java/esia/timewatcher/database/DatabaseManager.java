@@ -29,7 +29,7 @@ public class DatabaseManager extends SQLiteOpenHelper {
 
     private static DatabaseManager instance = null;
 
-    private static final int DATABASE_VERSION = 4;
+    private static final int DATABASE_VERSION = 2;
 
     public static final String DATABASE_NAME = "time_history";
 

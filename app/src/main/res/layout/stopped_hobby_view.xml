@@ -52,4 +52,10 @@
         android:text="(2h13)"
         android:gravity="center_vertical|end"/>
 
+    <ImageButton
+        android:id="@id/more_button"
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        style="@style/BorderlessButton"/>
+
 </LinearLayout>

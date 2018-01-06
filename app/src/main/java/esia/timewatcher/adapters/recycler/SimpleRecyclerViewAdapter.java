@@ -73,35 +73,9 @@ public abstract class SimpleRecyclerViewAdapter
 
 		public SimpleViewHolder(View itemView) {
 			super(itemView);
-			itemView.setOnLongClickListener(v -> onLongClick(v));
 		}
 
 		public abstract void set(Data data);
-
-		public void fillPopup(PopupMenu popup) {
-			popup.getMenuInflater().inflate(R.menu.deletion_menu, popup.getMenu());
-		}
-
-		public boolean onPopupItemClick(MenuItem item) {
-			switch (item.getItemId()) {
-				case R.id.delete_menu_item:
-					deleteData();
-					return true;
-				default:
-					return false;
-			}
-		}
-
-		public boolean onLongClick(View v) {
-			PopupMenu popup = new PopupMenu(context, itemView);
-			fillPopup(popup);
-			popup.setOnMenuItemClickListener(menuItem -> onPopupItemClick(menuItem));
-			popup.show();
-			return true;
-		}
-
-		public abstract void deleteData();
-
 	}
 
 	///// dialog listener /////
