@@ -5,6 +5,18 @@
     android:layout_height="match_parent"
     android:orientation="vertical">
 
+
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/running_hobbies"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        style="@style/RecyclerView"/>
+
+    <Space
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/small_margin" />
+
     <LinearLayout
         android:id="@+id/start_layout"
         android:layout_width="match_parent"
@@ -21,22 +33,13 @@
             android:layout_width="@dimen/small_margin"
             android:layout_height="match_parent" />
 
-        <Spinner
-            android:id="@+id/start_spinner"
+        <ImageButton
+            android:id="@+id/start_button"
             android:layout_width="wrap_content"
-            android:layout_height="match_parent" />
+            android:layout_height="match_parent"
+            style="@style/StartButton"/>
 
     </LinearLayout>
-
-    <Space
-        android:layout_width="match_parent"
-        android:layout_height="@dimen/small_margin" />
-
-    <android.support.v7.widget.RecyclerView
-        android:id="@+id/running_hobbies"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        style="@style/RecyclerView"/>
 
 </LinearLayout>
 

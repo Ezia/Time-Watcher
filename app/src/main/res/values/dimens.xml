@@ -4,6 +4,8 @@
     <dimen name="title_size">40sp</dimen>
 
     <!--Margin-->
+    <dimen name="large_margin">16dp</dimen>
+    <dimen name="medium_margin">8dp</dimen>
     <dimen name="small_margin">4dp</dimen>
     <dimen name="tiny_margin">2dp</dimen>
 

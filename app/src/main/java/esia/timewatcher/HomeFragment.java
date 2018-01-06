@@ -7,10 +7,13 @@ import android.os.Handler;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.Button;
+import android.widget.ImageButton;
+import android.widget.PopupMenu;
 import android.widget.Spinner;
 import android.widget.Toast;
 
@@ -29,10 +32,10 @@ import esia.timewatcher.structures.Hobby;
 
 public class HomeFragment extends Fragment implements SimpleRecyclerViewAdapter.DialogListener {
 
-	@Override
-	public void onDialogRequest(DialogFragment dialog) {
-		dialog.show(getFragmentManager(), "dialog");
-	}
+	private Spinner typeSpinner;
+	private RecyclerView runningHobbiesRecycler;
+	private Spinner actionSpinner;
+	private ImageButton startButton;
 
 	private enum  StartAction implements Action {
 		HOBBY("New hobby"),
@@ -40,7 +43,7 @@ public class HomeFragment extends Fragment implements SimpleRecyclerViewAdapter.
 		EVENT("New event"),
 		EVENT_PLUS("New Event...");
 
-		private String name;
+		private final String name;
 
 		StartAction(String name) {
 			this.name = name;
@@ -55,25 +58,31 @@ public class HomeFragment extends Fragment implements SimpleRecyclerViewAdapter.
 		public String getName() {
 			return name;
 		}
-	}
 
+	}
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
 							 Bundle savedInstanceState) {
-		// Inflate the layout for this fragment
+		// view
+
 		View view = inflater.inflate(R.layout.home_fragment, container, false);
 
+		// type spinner
+
 		TypeSpinnerAdapter typeSpinnerAdapter = new TypeSpinnerAdapter(getContext());
-		Spinner typeSpinner = (Spinner) view.findViewById(R.id.type_spinner);
+		typeSpinner = (Spinner) view.findViewById(R.id.type_spinner);
 		typeSpinner.setAdapter(typeSpinnerAdapter);
+
+		// running hobbies recycler view
 
 		RunningHobbyRecyclerViewAdapter runningHobbiesAdapter =
 				new RunningHobbyRecyclerViewAdapter(getContext());
-		RecyclerView runningHobbiesRecycler = (RecyclerView) view.findViewById(R.id.running_hobbies);
-		LinearLayoutManager layoutManager = new LinearLayoutManager(getContext());
-		runningHobbiesRecycler.setLayoutManager(layoutManager);
-		runningHobbiesRecycler.setAdapter(runningHobbiesAdapter);
 		runningHobbiesAdapter.setDialogListener(this);
+		runningHobbiesRecycler = (RecyclerView) view.findViewById(R.id.running_hobbies);
+		runningHobbiesRecycler.setLayoutManager(new LinearLayoutManager(getContext()));
+		runningHobbiesRecycler.setAdapter(runningHobbiesAdapter);
+
+		// timer update on running hobbies
 
 		final Handler handler = new Handler();
 		Runnable updateRunningList = new Runnable() {
@@ -86,26 +95,59 @@ public class HomeFragment extends Fragment implements SimpleRecyclerViewAdapter.
 		this.getActivity().runOnUiThread(updateRunningList);
 		handler.post(updateRunningList);
 
-		Spinner startSpinner = (Spinner) view.findViewById(R.id.start_spinner);
-		ActionSpinnerAdapter startSpinnerAdapter = new ActionSpinnerAdapter(getContext(),
-				Arrays.asList(StartAction.values()));
-		startSpinnerAdapter.setButtonClickListener(action -> onStartClick(action));
-		startSpinner.setAdapter(startSpinnerAdapter);
-		startSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-			@Override
-			public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-				onStartClick(StartAction.values()[(int)id]);
-			}
+//		// action spinner
+//
+//		ActionSpinnerAdapter startSpinnerAdapter = new ActionSpinnerAdapter(getContext(),
+//				Arrays.asList(StartAction.values()));
+//		startSpinnerAdapter.setButtonClickListener(action -> onStartClick(action));
+//		actionSpinner = (Spinner) view.findViewById(R.id.start_spinner);
+//		actionSpinner.setAdapter(startSpinnerAdapter);
 
-			@Override
-			public void onNothingSelected(AdapterView<?> parent) {}
+		// start button
+
+		startButton = (ImageButton) view.findViewById(R.id.start_button);
+		startButton.setOnClickListener(v -> {
+			PopupMenu popup = new PopupMenu(getContext(), v);
+			popup.inflate(R.menu.start_menu);
+			popup.setOnMenuItemClickListener(item -> onPopupMenuItemClick(item));
+			popup.show();
 		});
 
 		return view;
 	}
 
+	private boolean onPopupMenuItemClick(MenuItem item) {
+		long selectedTypeId = typeSpinner.getSelectedItemId();
+		switch (item.getItemId()) {
+			case R.id.start_hobby_menu_item:
+				Hobby newHobby = new Hobby(new DateTime());
+				DatabaseManager.getInstance().createHobby(newHobby, selectedTypeId);
+				Toast.makeText(getContext(), "Hobby created", Toast.LENGTH_SHORT).show();
+				return true;
+			case R.id.start_event_menu_item:
+				Event event = new Event(new DateTime());
+				DatabaseManager.getInstance().createEvent(event, selectedTypeId);
+				Toast.makeText(getContext(), "Event created", Toast.LENGTH_SHORT).show();
+				return true;
+			case R.id.start_hobby_plus_menu_item:
+				CustomStartDialogFragment.newHobbyInstance(selectedTypeId)
+						.show(getFragmentManager(), "dialog");
+				return true;
+			case R.id.start_event_plus_menu_item:
+				CustomStartDialogFragment.newEventInstance(selectedTypeId)
+						.show(getFragmentManager(), "dialog");
+				return true;
+		}
+		return false;
+	}
+
+
+	@Override
+	public void onDialogRequest(DialogFragment dialog) {
+		dialog.show(getFragmentManager(), "dialog");
+	}
+
 	public void onStartClick(Action action) {
-		Spinner typeSpinner = (Spinner) getView().findViewById(R.id.type_spinner);
 		long selectedTypeId = typeSpinner.getSelectedItemId();
 
 		switch (((StartAction)action)) {
