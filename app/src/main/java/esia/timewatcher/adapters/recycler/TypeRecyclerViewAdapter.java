@@ -95,6 +95,10 @@ public class TypeRecyclerViewAdapter
 					itemView.setBackgroundTintList(context.getResources().
 							getColorStateList(R.color.secondaryColor,
 									context.getTheme()));
+				} else {
+					itemView.setBackgroundTintList(context.getResources().
+							getColorStateList(R.color.primaryLightColor,
+									context.getTheme()));
 				}
 			} else {
 				deletable = true;
