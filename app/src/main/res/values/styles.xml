@@ -25,6 +25,26 @@
 
         <!--Button-->
         <item name="android:buttonStyle">@style/Button</item>
+
+        <!--Popup-->
+        <item name="android:popupMenuStyle">@style/Popup</item>
+
+        <!--Dialog-->
+        <item name="android:alertDialogTheme">@style/AlertDialog</item>
+    </style>
+
+    <!--Dialog-->
+
+    <style name="AlertDialog" parent="Theme.AppCompat.Light.Dialog.Alert">
+        <item name="android:background">@color/primaryLightColor</item>
+        <item name="android:colorAccent">@color/secondaryDarkColor</item>
+        <item name="android:textColorPrimary">@color/secondaryColor</item>
+    </style>
+
+    <!--Popup-->
+
+    <style name="Popup" parent="Widget.AppCompat.PopupMenu">
+        <item name="android:popupBackground">@color/secondaryDarkColor</item>
     </style>
 
     <!--Toolbar-->

@@ -3,7 +3,8 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical">
+    android:orientation="vertical"
+    android:padding="@dimen/large_margin">
 
     <Spinner
         android:id="@+id/type_spinner"
@@ -20,6 +21,10 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"/>
+
+        <Space
+            android:layout_width="@dimen/small_margin"
+            android:layout_height="match_parent" />
 
         <esia.timewatcher.view.TimeEditText
             android:id="@+id/time_edit_text"
