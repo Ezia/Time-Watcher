@@ -50,8 +50,7 @@ public class HomeFragment extends Fragment implements SimpleRecyclerViewAdapter.
 		// running hobbies recycler view
 
 		RunningHobbyRecyclerViewAdapter runningHobbiesAdapter =
-				new RunningHobbyRecyclerViewAdapter(getContext());
-		runningHobbiesAdapter.setDialogListener(this);
+				new RunningHobbyRecyclerViewAdapter(getContext(), this);
 		RecyclerView runningHobbiesRecycler = (RecyclerView) view.findViewById(R.id.running_hobbies);
 		runningHobbiesRecycler.setLayoutManager(new LinearLayoutManager(getContext()));
 		runningHobbiesRecycler.setAdapter(runningHobbiesAdapter);

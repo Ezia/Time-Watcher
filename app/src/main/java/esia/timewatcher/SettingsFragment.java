@@ -2,6 +2,7 @@ package esia.timewatcher;
 
 import android.app.Activity;
 import android.app.DatePickerDialog;
+import android.app.DialogFragment;
 import android.app.Fragment;
 import android.app.FragmentTransaction;
 import android.graphics.Bitmap;
@@ -29,6 +30,7 @@ import android.widget.Toast;
 
 import org.joda.time.DateTime;
 
+import esia.timewatcher.adapters.recycler.SimpleRecyclerViewAdapter;
 import esia.timewatcher.adapters.spinner.TypeIconSpinnerAdapter;
 import esia.timewatcher.adapters.recycler.TypeRecyclerViewAdapter;
 import esia.timewatcher.database.DatabaseManager;
@@ -38,7 +40,13 @@ import esia.timewatcher.utils.TimeUtils;
 import esia.timewatcher.view.DateEditText;
 
 
-public class SettingsFragment extends Fragment {
+public class SettingsFragment extends Fragment implements SimpleRecyclerViewAdapter.DialogListener {
+
+	@Override
+	public void onDialogRequest(DialogFragment dialog) {
+		dialog.show(getFragmentManager(), "dialog");
+	}
+
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
 							 Bundle savedInstanceState) {
@@ -47,10 +55,7 @@ public class SettingsFragment extends Fragment {
 
 		RecyclerView typeRecyclerView = (RecyclerView) view.findViewById(R.id.type_recycler_view);
 		typeRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
-		TypeRecyclerViewAdapter typeAdapter = new TypeRecyclerViewAdapter(getContext());
-		typeAdapter.setDialogListener((frag) -> {
-			frag.show(getFragmentManager(), "dialog");
-		});
+		TypeRecyclerViewAdapter typeAdapter = new TypeRecyclerViewAdapter(getContext(), this);
 		typeRecyclerView.setAdapter(typeAdapter);
 
 		Spinner typeIconSpinner = (Spinner) view.findViewById(R.id.type_icon_spinner);

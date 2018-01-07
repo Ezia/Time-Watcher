@@ -25,7 +25,7 @@ public class StoppedHobbyRecyclerViewAdapter
 		extends SimpleRecyclerViewAdapter<HobbyData, StoppedHobbyRecyclerViewAdapter.StoppedHobbyViewHolder> {
 
 	public StoppedHobbyRecyclerViewAdapter(Context context) {
-		super(context, R.layout.stopped_hobby_view);
+		super(context, null, R.layout.stopped_hobby_view);
 		dataList = DatabaseManager.getInstance().requestStoppedHobbies(true);
 	}
 

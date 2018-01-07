@@ -30,8 +30,8 @@ import esia.timewatcher.utils.TimeUtils;
 public class RunningHobbyRecyclerViewAdapter
 		extends SimpleRecyclerViewAdapter<HobbyData, RunningHobbyRecyclerViewAdapter.RunningHobbyViewHolder> {
 
-	public RunningHobbyRecyclerViewAdapter(Context context) {
-		super(context, R.layout.running_hobby_view);
+	public RunningHobbyRecyclerViewAdapter(Context context, DialogListener dialogListener) {
+		super(context, dialogListener, R.layout.running_hobby_view);
 		dataList = DatabaseManager.getInstance().requestRunningHobbies(true);
 	}
 

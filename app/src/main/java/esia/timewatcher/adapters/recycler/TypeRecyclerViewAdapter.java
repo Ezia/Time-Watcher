@@ -21,8 +21,8 @@ public class TypeRecyclerViewAdapter
 
 	private boolean showUsage = false;
 
-	public TypeRecyclerViewAdapter(Context context) {
-		super(context, R.layout.type_view);
+	public TypeRecyclerViewAdapter(Context context, DialogListener dialogListener) {
+		super(context, dialogListener, R.layout.type_view);
 		dataList = DatabaseManager.getInstance().requestAllTypes();
 	}
 

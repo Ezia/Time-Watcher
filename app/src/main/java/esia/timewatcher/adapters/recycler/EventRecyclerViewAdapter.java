@@ -19,7 +19,7 @@ public class EventRecyclerViewAdapter
 		extends SimpleRecyclerViewAdapter<EventData, EventRecyclerViewAdapter.EventViewHolder> {
 
 	public EventRecyclerViewAdapter(Context context) {
-		super(context, R.layout.event_view);
+		super(context, null, R.layout.event_view);
 		dataList = DatabaseManager.getInstance().requestEvents(false);
 	}
 
