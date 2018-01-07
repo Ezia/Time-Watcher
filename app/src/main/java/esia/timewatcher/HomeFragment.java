@@ -111,20 +111,10 @@ public class HomeFragment extends Fragment implements SimpleRecyclerViewAdapter.
 		long selectedTypeId = typeSpinner.getSelectedItemId();
 		switch (item.getItemId()) {
 			case R.id.start_hobby_menu_item:
-				Hobby newHobby = new Hobby(new DateTime());
-				DatabaseManager.getInstance().createHobby(newHobby, selectedTypeId);
-				Toast.makeText(getContext(), "Hobby created", Toast.LENGTH_SHORT).show();
-				return true;
-			case R.id.start_event_menu_item:
-				Event event = new Event(new DateTime());
-				DatabaseManager.getInstance().createEvent(event, selectedTypeId);
-				Toast.makeText(getContext(), "Event created", Toast.LENGTH_SHORT).show();
-				return true;
-			case R.id.start_hobby_plus_menu_item:
 				CustomStartDialogFragment.newHobbyInstance(selectedTypeId)
 						.show(getFragmentManager(), "dialog");
 				return true;
-			case R.id.start_event_plus_menu_item:
+			case R.id.start_event_menu_item:
 				CustomStartDialogFragment.newEventInstance(selectedTypeId)
 						.show(getFragmentManager(), "dialog");
 				return true;
