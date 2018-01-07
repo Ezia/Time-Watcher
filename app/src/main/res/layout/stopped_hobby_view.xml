@@ -21,24 +21,28 @@
         android:layout_width="10dp"
         android:layout_height="match_parent" />
 
-    <TextView
-        android:id="@+id/start_date"
+    <android.support.constraint.ConstraintLayout
         android:layout_width="wrap_content"
         android:layout_height="match_parent"
-        android:text="18h30"
-        android:gravity="center_vertical|left" />
+        android:orientation="vertical">
 
-    <Space
-        android:layout_weight="1"
-        android:layout_width="10dp"
-        android:layout_height="match_parent" />
+        <TextView
+            android:id="@+id/start_date"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="18h30"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toTopOf="@id/stop_date"/>
 
-    <TextView
-        android:id="@+id/stop_date"
-        android:layout_width="wrap_content"
-        android:layout_height="match_parent"
-        android:text="19h"
-        android:gravity="center_vertical|end"/>
+        <TextView
+            android:id="@+id/stop_date"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="19h"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/start_date"/>
+
+    </android.support.constraint.ConstraintLayout>
 
     <Space
         android:layout_weight="1"
