@@ -30,27 +30,6 @@ import esia.timewatcher.utils.TimeUtils;
 public class RunningHobbyRecyclerViewAdapter
 		extends SimpleRecyclerViewAdapter<HobbyData, RunningHobbyRecyclerViewAdapter.RunningHobbyViewHolder> {
 
-	private enum RunningHobbyAction implements Action {
-		CANCEL("Cancel"),
-		STOP("Stop"),
-		STOP_PLUS("Stop...");
-
-		private String name;
-		RunningHobbyAction(String name) {
-			this.name = name;
-		}
-
-		@Override
-		public long getId() {
-			return ordinal();
-		}
-
-		@Override
-		public String getName() {
-			return name;
-		}
-	}
-
 	public RunningHobbyRecyclerViewAdapter(Context context) {
 		super(context, R.layout.running_hobby_view);
 		dataList = DatabaseManager.getInstance().requestRunningHobbies(true);

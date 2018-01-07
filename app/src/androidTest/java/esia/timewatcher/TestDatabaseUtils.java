@@ -9,6 +9,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
@@ -41,7 +42,7 @@ public class TestDatabaseUtils {
 			DatabaseManager.getInstance().createType(type);
 		}
 
-		LinkedList<TypeData> typeData = DatabaseManager.getInstance().requestTypes(5);
+		ArrayList<TypeData> typeData = DatabaseManager.getInstance().requestTypes(5);
 
 		Assert.assertEquals(typeData.size(), 5);
 		for (TypeData data : typeData) {
@@ -57,7 +58,7 @@ public class TestDatabaseUtils {
 			DatabaseManager.getInstance().createType(type);
 		}
 
-		LinkedList<TypeData> typeData = DatabaseManager.getInstance().requestTypes(15);
+		ArrayList<TypeData> typeData = DatabaseManager.getInstance().requestTypes(15);
 
 		Assert.assertEquals(typeData.size(), 10);
 		for (TypeData data : typeData) {
@@ -72,7 +73,7 @@ public class TestDatabaseUtils {
 
 	@Test
 	public void testRequestTypesOnEmptyTable() throws Exception {
-		LinkedList<TypeData> typeData = DatabaseManager.getInstance().requestTypes(15);
+		ArrayList<TypeData> typeData = DatabaseManager.getInstance().requestTypes(15);
 		Assert.assertEquals(typeData.size(), 0);
 	}
 
@@ -84,7 +85,7 @@ public class TestDatabaseUtils {
 			DatabaseManager.getInstance().createType(type);
 		}
 
-		LinkedList<TypeData> typeData = DatabaseManager.getInstance().requestAllTypes();
+		ArrayList<TypeData> typeData = DatabaseManager.getInstance().requestAllTypes();
 
 		Assert.assertEquals(typeData.size(), 10);
 		for (TypeData data : typeData) {
@@ -94,7 +95,7 @@ public class TestDatabaseUtils {
 
 	@Test
 	public void testRequestAllTypesOnEmptyTable() throws Exception {
-		LinkedList<TypeData> typeData = DatabaseManager.getInstance().requestAllTypes();
+		ArrayList<TypeData> typeData = DatabaseManager.getInstance().requestAllTypes();
 		Assert.assertEquals(typeData.size(), 0);
 	}
 
@@ -112,7 +113,7 @@ public class TestDatabaseUtils {
 			DatabaseManager.getInstance().createHobby(hobby, typeData.getId());
 		}
 
-		LinkedList<HobbyData> hobbyData = DatabaseManager.getInstance().requestRunningHobbies(false);
+		ArrayList<HobbyData> hobbyData = DatabaseManager.getInstance().requestRunningHobbies(false);
 
 		Assert.assertEquals(hobbyData.size(), 5);
 		for (int i = 0; i < orderedHobbies.size(); ++i) {
@@ -132,7 +133,7 @@ public class TestDatabaseUtils {
 			DatabaseManager.getInstance().createHobby(hobby, typeData.getId());
 		}
 
-		LinkedList<HobbyData> hobbyData = DatabaseManager.getInstance().requestRunningHobbies(true);
+		ArrayList<HobbyData> hobbyData = DatabaseManager.getInstance().requestRunningHobbies(true);
 
 		Assert.assertEquals(hobbyData.size(), 5);
 		for (int i = 0; i < orderedHobbies.size(); ++i) {
@@ -142,7 +143,7 @@ public class TestDatabaseUtils {
 
 	@Test
 	public void testRequestRunningHobbiesOnEmptyTable() throws Exception {
-		LinkedList<HobbyData> hobbyData = DatabaseManager.getInstance().requestRunningHobbies(true);
+		ArrayList<HobbyData> hobbyData = DatabaseManager.getInstance().requestRunningHobbies(true);
 		Assert.assertEquals(hobbyData.size(), 0);
 	}
 
@@ -150,7 +151,7 @@ public class TestDatabaseUtils {
 
 	@Test
 	public void testRequestStoppedHobbiesOnEmptyTable() throws Exception {
-		LinkedList<HobbyData> hobbyData = DatabaseManager.getInstance().requestStoppedHobbies(true);
+		ArrayList<HobbyData> hobbyData = DatabaseManager.getInstance().requestStoppedHobbies(true);
 		Assert.assertEquals(hobbyData.size(), 0);
 	}
 
@@ -166,7 +167,7 @@ public class TestDatabaseUtils {
 			DatabaseManager.getInstance().createHobby(hobby, typeData.getId());
 		}
 
-		LinkedList<HobbyData> hobbyData = DatabaseManager.getInstance().requestStoppedHobbies(false);
+		ArrayList<HobbyData> hobbyData = DatabaseManager.getInstance().requestStoppedHobbies(false);
 
 		Assert.assertEquals(hobbyData.size(), 5);
 		for (int i = 0; i < orderedHobbies.size(); ++i) {
@@ -186,7 +187,7 @@ public class TestDatabaseUtils {
 			DatabaseManager.getInstance().createHobby(hobby, typeData.getId());
 		}
 
-		LinkedList<HobbyData> hobbyData = DatabaseManager.getInstance().requestStoppedHobbies(true);
+		ArrayList<HobbyData> hobbyData = DatabaseManager.getInstance().requestStoppedHobbies(true);
 
 		Assert.assertEquals(hobbyData.size(), 5);
 		for (int i = 0; i < orderedHobbies.size(); ++i) {
@@ -198,7 +199,7 @@ public class TestDatabaseUtils {
 
 	@Test
 	public void testRequestEventsOnEmptyTable() throws Exception {
-		LinkedList<EventData> eventData = DatabaseManager.getInstance().requestEvents(true);
+		ArrayList<EventData> eventData = DatabaseManager.getInstance().requestEvents(true);
 		Assert.assertEquals(eventData.size(), 0);
 	}
 
@@ -214,7 +215,7 @@ public class TestDatabaseUtils {
 			DatabaseManager.getInstance().createEvent(event, typeData.getId());
 		}
 
-		LinkedList<EventData> eventData = DatabaseManager.getInstance().requestEvents(true);
+		ArrayList<EventData> eventData = DatabaseManager.getInstance().requestEvents(true);
 
 		Assert.assertEquals(eventData.size(), 5);
 		for (int i = 0; i < orderedEvents.size(); ++i) {
@@ -234,7 +235,7 @@ public class TestDatabaseUtils {
 			DatabaseManager.getInstance().createEvent(event, typeData.getId());
 		}
 
-		LinkedList<EventData> eventData = DatabaseManager.getInstance().requestEvents(false);
+		ArrayList<EventData> eventData = DatabaseManager.getInstance().requestEvents(false);
 
 		Assert.assertEquals(eventData.size(), 5);
 		for (int i = 0; i < orderedEvents.size(); ++i) {
@@ -290,7 +291,7 @@ public class TestDatabaseUtils {
 		}
 
 		int deletedNbr = DatabaseManager.getInstance().deleteHobbiesOlderThan(limitDate);
-		LinkedList<HobbyData> remainingHobbyData =
+		ArrayList<HobbyData> remainingHobbyData =
 				DatabaseManager.getInstance().requestStoppedHobbies(true);
 		remainingHobbyData.addAll(
 				DatabaseManager.getInstance().requestRunningHobbies(true));
@@ -349,7 +350,7 @@ public class TestDatabaseUtils {
 		}
 
 		int deletedNbr = DatabaseManager.getInstance().deleteEventsOlderThan(limitDate);
-		LinkedList<EventData> remainingEventsData =
+		ArrayList<EventData> remainingEventsData =
 				DatabaseManager.getInstance().requestEvents(true);
 
 		Assert.assertEquals(deletedNbr, expectedRemovedNbr);

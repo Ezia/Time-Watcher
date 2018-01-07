@@ -12,6 +12,7 @@ import android.graphics.BitmapFactory;
 import org.joda.time.DateTime;
 
 import java.io.ByteArrayOutputStream;
+import java.util.ArrayList;
 import java.util.LinkedList;
 
 import esia.timewatcher.database.exceptions.EntryAlreadyExistsException;
@@ -443,12 +444,12 @@ public class DatabaseManager extends SQLiteOpenHelper {
 
     ///// SPECIFIC REQUESTS /////
 
-    public LinkedList<TypeData> requestAllTypes() {
+    public ArrayList<TypeData> requestAllTypes() {
     	String query = "SELECT * FROM " + OccupationTypeTable.TABLE_NAME;
 
 		try(SQLiteDatabase db = this.getReadableDatabase();
 			Cursor cursor = db.rawQuery(query, new String[] {})) {
-			LinkedList<TypeData> typeDataList = new LinkedList<>();
+			ArrayList<TypeData> typeDataList = new ArrayList<>();
 			while (cursor.moveToNext()) {
 				typeDataList.add(parseType(cursor));
 			}
@@ -456,7 +457,7 @@ public class DatabaseManager extends SQLiteOpenHelper {
 		}
     }
 
-    public LinkedList<TypeData> requestTypes(int maxNumber) {
+    public ArrayList<TypeData> requestTypes(int maxNumber) {
         if (maxNumber <= 0) {
             throw new IllegalArgumentException();
         }
@@ -466,7 +467,7 @@ public class DatabaseManager extends SQLiteOpenHelper {
 
 		try(SQLiteDatabase db = this.getReadableDatabase();
 			Cursor cursor = db.rawQuery(query, new String[] {})) {
-			LinkedList<TypeData> typeDataList = new LinkedList<>();
+			ArrayList<TypeData> typeDataList = new ArrayList<>();
 			while (cursor.moveToNext()) {
 				typeDataList.add(parseType(cursor));
 			}
@@ -474,7 +475,7 @@ public class DatabaseManager extends SQLiteOpenHelper {
 		}
     }
 
-    public LinkedList<HobbyData> requestRunningHobbies(boolean orderByDescendantStartDate) {
+    public ArrayList<HobbyData> requestRunningHobbies(boolean orderByDescendantStartDate) {
         String query = "SELECT * FROM " + HobbyTable.TABLE_NAME
                 + " INNER JOIN " + OccupationTypeTable.TABLE_NAME
                 + " ON " + HobbyTable.KEY_TYPE + " = " + OccupationTypeTable.KEY_ID
@@ -488,7 +489,7 @@ public class DatabaseManager extends SQLiteOpenHelper {
 
 		try(SQLiteDatabase db= this.getReadableDatabase();
 			Cursor cursor = db.rawQuery(query, new String[] {String.valueOf(0)})) {
-			LinkedList<HobbyData> hobbyDataList = new LinkedList<>();
+			ArrayList<HobbyData> hobbyDataList = new ArrayList<>();
 			while (cursor.moveToNext()) {
 				hobbyDataList.add(parseHobbyAndType(cursor));
 			}
@@ -496,7 +497,7 @@ public class DatabaseManager extends SQLiteOpenHelper {
 		}
     }
 
-    public LinkedList<HobbyData> requestStoppedHobbies(boolean orderByDescendantStartDate) {
+    public ArrayList<HobbyData> requestStoppedHobbies(boolean orderByDescendantStartDate) {
         String query = "SELECT * FROM " + HobbyTable.TABLE_NAME
                 + " INNER JOIN " + OccupationTypeTable.TABLE_NAME
                 + " ON " + HobbyTable.KEY_TYPE + " = " + OccupationTypeTable.KEY_ID
@@ -510,7 +511,7 @@ public class DatabaseManager extends SQLiteOpenHelper {
 
         try(SQLiteDatabase db= this.getReadableDatabase();
             Cursor cursor = db.rawQuery(query, new String[] {String.valueOf(0)})) {
-        	LinkedList<HobbyData> hobbyDataList = new LinkedList<>();
+        	ArrayList<HobbyData> hobbyDataList = new ArrayList<>();
         	while (cursor.moveToNext()) {
         		hobbyDataList.add(parseHobbyAndType(cursor));
 			}
@@ -518,7 +519,7 @@ public class DatabaseManager extends SQLiteOpenHelper {
         }
     }
 
-	public LinkedList<EventData> requestEvents(boolean orderByChronologicalDate) {
+	public ArrayList<EventData> requestEvents(boolean orderByChronologicalDate) {
 		String query = "SELECT * FROM " + EventTable.TABLE_NAME
 				+ " INNER JOIN " + OccupationTypeTable.TABLE_NAME
 				+ " ON " + EventTable.KEY_TYPE + " = " + OccupationTypeTable.KEY_ID;
@@ -531,7 +532,7 @@ public class DatabaseManager extends SQLiteOpenHelper {
 
 		try(SQLiteDatabase db= this.getReadableDatabase();
 			Cursor cursor = db.rawQuery(query, new String[] {})) {
-			LinkedList<EventData> eventDataList = new LinkedList<>();
+			ArrayList<EventData> eventDataList = new ArrayList<>();
 			while (cursor.moveToNext()) {
 				eventDataList.add(parseEventAndType(cursor));
 			}

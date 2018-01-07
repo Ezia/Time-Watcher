@@ -33,32 +33,7 @@ import esia.timewatcher.structures.Hobby;
 public class HomeFragment extends Fragment implements SimpleRecyclerViewAdapter.DialogListener {
 
 	private Spinner typeSpinner;
-	private RecyclerView runningHobbiesRecycler;
-	private ImageButton startButton;
 
-	private enum  StartAction implements Action {
-		HOBBY("New hobby"),
-		HOBBY_PLUS("New hobby..."),
-		EVENT("New event"),
-		EVENT_PLUS("New Event...");
-
-		private final String name;
-
-		StartAction(String name) {
-			this.name = name;
-		}
-
-		@Override
-		public long getId() {
-			return ordinal();
-		}
-
-		@Override
-		public String getName() {
-			return name;
-		}
-
-	}
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
 							 Bundle savedInstanceState) {
@@ -77,7 +52,7 @@ public class HomeFragment extends Fragment implements SimpleRecyclerViewAdapter.
 		RunningHobbyRecyclerViewAdapter runningHobbiesAdapter =
 				new RunningHobbyRecyclerViewAdapter(getContext());
 		runningHobbiesAdapter.setDialogListener(this);
-		runningHobbiesRecycler = (RecyclerView) view.findViewById(R.id.running_hobbies);
+		RecyclerView runningHobbiesRecycler = (RecyclerView) view.findViewById(R.id.running_hobbies);
 		runningHobbiesRecycler.setLayoutManager(new LinearLayoutManager(getContext()));
 		runningHobbiesRecycler.setAdapter(runningHobbiesAdapter);
 
@@ -96,7 +71,7 @@ public class HomeFragment extends Fragment implements SimpleRecyclerViewAdapter.
 
 		// start button
 
-		startButton = (ImageButton) view.findViewById(R.id.start_button);
+		ImageButton startButton = (ImageButton) view.findViewById(R.id.start_button);
 		startButton.setOnClickListener(v -> {
 			PopupMenu popup = new PopupMenu(getContext(), v);
 			popup.inflate(R.menu.start_menu);

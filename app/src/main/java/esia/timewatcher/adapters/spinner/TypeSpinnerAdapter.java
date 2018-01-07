@@ -9,6 +9,7 @@ import android.widget.Spinner;
 import android.widget.SpinnerAdapter;
 import android.widget.TextView;
 
+import java.util.ArrayList;
 import java.util.LinkedList;
 
 import esia.timewatcher.R;
@@ -20,7 +21,7 @@ import esia.timewatcher.structures.Type;
 public class TypeSpinnerAdapter implements SpinnerAdapter, DatabaseListener {
 
 	private Context context;
-	private LinkedList<TypeData> dataList;
+	private ArrayList<TypeData> dataList;
 	private LinkedList<DataSetObserver> observers = new LinkedList<>();
 
 	public TypeSpinnerAdapter(Context context) {

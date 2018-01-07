@@ -10,6 +10,7 @@ import android.view.ViewGroup;
 import android.widget.PopupMenu;
 import android.widget.Toast;
 
+import java.util.ArrayList;
 import java.util.LinkedList;
 
 import esia.timewatcher.R;
@@ -22,10 +23,11 @@ public abstract class SimpleRecyclerViewAdapter
 		extends RecyclerView.Adapter<VH>
 		implements DatabaseListener {
 
-	protected LinkedList<D> dataList = new LinkedList<>();
+	protected ArrayList<D> dataList = new ArrayList<>();
 	protected final Context context;
 	protected final int viewResource;
 	protected RecyclerView recyclerView;
+
 	public SimpleRecyclerViewAdapter(Context context, int viewRessource) {
 		this.context = context;
 		this.viewResource = viewRessource;
