@@ -2,7 +2,7 @@
 
     <!--Theme-->
 
-    <style name="AppTheme" parent="Theme.Design.NoActionBar">
+    <style name="AppTheme" parent="Theme.AppCompat.NoActionBar">
         <!--Misc-->
         <item name="colorPrimary">@color/primaryColor</item>
         <item name="colorPrimaryDark">@color/primaryDarkColor</item>

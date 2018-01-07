@@ -34,7 +34,6 @@ public class HomeFragment extends Fragment implements SimpleRecyclerViewAdapter.
 
 	private Spinner typeSpinner;
 	private RecyclerView runningHobbiesRecycler;
-	private Spinner actionSpinner;
 	private ImageButton startButton;
 
 	private enum  StartAction implements Action {
@@ -95,14 +94,6 @@ public class HomeFragment extends Fragment implements SimpleRecyclerViewAdapter.
 		this.getActivity().runOnUiThread(updateRunningList);
 		handler.post(updateRunningList);
 
-//		// action spinner
-//
-//		ActionSpinnerAdapter startSpinnerAdapter = new ActionSpinnerAdapter(getContext(),
-//				Arrays.asList(StartAction.values()));
-//		startSpinnerAdapter.setButtonClickListener(action -> onStartClick(action));
-//		actionSpinner = (Spinner) view.findViewById(R.id.start_spinner);
-//		actionSpinner.setAdapter(startSpinnerAdapter);
-
 		// start button
 
 		startButton = (ImageButton) view.findViewById(R.id.start_button);
@@ -141,34 +132,8 @@ public class HomeFragment extends Fragment implements SimpleRecyclerViewAdapter.
 		return false;
 	}
 
-
 	@Override
 	public void onDialogRequest(DialogFragment dialog) {
 		dialog.show(getFragmentManager(), "dialog");
-	}
-
-	public void onStartClick(Action action) {
-		long selectedTypeId = typeSpinner.getSelectedItemId();
-
-		switch (((StartAction)action)) {
-			case EVENT:
-				Event event = new Event(new DateTime());
-				DatabaseManager.getInstance().createEvent(event, selectedTypeId);
-				Toast.makeText(getContext(), "Event created", Toast.LENGTH_SHORT).show();
-				break;
-			case HOBBY:
-				Hobby newHobby = new Hobby(new DateTime());
-				DatabaseManager.getInstance().createHobby(newHobby, selectedTypeId);
-				Toast.makeText(getContext(), "Hobby created", Toast.LENGTH_SHORT).show();
-				break;
-			case EVENT_PLUS:
-				CustomStartDialogFragment.newEventInstance(selectedTypeId)
-						.show(getFragmentManager(), "dialog");
-				break;
-			case HOBBY_PLUS:
-				CustomStartDialogFragment.newHobbyInstance(selectedTypeId)
-						.show(getFragmentManager(), "dialog");
-				break;
-		}
 	}
 }

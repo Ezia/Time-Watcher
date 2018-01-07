@@ -13,9 +13,11 @@
         android:layout_weight="1"
         style="@style/RecyclerView"/>
 
-    <Space
+    <ImageView
         android:layout_width="match_parent"
-        android:layout_height="@dimen/small_margin" />
+        android:layout_height="wrap_content"
+        android:layout_margin="@dimen/small_margin"
+        android:background="@drawable/separator"/>
 
     <LinearLayout
         android:id="@+id/start_layout"

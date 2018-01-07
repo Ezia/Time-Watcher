@@ -21,6 +21,7 @@ import esia.timewatcher.database.TypeData;
 import esia.timewatcher.structures.Event;
 import esia.timewatcher.structures.Hobby;
 import esia.timewatcher.structures.Type;
+import esia.timewatcher.utils.BitmapUtils;
 
 
 public class HomeActivity extends AppCompatActivity {
@@ -42,7 +43,8 @@ public class HomeActivity extends AppCompatActivity {
         deleteDatabase(DatabaseManager.DATABASE_NAME);
         DatabaseManager.initializeInstance(this.getApplicationContext());
 
-        Bitmap icon = BitmapFactory.decodeResource(getResources(), R.drawable.twitter_small);
+        Bitmap icon = BitmapUtils.drawableToBitmap(getApplicationContext(),
+				getResources().getDrawable(R.drawable.icon_draw, getTheme()));
 
         LinkedList<Type> types = new LinkedList<>();
         types.add(new Type("now", icon));
