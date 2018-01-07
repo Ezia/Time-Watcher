@@ -11,11 +11,13 @@
         android:id="@+id/name"
         android:layout_width="70dp"
         android:layout_height="70dp"
-        android:gravity="center_vertical|start"
+        android:gravity="center"
         android:text="Lecture"
-        android:background="@drawable/default_image"
-        android:backgroundTint="#26ffffff"
-        android:backgroundTintMode="multiply"/>
+        android:background="@drawable/icon_music"
+        android:backgroundTint="#7dffffff"
+        android:backgroundTintMode="multiply"
+        android:textColor="@color/secondaryDarkColor"
+        android:textStyle="bold"/>
 
     <Space
         android:layout_width="10dp"
