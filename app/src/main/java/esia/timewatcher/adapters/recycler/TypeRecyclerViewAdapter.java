@@ -93,7 +93,7 @@ public class TypeRecyclerViewAdapter
 				deletable = false;
 				if (showUsage) {
 					itemView.setBackgroundTintList(context.getResources().
-							getColorStateList(R.color.secondaryColor,
+							getColorStateList(R.color.secondaryDarkColor,
 									context.getTheme()));
 				} else {
 					itemView.setBackgroundTintList(context.getResources().
