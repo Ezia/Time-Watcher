@@ -110,6 +110,12 @@
         <item name="android:paddingLeft">@dimen/large_margin</item>
     </style>
 
+    <style name="StatsButton" parent="Widget.AppCompat.ImageButton">
+        <item name="android:src">@drawable/poll</item>
+        <item name="android:background">@drawable/button</item>
+        <item name="android:tint">@color/primaryTextColor</item>
+    </style>
+
     <!--Item-->
 
     <style name="AppTheme.Item">

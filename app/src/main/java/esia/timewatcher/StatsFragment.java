@@ -7,11 +7,15 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Spinner;
 
 import esia.timewatcher.adapters.recycler.EventRecyclerViewAdapter;
 import esia.timewatcher.adapters.recycler.StoppedHobbyRecyclerViewAdapter;
+import esia.timewatcher.adapters.spinner.TypeSpinnerAdapter;
 
 public class StatsFragment extends Fragment {
+
+	private Spinner typeSpinner;
 
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -19,17 +23,8 @@ public class StatsFragment extends Fragment {
 		// Inflate the layout for this fragment
 		View view = inflater.inflate(R.layout.stats_fragment, container, false);
 
-		StoppedHobbyRecyclerViewAdapter runningHobbiesAdapter =
-				new StoppedHobbyRecyclerViewAdapter(getContext());
-		RecyclerView runningHobbiesRecycler = (RecyclerView) view.findViewById(R.id.stopped_hobbies);
-		runningHobbiesRecycler.setLayoutManager(new LinearLayoutManager(getContext()));
-		runningHobbiesRecycler.setAdapter(runningHobbiesAdapter);
-
-		EventRecyclerViewAdapter eventAdapter =
-				new EventRecyclerViewAdapter(getContext());
-		RecyclerView eventRecyclerView = (RecyclerView) view.findViewById(R.id.events);
-		eventRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
-		eventRecyclerView.setAdapter(eventAdapter);
+		typeSpinner = (Spinner) view.findViewById(R.id.type_spinner);
+		typeSpinner.setAdapter(new TypeSpinnerAdapter(getContext()));
 
 		return view;
 	}

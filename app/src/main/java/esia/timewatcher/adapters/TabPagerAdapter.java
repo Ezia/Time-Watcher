@@ -6,6 +6,7 @@ import android.support.annotation.Nullable;
 import android.support.v13.app.FragmentPagerAdapter;
 
 import esia.timewatcher.HomeFragment;
+import esia.timewatcher.ListsFragment;
 import esia.timewatcher.SettingsFragment;
 import esia.timewatcher.StatsFragment;
 
@@ -17,7 +18,7 @@ public class TabPagerAdapter extends FragmentPagerAdapter {
 
 	@Override
 	public int getCount() {
-		return 3;
+		return 4;
 	}
 
 	@Override
@@ -26,8 +27,10 @@ public class TabPagerAdapter extends FragmentPagerAdapter {
 			case 0:
 				return new HomeFragment();
 			case 1:
-				return new StatsFragment();
+				return new ListsFragment();
 			case 2:
+				return new StatsFragment();
+			case 3:
 				return new SettingsFragment();
 			default:
 				throw new IllegalArgumentException();
@@ -41,8 +44,10 @@ public class TabPagerAdapter extends FragmentPagerAdapter {
 			case 0:
 				return "Home";
 			case 1:
-				return "Stats";
+				return "Lists";
 			case 2:
+				return "Stats";
+			case 3:
 				return "Settings";
 			default:
 				throw new IllegalArgumentException();

@@ -1,26 +1,56 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
-    xmlns:android="http://schemas.android.com/apk/res/android" android:layout_width="match_parent"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
     android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="vertical">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <Spinner
+            android:id="@+id/type_spinner"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"/>
+
+        <Space
+            android:layout_width="@dimen/small_margin"
+            android:layout_height="match_parent" />
+
+        <ImageButton
+            android:id="@+id/stats_button"
+            android:layout_width="@dimen/icon_size"
+            android:layout_height="@dimen/icon_size"
+            style="@style/StatsButton"
+            android:layout_gravity="center"/>
+
+    </LinearLayout>
 
     <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/small_margin"
         android:gravity="center"
-        android:text="Stopped hobbies"
+        android:text="Hobby stats"
         android:textAllCaps="true"
         android:textColor="@color/secondaryColor"
         android:textStyle="bold" />
 
-    <android.support.v7.widget.RecyclerView
-        android:id="@+id/stopped_hobbies"
+    <ScrollView
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_weight="1"
-        android:layout_margin="@dimen/small_margin"
-        style="@style/RecyclerView"/>
+        style="@style/RecyclerView">
+
+        <TableLayout
+            android:id="@+id/hobby_stats_table"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:stretchColumns="0,1" />
+
+    </ScrollView>
 
     <ImageView
         android:layout_width="match_parent"
@@ -31,18 +61,25 @@
     <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/small_margin"
         android:gravity="center"
-        android:text="Events"
+        android:text="Event stats"
         android:textAllCaps="true"
         android:textColor="@color/secondaryColor"
         android:textStyle="bold" />
 
-    <android.support.v7.widget.RecyclerView
-        android:id="@+id/events"
+    <ScrollView
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_weight="1"
-        android:layout_margin="@dimen/small_margin"
-        style="@style/RecyclerView"/>
+        style="@style/RecyclerView">
+
+        <TableLayout
+            android:id="@+id/event_stats_table"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:stretchColumns="0,1" />
+
+    </ScrollView>
 
 </LinearLayout>
