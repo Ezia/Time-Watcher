@@ -449,7 +449,7 @@ public class DatabaseManager extends SQLiteOpenHelper {
 
 		try(SQLiteDatabase db = this.getReadableDatabase();
 			Cursor cursor = db.rawQuery(query, new String[] {})) {
-			ArrayList<TypeData> typeDataList = new ArrayList<>();
+			ArrayList<TypeData> typeDataList = new ArrayList<>(cursor.getCount());
 			while (cursor.moveToNext()) {
 				typeDataList.add(parseType(cursor));
 			}
@@ -467,7 +467,7 @@ public class DatabaseManager extends SQLiteOpenHelper {
 
 		try(SQLiteDatabase db = this.getReadableDatabase();
 			Cursor cursor = db.rawQuery(query, new String[] {})) {
-			ArrayList<TypeData> typeDataList = new ArrayList<>();
+			ArrayList<TypeData> typeDataList = new ArrayList<>(cursor.getCount());
 			while (cursor.moveToNext()) {
 				typeDataList.add(parseType(cursor));
 			}
@@ -489,7 +489,7 @@ public class DatabaseManager extends SQLiteOpenHelper {
 
 		try(SQLiteDatabase db= this.getReadableDatabase();
 			Cursor cursor = db.rawQuery(query, new String[] {String.valueOf(0)})) {
-			ArrayList<HobbyData> hobbyDataList = new ArrayList<>();
+			ArrayList<HobbyData> hobbyDataList = new ArrayList<>(cursor.getCount());
 			while (cursor.moveToNext()) {
 				hobbyDataList.add(parseHobbyAndType(cursor));
 			}
@@ -511,7 +511,7 @@ public class DatabaseManager extends SQLiteOpenHelper {
 
         try(SQLiteDatabase db= this.getReadableDatabase();
             Cursor cursor = db.rawQuery(query, new String[] {String.valueOf(0)})) {
-        	ArrayList<HobbyData> hobbyDataList = new ArrayList<>();
+        	ArrayList<HobbyData> hobbyDataList = new ArrayList<>(cursor.getCount());
         	while (cursor.moveToNext()) {
         		hobbyDataList.add(parseHobbyAndType(cursor));
 			}
@@ -532,7 +532,7 @@ public class DatabaseManager extends SQLiteOpenHelper {
 
 		try(SQLiteDatabase db= this.getReadableDatabase();
 			Cursor cursor = db.rawQuery(query, new String[] {})) {
-			ArrayList<EventData> eventDataList = new ArrayList<>();
+			ArrayList<EventData> eventDataList = new ArrayList<>(cursor.getCount());
 			while (cursor.moveToNext()) {
 				eventDataList.add(parseEventAndType(cursor));
 			}
