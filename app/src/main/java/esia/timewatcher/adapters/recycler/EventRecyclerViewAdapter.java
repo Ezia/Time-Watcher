@@ -13,6 +13,7 @@ import esia.timewatcher.R;
 import esia.timewatcher.database.Data;
 import esia.timewatcher.database.DatabaseManager;
 import esia.timewatcher.database.EventData;
+import esia.timewatcher.utils.DialogHelper;
 import esia.timewatcher.utils.TimeUtils;
 
 public class EventRecyclerViewAdapter
@@ -58,8 +59,13 @@ public class EventRecyclerViewAdapter
 		private boolean onPopupMenuItemClick(MenuItem item) {
 			switch (item.getItemId()) {
 				case R.id.delete_menu_item:
-					DatabaseManager.getInstance().deleteEvent(getItemId());
-					Toast.makeText(context, "Hobby deleted", Toast.LENGTH_SHORT).show();
+					DialogHelper.newYesNoDialog(context,
+							"Do you really want to delete this event ?",
+							(dialog, which) -> {
+								DatabaseManager.getInstance().deleteEvent(getItemId());
+								Toast.makeText(context, "Hobby deleted", Toast.LENGTH_SHORT).show();
+							},
+							null).show();
 					return true;
 			}
 			return false;
