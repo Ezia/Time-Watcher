@@ -11,5 +11,6 @@
         <item>@drawable/icon_eat</item>
         <item>@drawable/icon_kitchen</item>
         <item>@drawable/icon_music</item>
+        <item>@drawable/ic_icon_lip</item>
     </array>
 </resources>
