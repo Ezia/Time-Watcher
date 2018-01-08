@@ -25,6 +25,7 @@ import esia.timewatcher.database.Data;
 import esia.timewatcher.database.DatabaseManager;
 import esia.timewatcher.database.HobbyData;
 import esia.timewatcher.structures.Hobby;
+import esia.timewatcher.utils.DialogHelper;
 import esia.timewatcher.utils.TimeUtils;
 
 public class RunningHobbyRecyclerViewAdapter
@@ -81,18 +82,16 @@ public class RunningHobbyRecyclerViewAdapter
 		private boolean onPopupMenuItemClick(MenuItem item) {
 			switch (item.getItemId()) {
 				case R.id.stop_menu_item:
-					HobbyData data = dataList.get(getAdapterPosition());
-					Hobby newHobby = new Hobby(data.getHobby().getStartDate(), new DateTime());
-					DatabaseManager.getInstance().updateHobby(data.getId(), newHobby,
-							data.getTypeData().getId());
-					Toast.makeText(context, "Hobby stopped", Toast.LENGTH_SHORT).show();
-					return true;
-				case R.id.stop_plus_menu_item:
 					notifyDialogRequest(CustomStopDialogFragment.newInstance(getItemId()));
 					return true;
 				case R.id.cancel_menu_item:
-					DatabaseManager.getInstance().deleteHobby(getItemId());
-					Toast.makeText(context, "Hobby deleted", Toast.LENGTH_SHORT).show();
+					DialogHelper.newYesNoDialog(context,
+							"Do you really want to cancel this hobby ?",
+							(dialog, which) -> {
+								DatabaseManager.getInstance().deleteHobby(getItemId());
+								Toast.makeText(context, "Hobby deleted", Toast.LENGTH_SHORT).show();
+							},
+							null).show();
 					return true;
 			}
 			return false;

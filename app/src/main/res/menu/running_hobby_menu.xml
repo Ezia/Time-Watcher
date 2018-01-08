@@ -3,8 +3,6 @@
 
     <item android:id="@+id/stop_menu_item"
         android:title="Stop" />
-    <item android:id="@+id/stop_plus_menu_item"
-        android:title="Stop..." />
     <item android:id="@+id/cancel_menu_item"
         android:title="Cancel" />
 </menu>
