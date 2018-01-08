@@ -15,6 +15,7 @@ import esia.timewatcher.R;
 import esia.timewatcher.database.Data;
 import esia.timewatcher.database.DatabaseManager;
 import esia.timewatcher.database.TypeData;
+import esia.timewatcher.utils.DialogHelper;
 
 public class TypeRecyclerViewAdapter
 		extends SimpleRecyclerViewAdapter<TypeData, TypeRecyclerViewAdapter.TypeViewHolder> {
@@ -72,8 +73,13 @@ public class TypeRecyclerViewAdapter
 		private boolean onPopupMenuItemClick(MenuItem item) {
 			switch (item.getItemId()) {
 				case R.id.delete_menu_item:
-					DatabaseManager.getInstance().deleteType(getItemId());
-					Toast.makeText(context, "Type deleted", Toast.LENGTH_SHORT).show();
+					DialogHelper.newYesNoDialog(context,
+							"Do you really want to delete this type ?",
+							(dialog, which) -> {
+								DatabaseManager.getInstance().deleteType(getItemId());
+								Toast.makeText(context, "Type deleted", Toast.LENGTH_SHORT).show();
+							},
+							null).show();
 					return true;
 				case R.id.modify_menu_item:
 					ModifyTypeDialogFragment frag = ModifyTypeDialogFragment.newInstance(getItemId());

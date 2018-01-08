@@ -11,6 +11,22 @@ import org.joda.time.format.PeriodFormatterBuilder;
 
 public class TimeUtils {
 
+	public static String toFullString(DateTime time) {
+		DateTimeFormatterBuilder formatBuilder = new DateTimeFormatterBuilder();
+
+		formatBuilder.appendDayOfMonth(2);
+		formatBuilder.appendLiteral(" ");
+		formatBuilder.appendMonthOfYearShortText();
+		formatBuilder.appendLiteral(" ");
+		formatBuilder.appendYear(4, 4);
+		formatBuilder.appendLiteral(" ");
+		formatBuilder.appendHourOfDay(2);
+		formatBuilder.appendLiteral(":");
+		formatBuilder.appendMinuteOfHour(2);
+
+		return time.toString(formatBuilder.toFormatter());
+	}
+
 	public static String timeToString(DateTime time) {
 		DateTimeFormatterBuilder formatBuilder = new DateTimeFormatterBuilder();
 

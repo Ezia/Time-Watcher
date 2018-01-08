@@ -36,6 +36,7 @@ import esia.timewatcher.adapters.recycler.TypeRecyclerViewAdapter;
 import esia.timewatcher.database.DatabaseManager;
 import esia.timewatcher.structures.Type;
 import esia.timewatcher.utils.BitmapUtils;
+import esia.timewatcher.utils.DialogHelper;
 import esia.timewatcher.utils.TimeUtils;
 import esia.timewatcher.view.DateEditText;
 
@@ -111,13 +112,19 @@ public class SettingsFragment extends Fragment implements SimpleRecyclerViewAdap
 				dateEditText.getDay(),
 				0,
 				0);
-		int deletedHobbyNbr = DatabaseManager.getInstance().deleteHobbiesOlderThan(date);
-		int deletedEvenNbr = DatabaseManager.getInstance().deleteEventsOlderThan(date);
-		Toast.makeText(getContext(),
-				""
-				+ deletedEvenNbr + " events and "
-				+ deletedHobbyNbr + " hobbies deleted",
-				Toast.LENGTH_SHORT).show();
+		DialogHelper.newYesNoDialog(getContext(),
+				"Do you really want to delete hobbies and event prior to \n"
+						+ TimeUtils.toFullString(date) + " ?",
+				(dialog, which) -> {
+					int deletedHobbyNbr = DatabaseManager.getInstance().deleteHobbiesOlderThan(date);
+					int deletedEvenNbr = DatabaseManager.getInstance().deleteEventsOlderThan(date);
+					Toast.makeText(getContext(),
+							""
+									+ deletedEvenNbr + " events and "
+									+ deletedHobbyNbr + " hobbies deleted",
+							Toast.LENGTH_SHORT).show();
+				},
+				null).show();
 	}
 
 	public void onShowUsageSwitchChange(CompoundButton compoundButton, boolean b) {
