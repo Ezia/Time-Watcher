@@ -445,7 +445,8 @@ public class DatabaseManager extends SQLiteOpenHelper {
     ///// SPECIFIC REQUESTS /////
 
     public ArrayList<TypeData> requestAllTypes() {
-    	String query = "SELECT * FROM " + OccupationTypeTable.TABLE_NAME;
+    	String query = "SELECT * FROM " + OccupationTypeTable.TABLE_NAME
+				+ " ORDER BY " + OccupationTypeTable.KEY_NAME + " ASC";
 
 		try(SQLiteDatabase db = this.getReadableDatabase();
 			Cursor cursor = db.rawQuery(query, new String[] {})) {
