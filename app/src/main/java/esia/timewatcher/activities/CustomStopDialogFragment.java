@@ -65,7 +65,8 @@ public class CustomStopDialogFragment extends DialogFragment {
 								dateEditText.getMonth(),
 								dateEditText.getDay(),
 								timeEditText.getHours(),
-								timeEditText.getMinutes()
+								timeEditText.getMinutes(),
+								timeEditText.getSeconds()
 						)
 				),
 				hobbyData.getTypeData().getId());

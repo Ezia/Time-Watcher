@@ -701,7 +701,13 @@ public class DatabaseManager extends SQLiteOpenHelper {
 	}
 	
 	private ContentValues checkAndBuildHobbyContent(long hobbyId, Hobby hobby, long typeId) {
-		if (hobby == null || !hobby.isValid() || !hobbyExists(hobbyId) || !typeExists(typeId)) {
+		if (hobby == null) {
+			throw new IllegalArgumentException();
+		} else if (!hobby.isValid()) {
+			throw new IllegalArgumentException();
+		} else if (!hobbyExists(hobbyId)) {
+			throw new IllegalArgumentException();
+		} else if (!typeExists(typeId)) {
 			throw new IllegalArgumentException();
 		}
 

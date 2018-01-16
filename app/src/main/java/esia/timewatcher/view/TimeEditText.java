@@ -13,13 +13,14 @@ import esia.timewatcher.utils.TimeUtils;
 public class TimeEditText extends AppCompatEditText {
 	private int minutes;
 	private int hours;
+	private int seconds;
 
 	private void init() {
 		setFocusable(false);
 		setInputType(InputType.TYPE_NULL);
 		setOnClickListener(view -> onClick());
 		DateTime now = DateTime.now();
-		setTime(now.getHourOfDay(), now.getMinuteOfHour());
+		setTime(now.getHourOfDay(), now.getMinuteOfHour(), now.getSecondOfMinute());
 	}
 
 	public TimeEditText(Context context) {
@@ -37,9 +38,10 @@ public class TimeEditText extends AppCompatEditText {
 		init();
 	}
 
-	public void setTime(int hours, int minutes) {
+	public void setTime(int hours, int minutes, int seconds) {
 		this.hours = hours;
 		this.minutes = minutes;
+		this.seconds = seconds;
 		setText(TimeUtils.timeToString(
 				new DateTime(0, 1, 1, hours, minutes)));
 	}
@@ -52,9 +54,13 @@ public class TimeEditText extends AppCompatEditText {
 		return hours;
 	}
 
+	public int getSeconds() {
+		return seconds;
+	}
+
 	public void onClick() {
 		new TimePickerDialog(getContext(),
-				(timePicker, h, m) -> setTime(h, m),
+				(timePicker, h, m) -> setTime(h, m, 0),
 				hours, minutes, true).show();
 	}
 }

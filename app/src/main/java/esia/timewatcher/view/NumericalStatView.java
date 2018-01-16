@@ -23,6 +23,24 @@ public class NumericalStatView extends TableRow {
 		init(context, attrs);
 	}
 
+	public String getStatName() {
+		return statName;
+	}
+
+	public String getStatValue() {
+		return statValue;
+	}
+
+	public void setStatName(String statName) {
+		this.statName = statName;
+		((TextView)getChildAt(0)).setText(statName);
+	}
+
+	public void setStatValue(String statValue) {
+		this.statValue = statValue;
+		((TextView)getChildAt(1)).setText(statValue);
+	}
+
 	private void init(Context context, AttributeSet attrs) {
 		TypedArray a = context.getTheme().obtainStyledAttributes(
 				attrs,

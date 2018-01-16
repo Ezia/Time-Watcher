@@ -11,6 +11,8 @@ import android.widget.ImageButton;
 import android.widget.Spinner;
 import android.widget.TableLayout;
 
+import org.joda.time.Duration;
+
 import java.util.ArrayList;
 
 import esia.timewatcher.R;
@@ -18,9 +20,13 @@ import esia.timewatcher.adapters.recycler.EventRecyclerViewAdapter;
 import esia.timewatcher.adapters.recycler.StoppedHobbyRecyclerViewAdapter;
 import esia.timewatcher.adapters.spinner.TypeSpinnerAdapter;
 import esia.timewatcher.database.DatabaseManager;
+import esia.timewatcher.database.EventData;
 import esia.timewatcher.database.HobbyData;
 import esia.timewatcher.database.TypeData;
 import esia.timewatcher.structures.Type;
+import esia.timewatcher.utils.StatsUtils;
+import esia.timewatcher.utils.TimeUtils;
+import esia.timewatcher.view.NumericalStatView;
 
 public class StatsFragment extends Fragment {
 
@@ -50,6 +56,50 @@ public class StatsFragment extends Fragment {
 	private void updateStats() {
 		long typeId = typeSpinner.getSelectedItemId();
 
-		TypeData typeData = DatabaseManager.getInstance().requestType(typeId);
+		ArrayList<EventData> eventDataList =
+				DatabaseManager.getInstance().requestEvents(typeId, true);
+
+		NumericalStatView eventDayFreq = new NumericalStatView(getContext());
+		eventDayFreq.setStatName("Times per day");
+		eventDayFreq.setStatValue(String.valueOf(
+				StatsUtils.computeEventFrequency(eventDataList, Duration.standardDays(1))
+		));
+
+		NumericalStatView eventWeekFreq = new NumericalStatView(getContext());
+		eventWeekFreq.setStatName("Times per week");
+		eventWeekFreq.setStatValue(String.valueOf(
+				StatsUtils.computeEventFrequency(eventDataList, Duration.standardDays(7))
+		));
+
+		ArrayList<HobbyData> hobbyDataList =
+				DatabaseManager.getInstance().requestStoppedHobbies(typeId, true);
+
+		NumericalStatView hobbyDayFreq = new NumericalStatView(getContext());
+		hobbyDayFreq.setStatName("Time per day");
+		hobbyDayFreq.setStatValue(String.valueOf(
+				TimeUtils.toSimpleString(
+				StatsUtils.computeHobbyDurationFrequency(hobbyDataList, Duration.standardDays(1))
+						.toPeriod()
+				)
+		));
+
+		NumericalStatView hobbyWeekFreq = new NumericalStatView(getContext());
+		hobbyWeekFreq.setStatName("Time per week");
+		hobbyWeekFreq.setStatValue(String.valueOf(
+				TimeUtils.toSimpleString(
+				StatsUtils.computeHobbyDurationFrequency(hobbyDataList, Duration.standardDays(7))
+						.toPeriod()
+				)
+		));
+
+		eventStatsTable.removeAllViews();
+
+		eventStatsTable.addView(eventDayFreq);
+		eventStatsTable.addView(eventWeekFreq);
+
+		hobbyStatstable.removeAllViews();
+
+		hobbyStatstable.addView(hobbyDayFreq);
+		hobbyStatstable.addView(hobbyWeekFreq);
 	}
 }
