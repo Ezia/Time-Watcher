@@ -463,7 +463,8 @@ public class DatabaseManager extends SQLiteOpenHelper {
         }
 
         String query = "SELECT * FROM " + OccupationTypeTable.TABLE_NAME
-				+ " LIMIT " + maxNumber;
+				+ " LIMIT " + maxNumber
+				+ " ORDER BY " + OccupationTypeTable.KEY_NAME + " ASC";
 
 		try(SQLiteDatabase db = this.getReadableDatabase();
 			Cursor cursor = db.rawQuery(query, new String[] {})) {

@@ -70,6 +70,7 @@
 
     <style name="Spinner" parent="Widget.AppCompat.Spinner">
         <item name="android:background">@drawable/spinner_background</item>
+        <item name="android:spinnerMode">dialog</item>
     </style>
 
     <!--Recycler View-->
