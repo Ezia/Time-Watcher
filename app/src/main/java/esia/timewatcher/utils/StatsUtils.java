@@ -59,9 +59,10 @@ public class StatsUtils {
 			if (fullDuration.getMillis() <= duration.getMillis()) {
 				return totalHobbyDuration;
 			} else {
-				return totalHobbyDuration
+				Duration result = totalHobbyDuration
 						.multipliedBy(duration.getMillis())
 						.dividedBy(fullDuration.getMillis());
+				return result;
 			}
 		} else {
 			return new Duration(0);

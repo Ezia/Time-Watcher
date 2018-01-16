@@ -79,7 +79,7 @@ public class StatsFragment extends Fragment {
 		hobbyDayFreq.setStatValue(String.valueOf(
 				TimeUtils.toSimpleString(
 				StatsUtils.computeHobbyDurationFrequency(hobbyDataList, Duration.standardDays(1))
-						.toPeriod()
+						.toPeriod().normalizedStandard()
 				)
 		));
 
@@ -88,7 +88,7 @@ public class StatsFragment extends Fragment {
 		hobbyWeekFreq.setStatValue(String.valueOf(
 				TimeUtils.toSimpleString(
 				StatsUtils.computeHobbyDurationFrequency(hobbyDataList, Duration.standardDays(7))
-						.toPeriod()
+						.toPeriod().normalizedStandard()
 				)
 		));
 
