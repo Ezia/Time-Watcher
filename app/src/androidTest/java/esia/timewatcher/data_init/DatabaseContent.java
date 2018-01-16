@@ -145,11 +145,44 @@ public class DatabaseContent {
 		return resultList;
 	}
 
+	public ArrayList<EventData> getEvents(long typeId, boolean chronologicalOrder) {
+		ArrayList<EventData> resultList = new ArrayList<>();
+
+		for (EventData ed : eventDataList) {
+			if (ed.getTypeData().getId() == typeId) {
+				resultList.add(ed);
+			}
+		}
+		orderByDate(resultList, !chronologicalOrder);
+
+		return resultList;
+	}
+
 	public ArrayList<HobbyData> getStoppedHobbies(boolean orderByDescendantStartDate) {
 		ArrayList<HobbyData> resultList = new ArrayList<>(stoppedHobbyDataList);
 		orderByStartDate(resultList, orderByDescendantStartDate);
 
 		return resultList;
+	}
+
+	private static void orderByDate(ArrayList<EventData> list, boolean descendingOrder) {
+		Collections.sort(list, (lhs, rhs) -> {
+			if (lhs.getEvent().getDate().isBefore(rhs.getEvent().getDate())) {
+				if (descendingOrder) {
+					return 1;
+				} else {
+					return -1;
+				}
+			} else if (rhs.getEvent().getDate().isBefore(lhs.getEvent().getDate())) {
+				if (descendingOrder) {
+					return -1;
+				} else {
+					return 1;
+				}
+			} else {
+				return 0;
+			}
+		});
 	}
 
 	private static void orderByStartDate(ArrayList<HobbyData> list, boolean descendingOrder) {

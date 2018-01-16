@@ -17,6 +17,7 @@ import java.util.LinkedList;
 import esia.timewatcher.data_init.DatabaseContent;
 import esia.timewatcher.data_init.TypeSet;
 import esia.timewatcher.database.DatabaseManager;
+import esia.timewatcher.database.EventData;
 import esia.timewatcher.database.HobbyData;
 
 @RunWith(Parameterized.class)
@@ -92,5 +93,41 @@ public class TestDatabaseListRequest {
 	public void requestStoppedHobbiesOfTypeWithNonexistentType() throws Exception {
 		DatabaseManager.getInstance()
 				.requestStoppedHobbies(-1, true);
+	}
+
+	@Test
+	public void requestEventsOfType() throws Exception {
+		if (databaseContent.getTypeNbr() > 0) {
+			long typeId = databaseContent.getTypeData(0).getId();
+
+			ArrayList<EventData> resultList = DatabaseManager.getInstance()
+					.requestEvents(typeId, true);
+
+			ArrayList<EventData> expectedList = databaseContent
+					.getEvents(typeId, true);
+
+			Assert.assertEquals(resultList, expectedList);
+		}
+	}
+
+	@Test
+	public void requestEventsOfTypeReverse() throws Exception {
+		if (databaseContent.getTypeNbr() > 0) {
+			long typeId = databaseContent.getTypeData(0).getId();
+
+			ArrayList<EventData> resultList = DatabaseManager.getInstance()
+					.requestEvents(typeId, false);
+
+			ArrayList<EventData> expectedList = databaseContent
+					.getEvents(typeId, false);
+
+			Assert.assertEquals(resultList, expectedList);
+		}
+	}
+
+	@Test(expected = IllegalArgumentException.class)
+	public void requestEventsOfTypeWithNonexistentType() throws Exception {
+		DatabaseManager.getInstance()
+				.requestEvents(-1, true);
 	}
 }

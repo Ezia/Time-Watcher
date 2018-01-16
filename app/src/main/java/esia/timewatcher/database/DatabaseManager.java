@@ -569,6 +569,32 @@ public class DatabaseManager extends SQLiteOpenHelper {
 		}
 	}
 
+	public ArrayList<EventData> requestEvents(long typeId, boolean orderByChronologicalDate) {
+		if (!typeExists(typeId)) {
+			throw new IllegalArgumentException();
+		}
+
+		String query = "SELECT * FROM " + EventTable.TABLE_NAME
+				+ " INNER JOIN " + OccupationTypeTable.TABLE_NAME
+				+ " ON " + EventTable.KEY_TYPE + " = " + OccupationTypeTable.KEY_ID
+				+ " WHERE " + EventTable.KEY_TYPE + " =?";
+
+		if (orderByChronologicalDate) {
+			query += " ORDER BY " + EventTable.KEY_DATE + " ASC";
+		} else {
+			query += " ORDER BY " + EventTable.KEY_DATE + " DESC";
+		}
+
+		try(SQLiteDatabase db= this.getReadableDatabase();
+			Cursor cursor = db.rawQuery(query, new String[] {String.valueOf(typeId)})) {
+			ArrayList<EventData> eventDataList = new ArrayList<>(cursor.getCount());
+			while (cursor.moveToNext()) {
+				eventDataList.add(parseEventAndType(cursor));
+			}
+			return eventDataList;
+		}
+	}
+
 	public int deleteHobbiesOlderThan(DateTime oldestEndDate) {
     	if (oldestEndDate == null || oldestEndDate.getMillis() == 0) {
     		throw new IllegalArgumentException();

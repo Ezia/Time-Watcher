@@ -51,10 +51,5 @@ public class StatsFragment extends Fragment {
 		long typeId = typeSpinner.getSelectedItemId();
 
 		TypeData typeData = DatabaseManager.getInstance().requestType(typeId);
-
-		computeHobbyStats(typeData);
-	}
-
-	private void computeHobbyStats(TypeData typeData) {
 	}
 }
