@@ -1,4 +1,4 @@
-package esia.timewatcher;
+package esia.timewatcher.activities;
 
 import android.app.Fragment;
 import android.os.Bundle;
@@ -13,6 +13,7 @@ import android.widget.TableLayout;
 
 import java.util.ArrayList;
 
+import esia.timewatcher.R;
 import esia.timewatcher.adapters.recycler.EventRecyclerViewAdapter;
 import esia.timewatcher.adapters.recycler.StoppedHobbyRecyclerViewAdapter;
 import esia.timewatcher.adapters.spinner.TypeSpinnerAdapter;

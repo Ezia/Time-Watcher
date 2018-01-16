@@ -1,4 +1,4 @@
-package esia.timewatcher;
+package esia.timewatcher.activities;
 
 import android.app.Activity;
 import android.app.DatePickerDialog;
@@ -30,6 +30,7 @@ import android.widget.Toast;
 
 import org.joda.time.DateTime;
 
+import esia.timewatcher.R;
 import esia.timewatcher.adapters.recycler.SimpleRecyclerViewAdapter;
 import esia.timewatcher.adapters.spinner.TypeIconSpinnerAdapter;
 import esia.timewatcher.adapters.recycler.TypeRecyclerViewAdapter;

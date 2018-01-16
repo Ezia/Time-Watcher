@@ -14,6 +14,8 @@ import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
 
+import esia.timewatcher.data_init.DatabaseContent;
+import esia.timewatcher.data_init.TypeSet;
 import esia.timewatcher.database.DatabaseManager;
 import esia.timewatcher.database.EventData;
 import esia.timewatcher.database.HobbyData;
@@ -441,5 +443,70 @@ public class TestDatabaseUtils {
 		boolean typeUsed = DatabaseManager.getInstance().isTypeUsed(data.getId());
 
 		Assert.assertTrue(typeUsed);
+	}
+
+	///// REQUEST HOBBIES OF TYPE ...
+
+	@Test
+	public void requestStoppedHobbiesOfType() throws Exception {
+		DatabaseContent databaseContent =
+				new DatabaseContent(2,
+						new TypeSet(2, 3, 4),
+						new TypeSet(5, 6, 7));
+
+		databaseContent.fillDatabase();
+
+
+		long typeId = databaseContent.getTypeData(0).getId();
+
+		ArrayList<HobbyData> resultList = DatabaseManager.getInstance()
+				.requestStoppedHobbies(typeId, true);
+
+		ArrayList<HobbyData> expectedList = databaseContent
+				.getStoppedHobbies(typeId, true);
+
+		Assert.assertEquals(resultList, expectedList);
+	}
+
+	@Test
+	public void requestStoppedHobbiesOfTypeWithEmptyTable() throws Exception {
+		DatabaseContent databaseContent =
+				new DatabaseContent(2,
+						new TypeSet(2, 0, 4),
+						new TypeSet(5, 0, 7));
+
+		databaseContent.fillDatabase();
+
+
+		long typeId = databaseContent.getTypeData(0).getId();
+
+		ArrayList<HobbyData> resultList = DatabaseManager.getInstance()
+				.requestStoppedHobbies(typeId, true);
+
+		ArrayList<HobbyData> expectedList = databaseContent
+				.getStoppedHobbies(typeId, true);
+
+		Assert.assertEquals(resultList, expectedList);
+	}
+
+	@Test
+	public void requestStoppedHobbiesOfTypeWithReverseOrder() throws Exception {
+		DatabaseContent databaseContent =
+				new DatabaseContent(2,
+						new TypeSet(2, 2, 4),
+						new TypeSet(5, 6, 7));
+
+		databaseContent.fillDatabase();
+
+
+		long typeId = databaseContent.getTypeData(0).getId();
+
+		ArrayList<HobbyData> resultList = DatabaseManager.getInstance()
+				.requestStoppedHobbies(typeId, false);
+
+		ArrayList<HobbyData> expectedList = databaseContent
+				.getStoppedHobbies(typeId, false);
+
+		Assert.assertEquals(resultList, expectedList);
 	}
 }

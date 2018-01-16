@@ -1,4 +1,4 @@
-package esia.timewatcher;
+package esia.timewatcher.activities;
 
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -13,6 +13,7 @@ import org.joda.time.Period;
 
 import java.util.LinkedList;
 
+import esia.timewatcher.R;
 import esia.timewatcher.adapters.TabPagerAdapter;
 import esia.timewatcher.database.DatabaseManager;
 import esia.timewatcher.database.EventData;

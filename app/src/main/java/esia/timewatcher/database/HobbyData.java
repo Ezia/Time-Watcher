@@ -23,4 +23,15 @@ public class HobbyData extends Data {
     public TypeData getTypeData() {
         return typeData;
     }
+
+    @Override
+    public boolean equals(Object o) {
+        HobbyData other = (HobbyData) o;
+        if (o != null) {
+            return (super.equals(o)
+                && this.hobby.equals(other.hobby)
+                && this.typeData.equals(other.typeData));
+        }
+        return false;
+    }
 }

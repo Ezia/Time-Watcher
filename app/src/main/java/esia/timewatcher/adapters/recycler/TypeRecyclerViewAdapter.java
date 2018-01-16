@@ -1,7 +1,6 @@
 package esia.timewatcher.adapters.recycler;
 
 import android.content.Context;
-import android.content.res.ColorStateList;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageButton;
@@ -10,7 +9,7 @@ import android.widget.PopupMenu;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import esia.timewatcher.ModifyTypeDialogFragment;
+import esia.timewatcher.activities.ModifyTypeDialogFragment;
 import esia.timewatcher.R;
 import esia.timewatcher.database.Data;
 import esia.timewatcher.database.DatabaseManager;

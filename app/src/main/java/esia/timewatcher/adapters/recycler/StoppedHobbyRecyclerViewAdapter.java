@@ -9,15 +9,12 @@ import android.widget.PopupMenu;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import org.joda.time.DateTime;
 import org.joda.time.Period;
 
-import esia.timewatcher.CustomStopDialogFragment;
 import esia.timewatcher.R;
 import esia.timewatcher.database.Data;
 import esia.timewatcher.database.DatabaseManager;
 import esia.timewatcher.database.HobbyData;
-import esia.timewatcher.structures.Hobby;
 import esia.timewatcher.utils.DialogHelper;
 import esia.timewatcher.utils.TimeUtils;
 

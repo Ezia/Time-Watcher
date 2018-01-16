@@ -13,4 +13,14 @@ public class TypeData extends Data {
     public Type getType() {
         return type;
     }
+
+    @Override
+    public boolean equals(Object o) {
+        TypeData other = (TypeData) o;
+        if (o != null) {
+            return (super.equals(o)
+                    && this.type.equals(other.type));
+        }
+        return false;
+    }
 }

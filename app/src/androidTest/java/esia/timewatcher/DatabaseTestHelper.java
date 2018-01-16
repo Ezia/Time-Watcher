@@ -11,9 +11,9 @@ import esia.timewatcher.structures.Event;
 import esia.timewatcher.structures.Hobby;
 import esia.timewatcher.structures.Type;
 
-class DatabaseTestHelper {
+public class DatabaseTestHelper {
 
-	 static Type getValidType1() {
+	 public static Type getValidType1() {
 		return new Type("test1",
 				BitmapFactory.decodeResource(
 						InstrumentationRegistry.getTargetContext().getResources(),
@@ -22,7 +22,7 @@ class DatabaseTestHelper {
 		);
 	}
 
-	 static Type getValidType2() {
+	 public static Type getValidType2() {
 		return new Type("test2",
 				BitmapFactory.decodeResource(
 						InstrumentationRegistry.getTargetContext().getResources(),
@@ -31,7 +31,7 @@ class DatabaseTestHelper {
 		);
 	}
 
-	 static Type getInvalidType() {
+	 public static Type getInvalidType() {
 		return new Type("",
 				BitmapFactory.decodeResource(
 						InstrumentationRegistry.getTargetContext().getResources(),
@@ -40,25 +40,25 @@ class DatabaseTestHelper {
 		);
 	}
 
-	static Event getValidEvent1() {
+	public static Event getValidEvent1() {
 		return new Event(new DateTime(0));
 	}
 
-	static Event getValidEvent2() {
+	public static Event getValidEvent2() {
 		return new Event(new DateTime(1));
 	}
 
- 	static Event getInvalidEvent() {
+ 	public static Event getInvalidEvent() {
 		return new Event((DateTime) null);
 	}
 
-	static Hobby getValidHobby1() { return new Hobby(new DateTime(10));}
+	public static Hobby getValidHobby1() { return new Hobby(new DateTime(10));}
 
-	static Hobby getValidHobby2() { return new Hobby(new DateTime(20), new DateTime(30));}
+	public static Hobby getValidHobby2() { return new Hobby(new DateTime(20), new DateTime(30));}
 
-	static Hobby getInvalidHobby() { return new Hobby((DateTime) null);}
+	public static Hobby getInvalidHobby() { return new Hobby((DateTime) null);}
 
-	static LinkedList<Type> getListOfTypes(int number) {
+	public static LinkedList<Type> getListOfTypes(int number) {
 	 	LinkedList<Type> list = new LinkedList<>();
 		Bitmap icon = BitmapFactory.decodeResource(
 				InstrumentationRegistry.getTargetContext().getResources(),
@@ -72,7 +72,7 @@ class DatabaseTestHelper {
 		return list;
 	}
 
-	static LinkedList<Hobby> getListOfHobbies(int runningNumber, int finishedNumber) {
+	public static LinkedList<Hobby> getListOfHobbies(int runningNumber, int finishedNumber) {
 		LinkedList<Hobby> list = new LinkedList<>();
 
 		for (int i = 0; i < runningNumber; i++) {
@@ -86,7 +86,7 @@ class DatabaseTestHelper {
 		return list;
 	}
 
-	static LinkedList<Hobby> getListOfStoppedHobbiesByStartDate(int number, boolean sortedByAscendantStartDate) {
+	public static LinkedList<Hobby> getListOfStoppedHobbiesByStartDate(int number, boolean sortedByAscendantStartDate) {
 		LinkedList<Hobby> list = new LinkedList<>();
 
 		if (sortedByAscendantStartDate) {
@@ -102,7 +102,7 @@ class DatabaseTestHelper {
 		return list;
 	}
 
-	static LinkedList<Hobby> getListOfStoppedHobbiesByStopDate(int number, boolean sortedByAscendantStopDate) {
+	public static LinkedList<Hobby> getListOfStoppedHobbiesByStopDate(int number, boolean sortedByAscendantStopDate) {
 		LinkedList<Hobby> list = new LinkedList<>();
 
 		if (sortedByAscendantStopDate) {
@@ -118,7 +118,7 @@ class DatabaseTestHelper {
 		return list;
 	}
 
-	static LinkedList<Hobby> getListOfRunningHobbies(int number, boolean sortedByAscendantStartDate) {
+	public static LinkedList<Hobby> getListOfRunningHobbies(int number, boolean sortedByAscendantStartDate) {
 		LinkedList<Hobby> list = new LinkedList<>();
 
 		if (sortedByAscendantStartDate) {
@@ -134,7 +134,7 @@ class DatabaseTestHelper {
 		return list;
 	}
 
-	static LinkedList<Event> getListOfEvents(int number, boolean sortByChronologicalOrder) {
+	public static LinkedList<Event> getListOfEvents(int number, boolean sortByChronologicalOrder) {
 		LinkedList<Event> list = new LinkedList<>();
 
 		if (sortByChronologicalOrder) {

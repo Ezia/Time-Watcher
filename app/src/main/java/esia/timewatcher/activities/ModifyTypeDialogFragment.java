@@ -1,4 +1,4 @@
-package esia.timewatcher;
+package esia.timewatcher.activities;
 
 import android.app.AlertDialog;
 import android.app.Dialog;
@@ -13,6 +13,7 @@ import android.widget.Toast;
 
 import java.util.LinkedList;
 
+import esia.timewatcher.R;
 import esia.timewatcher.adapters.spinner.TypeIconSpinnerAdapter;
 import esia.timewatcher.database.DatabaseManager;
 import esia.timewatcher.database.TypeData;

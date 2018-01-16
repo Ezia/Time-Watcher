@@ -5,10 +5,10 @@ import android.app.FragmentManager;
 import android.support.annotation.Nullable;
 import android.support.v13.app.FragmentPagerAdapter;
 
-import esia.timewatcher.HomeFragment;
-import esia.timewatcher.ListsFragment;
-import esia.timewatcher.SettingsFragment;
-import esia.timewatcher.StatsFragment;
+import esia.timewatcher.activities.HomeFragment;
+import esia.timewatcher.activities.ListsFragment;
+import esia.timewatcher.activities.SettingsFragment;
+import esia.timewatcher.activities.StatsFragment;
 
 public class TabPagerAdapter extends FragmentPagerAdapter {
 

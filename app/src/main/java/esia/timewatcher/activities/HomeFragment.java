@@ -1,4 +1,4 @@
-package esia.timewatcher;
+package esia.timewatcher.activities;
 
 import android.app.DialogFragment;
 import android.app.Fragment;
@@ -10,25 +10,14 @@ import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AdapterView;
-import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.PopupMenu;
 import android.widget.Spinner;
-import android.widget.Toast;
 
-import org.joda.time.DateTime;
-
-import java.util.Arrays;
-
+import esia.timewatcher.R;
 import esia.timewatcher.adapters.recycler.RunningHobbyRecyclerViewAdapter;
 import esia.timewatcher.adapters.recycler.SimpleRecyclerViewAdapter;
-import esia.timewatcher.adapters.spinner.Action;
-import esia.timewatcher.adapters.spinner.ActionSpinnerAdapter;
 import esia.timewatcher.adapters.spinner.TypeSpinnerAdapter;
-import esia.timewatcher.database.DatabaseManager;
-import esia.timewatcher.structures.Event;
-import esia.timewatcher.structures.Hobby;
 
 public class HomeFragment extends Fragment implements SimpleRecyclerViewAdapter.DialogListener {
 

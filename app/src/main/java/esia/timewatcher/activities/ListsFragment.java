@@ -1,4 +1,4 @@
-package esia.timewatcher;
+package esia.timewatcher.activities;
 
 import android.app.Fragment;
 import android.os.Bundle;
@@ -8,6 +8,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import esia.timewatcher.R;
 import esia.timewatcher.adapters.recycler.EventRecyclerViewAdapter;
 import esia.timewatcher.adapters.recycler.StoppedHobbyRecyclerViewAdapter;
 

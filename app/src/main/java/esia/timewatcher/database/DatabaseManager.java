@@ -519,6 +519,34 @@ public class DatabaseManager extends SQLiteOpenHelper {
         }
     }
 
+	public ArrayList<HobbyData> requestStoppedHobbies(long typeId, boolean orderByDescendantStartDate) {
+    	if (!typeExists(typeId)) {
+    		throw new IllegalArgumentException();
+		}
+
+    	String query = "SELECT * FROM " + HobbyTable.TABLE_NAME
+				+ " INNER JOIN " + OccupationTypeTable.TABLE_NAME
+				+ " ON " + HobbyTable.KEY_TYPE + " = " + OccupationTypeTable.KEY_ID
+				+ " WHERE " + HobbyTable.KEY_END_DATE + "<>?"
+				+ " AND " + HobbyTable.KEY_TYPE + "=?" ;
+
+		if (orderByDescendantStartDate) {
+			query += "ORDER BY " + HobbyTable.KEY_START_DATE + " DESC";
+		} else {
+			query += "ORDER BY " + HobbyTable.KEY_START_DATE + " ASC";
+		}
+
+		try(SQLiteDatabase db= this.getReadableDatabase();
+			Cursor cursor = db.rawQuery(query,
+					new String[] {String.valueOf(0), String.valueOf(typeId)})) {
+			ArrayList<HobbyData> hobbyDataList = new ArrayList<>(cursor.getCount());
+			while (cursor.moveToNext()) {
+				hobbyDataList.add(parseHobbyAndType(cursor));
+			}
+			return hobbyDataList;
+		}
+	}
+
 	public ArrayList<EventData> requestEvents(boolean orderByChronologicalDate) {
 		String query = "SELECT * FROM " + EventTable.TABLE_NAME
 				+ " INNER JOIN " + OccupationTypeTable.TABLE_NAME

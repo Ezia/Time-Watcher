@@ -20,4 +20,15 @@ public class EventData extends Data {
     public TypeData getTypeData() {
         return typeData;
     }
+
+    @Override
+    public boolean equals(Object o) {
+        EventData other = (EventData) o;
+        if (o != null) {
+            return (super.equals(o)
+                    && this.event.equals(other.event)
+                    && this.typeData.equals(other.typeData));
+        }
+        return false;
+    }
 }
