@@ -88,7 +88,8 @@ public class CustomStartDialogFragment extends DialogFragment {
 				dateEditText.getMonth(),
 				dateEditText.getDay(),
 				timeEditText.getHours(),
-				timeEditText.getMinutes()
+				timeEditText.getMinutes(),
+				timeEditText.getSeconds()
 		);
 
 		if (instanceType == HOBBY) {
