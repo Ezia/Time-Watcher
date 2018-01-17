@@ -2,8 +2,6 @@ package esia.timewatcher.activities;
 
 import android.app.Fragment;
 import android.os.Bundle;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -16,23 +14,20 @@ import org.joda.time.Duration;
 import java.util.ArrayList;
 
 import esia.timewatcher.R;
-import esia.timewatcher.adapters.recycler.EventRecyclerViewAdapter;
-import esia.timewatcher.adapters.recycler.StoppedHobbyRecyclerViewAdapter;
 import esia.timewatcher.adapters.spinner.TypeSpinnerAdapter;
 import esia.timewatcher.database.DatabaseManager;
 import esia.timewatcher.database.EventData;
 import esia.timewatcher.database.HobbyData;
-import esia.timewatcher.database.TypeData;
-import esia.timewatcher.structures.Type;
+import esia.timewatcher.utils.HobbyStatManager;
 import esia.timewatcher.utils.StatsUtils;
 import esia.timewatcher.utils.TimeUtils;
-import esia.timewatcher.view.NumericalStatView;
+import esia.timewatcher.view.StatView;
 
 public class StatsFragment extends Fragment {
 
 	private Spinner typeSpinner;
 	private TableLayout eventStatsTable;
-	private TableLayout hobbyStatstable;
+	private TableLayout hobbyStatsTable;
 
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -45,7 +40,7 @@ public class StatsFragment extends Fragment {
 
 		eventStatsTable = (TableLayout) view.findViewById(R.id.event_stats_table);
 
-		hobbyStatstable = (TableLayout) view.findViewById(R.id.hobby_stats_table);
+		hobbyStatsTable = (TableLayout) view.findViewById(R.id.hobby_stats_table);
 
 		ImageButton statsButton = (ImageButton) view.findViewById(R.id.stats_button);
 		statsButton.setOnClickListener(v -> updateStats());
@@ -56,50 +51,84 @@ public class StatsFragment extends Fragment {
 	private void updateStats() {
 		long typeId = typeSpinner.getSelectedItemId();
 
-		ArrayList<EventData> eventDataList =
-				DatabaseManager.getInstance().requestEvents(typeId, true);
+//		ArrayList<EventData> eventDataList =
+//				DatabaseManager.getInstance().requestEvents(typeId, true);
 
-		NumericalStatView eventDayFreq = new NumericalStatView(getContext());
-		eventDayFreq.setStatName("Times per day");
-		eventDayFreq.setStatValue(String.valueOf(
-				StatsUtils.computeEventFrequency(eventDataList, Duration.standardDays(1))
-		));
+//		StatView eventDayFreq = new StatView(
+//				getContext(),
+//				"Times per day",
+//				String.valueOf(
+//						StatsUtils.computeEventFrequency(eventDataList, Duration.standardDays(1))
+//				)
+//		);
+//
+//		StatView eventWeekFreq = new StatView(
+//				getContext(),
+//				"Times per week",
+//				String.valueOf(
+//						StatsUtils.computeEventFrequency(eventDataList, Duration.standardDays(7))
+//				)
+//		);
+//
+//		eventStatsTable.removeAllViews();
+//
+//		eventStatsTable.addView(eventDayFreq);
+//		eventStatsTable.addView(eventWeekFreq);
 
-		NumericalStatView eventWeekFreq = new NumericalStatView(getContext());
-		eventWeekFreq.setStatName("Times per week");
-		eventWeekFreq.setStatValue(String.valueOf(
-				StatsUtils.computeEventFrequency(eventDataList, Duration.standardDays(7))
-		));
 
 		ArrayList<HobbyData> hobbyDataList =
 				DatabaseManager.getInstance().requestStoppedHobbies(typeId, true);
+		HobbyStatManager hobbyStats = new HobbyStatManager(hobbyDataList);
 
-		NumericalStatView hobbyDayFreq = new NumericalStatView(getContext());
+		StatView hobbyDayFreq = new StatView(getContext());
 		hobbyDayFreq.setStatName("Time per day");
 		hobbyDayFreq.setStatValue(String.valueOf(
 				TimeUtils.toSimpleString(
-				StatsUtils.computeHobbyDurationFrequency(hobbyDataList, Duration.standardDays(1))
+						hobbyStats.getHobbyDurationFrequency(Duration.standardDays(1))
 						.toPeriod().normalizedStandard()
 				)
 		));
 
-		NumericalStatView hobbyWeekFreq = new NumericalStatView(getContext());
+
+		StatView hobbyWeekFreq = new StatView(getContext());
 		hobbyWeekFreq.setStatName("Time per week");
 		hobbyWeekFreq.setStatValue(String.valueOf(
 				TimeUtils.toSimpleString(
-				StatsUtils.computeHobbyDurationFrequency(hobbyDataList, Duration.standardDays(7))
+						hobbyStats.getHobbyDurationFrequency(Duration.standardDays(7))
 						.toPeriod().normalizedStandard()
 				)
 		));
 
-		eventStatsTable.removeAllViews();
+		StatView hobbyEarlyStart = new StatView(getContext());
+		hobbyEarlyStart.setStatName("Earliest start date");
+		hobbyEarlyStart.setStatValue(String.valueOf(
+				TimeUtils.toSimpleString(
+						hobbyStats.getEarliestStartDate()
+				)
+		));
 
-		eventStatsTable.addView(eventDayFreq);
-		eventStatsTable.addView(eventWeekFreq);
+		StatView hobbyLateEnd = new StatView(getContext());
+		hobbyLateEnd.setStatName("Latest end date");
+		hobbyLateEnd.setStatValue(String.valueOf(
+				TimeUtils.toSimpleString(
+						hobbyStats.getLatestEndDate()
+				)
+		));
 
-		hobbyStatstable.removeAllViews();
+		StatView hobbyTotalDuration = new StatView(getContext());
+		hobbyTotalDuration.setStatName("Total time spent");
+		hobbyTotalDuration.setStatValue(String.valueOf(
+				TimeUtils.toSimpleString(
+						hobbyStats.getTotalHobbyDuration()
+								.toPeriod().normalizedStandard()
+				)
+		));
 
-		hobbyStatstable.addView(hobbyDayFreq);
-		hobbyStatstable.addView(hobbyWeekFreq);
+		hobbyStatsTable.removeAllViews();
+		hobbyStatsTable.addView(hobbyEarlyStart);
+		hobbyStatsTable.addView(hobbyLateEnd);
+		hobbyStatsTable.addView(hobbyTotalDuration);
+		hobbyStatsTable.addView(hobbyDayFreq);
+		hobbyStatsTable.addView(hobbyWeekFreq);
 	}
 }

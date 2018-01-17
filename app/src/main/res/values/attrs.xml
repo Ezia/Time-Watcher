@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <declare-styleable name="NumericalStatView">
+    <declare-styleable name="StatView">
         <attr name="statNameText" format="string" />
         <attr name="statValueText" format="string" />
     </declare-styleable>

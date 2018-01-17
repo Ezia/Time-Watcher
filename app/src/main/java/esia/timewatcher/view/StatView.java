@@ -8,17 +8,17 @@ import android.widget.TextView;
 
 import esia.timewatcher.R;
 
-public class NumericalStatView extends TableRow {
+public class StatView extends TableRow {
 
-	private String statName;
-	private String statValue;
+	private String statName = null;
+	private String statValue = null;
 
-	public NumericalStatView(Context context) {
+	public StatView(Context context) {
 		super(context);
 		init(context, null);
 	}
 
-	public NumericalStatView(Context context, AttributeSet attrs) {
+	public StatView(Context context, AttributeSet attrs) {
 		super(context, attrs);
 		init(context, attrs);
 	}
@@ -42,16 +42,18 @@ public class NumericalStatView extends TableRow {
 	}
 
 	private void init(Context context, AttributeSet attrs) {
-		TypedArray a = context.getTheme().obtainStyledAttributes(
-				attrs,
-				R.styleable.NumericalStatView,
-				0, 0);
+		if (attrs != null) {
+			TypedArray a = context.getTheme().obtainStyledAttributes(
+					attrs,
+					R.styleable.StatView,
+					0, 0);
 
-		try {
-			statName = a.getString(R.styleable.NumericalStatView_statNameText);
-			statValue = a.getString(R.styleable.NumericalStatView_statValueText);
-		} finally {
-			a.recycle();
+			try {
+				statName = a.getString(R.styleable.StatView_statNameText);
+				statValue = a.getString(R.styleable.StatView_statValueText);
+			} finally {
+				a.recycle();
+			}
 		}
 
 		TextView nameView = new TextView(context);
